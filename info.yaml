@@ -17,3 +17,28 @@ project:
   discord: "alejandrojuarezlora"                   # Optional: Discord username (for support / communication)
   description: "Set of analog neuromorphic standard cell to be assembled into a net"  # Short one-line description
   lvs_config: "./designs/libs/snn_analog"
+
+pins: 
+  - name: avss
+    io_type: ground  # the first pin must be a ground connection
+  - name: Vin 
+    io_type: analog
+  - name: Vin_neg
+    io_type: analog
+  - name: vpre1
+    io_type: analog
+  - name: vpre2
+    io_type: analog
+    secondary_esd: true
+  - name: vpost1
+    io_type: analog
+    secondary_esd: false
+  - name: vpost2
+    io_type: analog
+  - name: vw11
+    io_type: analog
+  - name: vw42
+    io_type: analog
+  - name: avdd
+    io_type: power  # subsequent power/ground cells cause a break in the I/O power rails
+

@@ -1,4 +1,4 @@
-v {xschem version=3.4.8RC file_version=1.2}
+v {xschem version=3.4.8RC file_version=1.3}
 G {}
 K {}
 V {}
@@ -56,7 +56,7 @@ N 120 -220 440 -220 {lab=x}
 N 120 -280 120 -220 {lab=x}
 C {symbols/nfet_03v3.sym} 420 -170 0 0 {name=M1
 L=10u
-W=0.28u
+W=0.5u
 nf=1
 m=1
 ad="'int((nf+1)/2) * W/nf * 0.18u'"
@@ -70,7 +70,7 @@ spiceprefix=X
 }
 C {symbols/nfet_03v3.sym} 670 -170 0 1 {name=M2
 L=10u
-W=0.28u
+W=0.5u
 nf=1
 m=1
 ad="'int((nf+1)/2) * W/nf * 0.18u'"
@@ -146,7 +146,7 @@ C {lab_pin.sym} 440 -240 2 0 {name=p8 sig_type=std_logic lab=x}
 C {lab_pin.sym} 650 -240 2 1 {name=p9 sig_type=std_logic lab=y}
 C {symbols/nfet_03v3.sym} 520 -10 0 0 {name=M9
 L=0.28u
-W=0.28u
+W=0.5u
 nf=1
 m=1
 ad="'int((nf+1)/2) * W/nf * 0.18u'"
@@ -160,7 +160,7 @@ spiceprefix=X
 }
 C {symbols/nfet_03v3.sym} -80 -10 0 1 {name=M10
 L=0.28u
-W=0.28u
+W=0.5u
 nf=1
 m=1
 ad="'int((nf+1)/2) * W/nf * 0.18u'"
@@ -174,7 +174,7 @@ spiceprefix=X
 }
 C {symbols/pfet_03v3.sym} -80 -130 0 1 {name=M11
 L=0.28u
-W=0.28u
+W=0.5u
 nf=1
 m=1
 ad="'int((nf+1)/2) * W/nf * 0.18u'"

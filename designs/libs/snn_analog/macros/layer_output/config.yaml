@@ -1,0 +1,78 @@
+meta:
+  version: 3
+  flow: Classic
+
+DESIGN_NAME: layer_output
+
+# --- RTL del top: instancia las 2 neuronas (x1, x2) ---
+VERILOG_FILES:
+  - dir::layer_output.v
+
+# --- Parámetros de Floorplaning (Alineados a rejilla 7T GF180MCU) ---
+FP_SIZING: absolute
+DIE_AREA:
+  - 0
+  - 0
+  - 85
+  - 80
+CORE_AREA:
+  - 5.04
+  - 7.84
+  - 78.40
+  - 74.48
+
+# --- Desactivar Optimización y Reparación de Celdas Estándar Temporal en lo que arreglan lo de los capacitores :/, Esto se deberia de cambiar a true cuando se tenga cada uno de los parametros conectado a cada uno de sus pines, debido a que no se encuentran, esto se debe que libreline lo quiere reparar para llegar al vdd del elemento, pero como no existe da error, para evitar eso se desactivo temporalmente para seguir con el flujo lo mas deseado posible y observar que todo funciona correctamente---
+
+#A evaluar 
+RUN_POST_GPL_DESIGN_REPAIR: false
+RUN_REPAIR_DESIGN: false
+
+#forzoso mantener desactivado
+RUN_CTS: false
+
+
+# --- Alimentación y Potencia ---
+VDD_NETS:
+  - avdd
+  - VDD
+  
+GND_NETS:
+  - avss
+  - VSS
+
+# --- Conexiones de Potencia para los Macros ---
+PDN_MACRO_CONNECTIONS:
+  - ".*x.* avdd avss VDD VSS"
+
+# --- Reglas de Enrutamiento y Capas (GF180MCU) ---
+PRIMARY_GDSII_STREAMOUT_TOOL: klayout
+RT_MIN_LAYER: Metal3
+RT_MAX_LAYER: Metal5
+DRT_THREADS: 12
+GRT_ALLOW_CONGESTION: true
+
+# --- Halo y Espaciado de Macros ---
+FP_MACRO_HORIZONTAL_HALO: 2
+FP_MACRO_VERTICAL_HALO: 2
+
+MACROS:
+  neurona_lvs:
+    gds:
+      - dir::../../lif/neurona_lvs.gds
+    lef:
+      - dir::../../lif/neurona_lvs.lef
+    spice:
+      - dir::../../lif/neurona_lvs.spice
+    vh:
+      - dir::../../lif/neurona_lvs.v
+    instances:
+      x1:
+        location:
+          - 10.08
+          - 11.76
+        orientation: N
+      x2:
+        location:
+          - 10.08
+          - 43.12
+        orientation: N

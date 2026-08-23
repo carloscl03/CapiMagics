@@ -49,12 +49,11 @@ N 1040 -230 1040 -150 {lab=spike/reset}
 N 860 -150 1040 -150 {lab=spike/reset}
 N 860 -150 860 -130 {lab=spike/reset}
 N 630 -130 860 -130 {lab=spike/reset}
-N 560 -340 560 -310 {lab=Vdd}
 N 730 -170 730 -150 {lab=Vss}
 N 560 -280 560 -230 {lab=integration}
 C {symbols/pfet_03v3.sym} 710 -260 0 0 {name=M1
 L=0.28u
-W=0.22u
+W=0.5u
 nf=1
 m=1
 ad="'int((nf+1)/2) * W/nf * 0.18u'"
@@ -68,7 +67,7 @@ spiceprefix=X
 }
 C {symbols/nfet_03v3.sym} 710 -200 0 0 {name=M2
 L=0.28u
-W=0.22u
+W=0.5u
 nf=1
 m=1
 ad="'int((nf+1)/2) * W/nf * 0.18u'"
@@ -82,7 +81,7 @@ spiceprefix=X
 }
 C {symbols/pfet_03v3.sym} 900 -260 0 0 {name=M3
 L=0.28u
-W=0.22u
+W=0.5u
 nf=1
 m=1
 ad="'int((nf+1)/2) * W/nf * 0.18u'"
@@ -96,7 +95,7 @@ spiceprefix=X
 }
 C {symbols/nfet_03v3.sym} 900 -200 0 0 {name=M4
 L=0.28u
-W=0.22u
+W=0.5u
 nf=1
 m=1
 ad="'int((nf+1)/2) * W/nf * 0.18u'"
@@ -110,7 +109,7 @@ spiceprefix=X
 }
 C {symbols/pfet_03v3.sym} 900 -410 0 0 {name=M7
 L=0.28u
-W=0.22u
+W=0.5u
 nf=1
 m=1
 ad="'int((nf+1)/2) * W/nf * 0.18u'"
@@ -124,7 +123,7 @@ spiceprefix=X
 }
 C {symbols/nfet_03v3.sym} 900 -350 0 0 {name=M8
 L=0.28u
-W=0.22u
+W=0.5u
 nf=1
 m=1
 ad="'int((nf+1)/2) * W/nf * 0.18u'"
@@ -138,7 +137,7 @@ spiceprefix=X
 }
 C {symbols/nfet_03v3.sym} 540 -200 0 0 {name=M5
 L=50u
-W=1.25u
+W=2.3u
 nf=1
 m=1
 ad="'int((nf+1)/2) * W/nf * 0.18u'"
@@ -154,39 +153,24 @@ C {lab_pin.sym} 730 -290 2 0 {name=p1 sig_type=std_logic lab=Vdd}
 C {lab_pin.sym} 920 -290 2 0 {name=p2 sig_type=std_logic lab=Vdd}
 C {lab_pin.sym} 920 -440 2 0 {name=p3 sig_type=std_logic lab=Vdd}
 C {lab_pin.sym} 1010 -380 2 0 {name=p4 sig_type=std_logic lab=spike}
-C {lab_pin.sym} 560 -340 2 0 {name=p6 sig_type=std_logic lab=Vdd}
-C {capa-2.sym} 630 -200 0 0 {name=C1
-m=1
-value=150f
-footprint=1206
-device=polarized_capacitor}
 C {lab_pin.sym} 860 -140 0 1 {name=p9 sig_type=std_logic lab=spike/reset}
 C {gnd.sym} 920 -320 0 0 {name=l3 lab=GND}
 C {lab_pin.sym} 850 -230 1 0 {name=p8 sig_type=std_logic lab=spike_neg}
 C {lab_pin.sym} 690 -250 2 1 {name=p7 sig_type=std_logic lab=integration}
-C {symbols/pfet_03v3.sym} 540 -310 0 0 {name=M6
-L=17u
-W=0.22u
-nf=1
-m=1
-ad="'int((nf+1)/2) * W/nf * 0.18u'"
-pd="'2*int((nf+1)/2) * (W/nf + 0.18u)'"
-as="'int((nf+2)/2) * W/nf * 0.18u'"
-ps="'2*int((nf+2)/2) * (W/nf + 0.18u)'"
-nrd="'0.18u / W'" nrs="'0.18u / W'"
-sa=0 sb=0 sd=0
-model=pfet_03v3
-spiceprefix=X
-}
-C {lab_pin.sym} 520 -310 0 0 {name=p5 sig_type=std_logic lab=Vin}
+C {lab_pin.sym} 560 -280 0 0 {name=p5 sig_type=std_logic lab=Iin}
 C {iopin.sym} 660 -490 2 0 {name=p10 lab=Vdd}
 C {iopin.sym} 660 -460 2 0 {name=p11 lab=Vss}
-C {ipin.sym} 660 -520 0 0 {name=p12 lab=Vin}
+C {ipin.sym} 660 -520 0 0 {name=p12 lab=Iin}
 C {opin.sym} 660 -430 2 0 {name=p13 lab=spike}
 C {opin.sym} 660 -400 2 0 {name=p14 lab=spike_neg}
 C {lab_pin.sym} 660 -490 2 0 {name=p15 sig_type=std_logic lab=Vdd}
 C {lab_pin.sym} 660 -460 2 0 {name=p16 sig_type=std_logic lab=Vss}
 C {lab_pin.sym} 730 -150 0 0 {name=p17 sig_type=std_logic lab=Vss}
-C {lab_pin.sym} 660 -520 2 0 {name=p18 sig_type=std_logic lab=Vin}
 C {lab_pin.sym} 660 -400 2 0 {name=p19 sig_type=std_logic lab=spike_neg}
 C {lab_pin.sym} 660 -430 2 0 {name=p20 sig_type=std_logic lab=spike}
+C {capa-2.sym} 640 -200 0 0 {name=C1
+m=1
+value=280f
+footprint=1206
+device=polarized_capacitor}
+C {lab_pin.sym} 660 -520 0 1 {name=p6 sig_type=std_logic lab=Iin}

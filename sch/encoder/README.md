@@ -28,3 +28,11 @@ To verify the functionality of the proposed encoder, the testbench show below wa
 ![testbench](encoder_tb.png)
 
 The output currents exhibit complementary behavior. When $V_{in}$ increases, the current through one branch increases while the current through the opposite branch decreases. These results confirm the correct operation of the encoder and its ability to convert the differential input voltage into the corresponding output current distribution.
+
+## Post-layout Simulation
+A testbench is created where a symbol for the schematic design is placed alongside another symbol representing the encoder, which points to a .spice file containing the parasitic elements extracted after layout.
+![testbench_pex](encoder_pex_tb.png)
+
+The plots show that under the same input stimulus, the same output behavior is obtained.
+
+

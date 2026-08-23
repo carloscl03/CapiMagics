@@ -1,0 +1,116 @@
+
+Cell nfet_03v3 (1) disconnected node: drain
+Cell nfet_03v3 (1) disconnected node: gate
+Cell nfet_03v3 (1) disconnected node: source
+Cell nfet_03v3 (1) disconnected node: bulk
+Equate elements:  no current cell.
+Device classes nfet_03v3 and nfet_03v3 are equivalent.
+
+Cell pfet_03v3 (1) disconnected node: drain
+Cell pfet_03v3 (1) disconnected node: gate
+Cell pfet_03v3 (1) disconnected node: source
+Cell pfet_03v3 (1) disconnected node: bulk
+Equate elements:  no current cell.
+Device classes pfet_03v3 and pfet_03v3 are equivalent.
+Flattening unmatched subcell Unnamed_20771673 in circuit neurona_lvs (0)(1 instance)
+Flattening unmatched subcell Unnamed_f33c6f5c in circuit neurona_lvs (0)(3 instances)
+Flattening unmatched subcell Unnamed_fab9c559 in circuit neurona_lvs (0)(3 instances)
+
+Class neurona_lvs (0):  Merged 2 parallel devices.
+Subcircuit summary:
+Circuit 1: neurona_lvs                     |Circuit 2: neurona_lvs                     
+-------------------------------------------|-------------------------------------------
+nfet_03v3 (4->3)                           |nfet_03v3 (4) **Mismatch**                 
+pfet_03v3 (3->2)                           |pfet_03v3 (3) **Mismatch**                 
+(no matching element)                      |cap_mim_2f0fF (3->1)                       
+Number of devices: 5 **Mismatch**          |Number of devices: 8 **Mismatch**          
+Number of nets: 3 **Mismatch**             |Number of nets: 7 **Mismatch**             
+---------------------------------------------------------------------------------------
+NET mismatches: Class fragments follow (with fanout counts):
+Circuit 1: neurona_lvs                     |Circuit 2: neurona_lvs                     
+
+---------------------------------------------------------------------------------------
+Net: vss                                   |Net: Vss                                   
+  nfet_03v3/(1|3) = 5                      |  nfet_03v3/(drain|source) = 3             
+  nfet_03v3/2 = 1                          |  nfet_03v3/bulk = 3                       
+  nfet_03v3/4 = 3                          |  cap_mim_2f0fF/2 = 1                      
+  pfet_03v3/(1|3) = 3                      |                                           
+  pfet_03v3/4 = 2                          |                                           
+                                           |                                           
+Net: Unnamed_fab9c559_2/a_n64_n339#        |Net: GND                                   
+  nfet_03v3/2 = 1                          |  nfet_03v3/(drain|source) = 1             
+  pfet_03v3/2 = 1                          |  nfet_03v3/bulk = 1                       
+                                           |                                           
+(no matching net)                          |Net: spike_neg                             
+                                           |  pfet_03v3/(drain|source) = 1             
+                                           |  nfet_03v3/(drain|source) = 1             
+                                           |  pfet_03v3/gate = 2                       
+                                           |  nfet_03v3/gate = 2                       
+                                           |                                           
+(no matching net)                          |Net: Vdd                                   
+                                           |  pfet_03v3/(drain|source) = 3             
+                                           |  pfet_03v3/bulk = 3                       
+                                           |                                           
+(no matching net)                          |Net: spike                                 
+                                           |  pfet_03v3/(drain|source) = 1             
+                                           |  nfet_03v3/(drain|source) = 1             
+                                           |                                           
+(no matching net)                          |Net: spike/reset                           
+                                           |  pfet_03v3/(drain|source) = 1             
+                                           |  nfet_03v3/(drain|source) = 1             
+                                           |  nfet_03v3/gate = 1                       
+---------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------
+Net: Unnamed_fab9c559_2/a_64_n131#         |Net: Iin                                   
+  nfet_03v3/2 = 1                          |  pfet_03v3/gate = 1                       
+  nfet_03v3/(1|3) = 1                      |  nfet_03v3/gate = 1                       
+  pfet_03v3/2 = 1                          |  nfet_03v3/(drain|source) = 1             
+  pfet_03v3/(1|3) = 1                      |  cap_mim_2f0fF/1 = 1                      
+---------------------------------------------------------------------------------------
+DEVICE mismatches: Class fragments follow (with node fanout counts):
+Circuit 1: neurona_lvs                     |Circuit 2: neurona_lvs                     
+
+---------------------------------------------------------------------------------------
+Instance: Unnamed_20771673_0/nfet_03v3:0   |Instance: nfet_03v3:4                      
+  (1,3) = (14,14)                          |  (drain,source) = (7,3)                   
+  2 = 14                                   |  gate = 6                                 
+  4 = 14                                   |  bulk = 7                                 
+                                           |                                           
+Instance: Unnamed_fab9c559_2/pfet_03v3:0   |Instance: nfet_03v3:8                      
+  (1,3) = (14,4)                           |  (drain,source) = (2,2)                   
+  2 = 2                                    |  gate = 6                                 
+  4 = 14                                   |  bulk = 2                                 
+                                           |                                           
+(no matching instance)                     |Instance: pfet_03v3:3                      
+                                           |  (drain,source) = (6,3)                   
+                                           |  gate = 6                                 
+                                           |  bulk = 6                                 
+                                           |                                           
+                                           |                                           
+(no matching instance)                     |Instance: pfet_03v3:7                      
+                                           |  (drain,source) = (6,2)                   
+                                           |  gate = 6                                 
+                                           |  bulk = 6                                 
+                                           |                                           
+                                           |                                           
+(no matching instance)                     |Instance: cap_mim_2f0fF:C2                 
+                                           |  1 = 4                                    
+                                           |  2 = 7                                    
+---------------------------------------------------------------------------------------
+Netlists do not match.
+Port matching may fail to disambiguate symmetries.
+
+Subcircuit pins:
+Circuit 1: neurona_lvs                     |Circuit 2: neurona_lvs                     
+-------------------------------------------|-------------------------------------------
+vss                                        |spike **Mismatch**                         
+(no pin, node is Unnamed_fab9c559_2/a_n64_ |Vdd                                        
+(no pin, node is Unnamed_fab9c559_2/a_n64_ |Vss                                        
+(no pin, node is Unnamed_fab9c559_2/a_64_n |Iin                                        
+(no pin, node is Unnamed_fab9c559_2/a_n64_ |spike_neg                                  
+---------------------------------------------------------------------------------------
+Cell pin lists for neurona_lvs and neurona_lvs altered to match.
+Device classes neurona_lvs and neurona_lvs are equivalent.
+
+Final result: Top level cell failed pin matching.
