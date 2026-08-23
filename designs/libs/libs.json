@@ -1,5 +1,10 @@
 {
   "core_analog_unit_nmos": "/foss/designs/libs/core_analog/unit_nmos/unit_nmos.gds",
   "core_analog_ota_5t": "/foss/designs/libs/core_analog/ota_5t/ota_5t.gds",
-  "core_analog_unit_pmos": "/foss/designs/libs/core_analog/unit_pmos/unit_pmos.gds"
+  "core_analog_unit_pmos": "/foss/designs/libs/core_analog/unit_pmos/unit_pmos.gds",
+  "snn_analog_neurona_lvs": "/foss/designs/libs/snn_analog/lif/neurona_lvs.gds",
+  "snn_analog_current_mirror": "/foss/designs/libs/snn_analog/current_mirror/current_mirror.gds",
+  "snn_analog_encoder": "/foss/designs/libs/snn_analog/Encoder/encoder.gds",
+  "snn_analog_stdp": "/foss/designs/libs/snn_analog/stdp/stdp.gds",
+  "snn_analog_Current_limit": "/foss/designs/libs/snn_analog/Current_limit/Current_limit.gds"
 }

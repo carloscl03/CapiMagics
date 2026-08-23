@@ -1,0 +1,7 @@
+** sch_path: /foss/designs/CapiMagics/designs/libs/snn_analog/stdp/Current_limit.sch
+.subckt Current_limit ifwd i_SUM avdd
+*.PININFO ifwd:B i_SUM:B avdd:B
+X0 net1 net1 i_SUM avdd pfet_03v3 L=5.0u W=0.5u nf=1
+X1 ifwd ifwd net1 avdd pfet_03v3 L=5.0u W=0.5u nf=1
+
+.ends

@@ -1,50 +1,44 @@
 ** sch_path: /foss/designs/CapiMagics/sch/stdp/stdp_lvs.sch
-.subckt stdp avss avdd nvpost nvpre vpost vpre vb_idep vb_itd vb_itp vb_pot vw
-*.iopin avss
-*.iopin avdd
-*.iopin nvpost
-*.iopin nvpre
-*.iopin vpost
-*.iopin vpre
-*.iopin vb_idep
-*.iopin vb_itd
-*.iopin vb_itp
-*.iopin vb_pot
-*.iopin vw
-XM1 net1 vpot avdd avdd pfet_03v3 L=0.28u W=0.22u nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u' pd='2*int((nf+1)/2) * (W/nf + 0.18u)'
-+ ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
-XM2 vw nvpost net1 avdd pfet_03v3 L=0.28u W=0.22u nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u' pd='2*int((nf+1)/2) * (W/nf + 0.18u)'
-+ ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
-XM3 vw vpre net2 avss nfet_03v3 L=0.28u W=0.22u nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u' pd='2*int((nf+1)/2) * (W/nf + 0.18u)'
-+ ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
-XM4 net2 vdep avss avss nfet_03v3 L=0.28u W=0.22u nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u' pd='2*int((nf+1)/2) * (W/nf + 0.18u)'
-+ ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
-XM7 net3 net4 avdd avdd pfet_03v3 L=0.28u W=0.22u nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u' pd='2*int((nf+1)/2) * (W/nf + 0.18u)'
-+ ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
-XCpot avdd vpot cap_mim_2f0fF c_width=5e-6 c_length=5e-6 m=2
-XM8 net4 nvpre vpot avdd pfet_03v3 L=0.28u W=0.22u nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u' pd='2*int((nf+1)/2) * (W/nf + 0.18u)'
-+ ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
-XCW vw avss cap_mim_2f0fF c_width=5e-6 c_length=5e-6 m=10
-XM9 net5 net5 avss avss nfet_03v3 L=0.28u W=0.22u nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u' pd='2*int((nf+1)/2) * (W/nf + 0.18u)'
-+ ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
-XM12 net5 vpost vdep avss nfet_03v3 L=0.28u W=0.22u nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u' pd='2*int((nf+1)/2) * (W/nf + 0.18u)'
-+ ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
-XCdep vdep avss cap_mim_2f0fF c_width=5e-6 c_length=5e-6 m=2
-XM17 vpot vb_itp avdd avdd pfet_03v3 L=4.6u W=0.3u nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u' pd='2*int((nf+1)/2) * (W/nf + 0.18u)'
-+ ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
-XMCM_1 net3 vb_pot avss avss nfet_03v3 L=2.8u W=0.61u nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u' pd='2*int((nf+1)/2) * (W/nf + 0.18u)'
-+ ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
-XM16 net5 vb_idep avdd avdd pfet_03v3 L=2.8u W=10.2u nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u' pd='2*int((nf+1)/2) * (W/nf + 0.18u)'
-+ ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
-XMCM_5 vdep vb_itd net6 avss nfet_03v3 L=10u W=0.5u nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u' pd='2*int((nf+1)/2) * (W/nf + 0.18u)'
-+ ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
-XMCM_6 net6 vb_itd net7 avss nfet_03v3 L=10u W=0.5u nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u' pd='2*int((nf+1)/2) * (W/nf + 0.18u)'
-+ ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
-XMCM_7 net7 vb_itd net8 avss nfet_03v3 L=10u W=0.5u nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u' pd='2*int((nf+1)/2) * (W/nf + 0.18u)'
-+ ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
-XMCM_8 net9 vb_itd avss avss nfet_03v3 L=10u W=0.5u nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u' pd='2*int((nf+1)/2) * (W/nf + 0.18u)'
-+ ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
-XMCM_9 net8 vb_itd net9 avss nfet_03v3 L=10u W=0.5u nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u' pd='2*int((nf+1)/2) * (W/nf + 0.18u)'
-+ ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
-**.ends
-.end
+.subckt stdp avss avdd nvpost nvpre vpost vpre vb_idep vb_itd vb_itp vb_pot vw iout
+*.PININFO avss:B avdd:B nvpost:B nvpre:B vpost:B vpre:B vb_idep:B vb_itd:B vb_itp:B vb_pot:B vw:B iout:O
+M1 n1 vpot avdd avdd pfet_03v3 L=0.28u W=0.22u nf=1
+M2 vw nvpost n1 avdd pfet_03v3 L=0.28u W=0.22u nf=1
+M3 vw vpre n2 avss nfet_03v3 L=0.28u W=0.22u nf=1
+M4 n2 vdep avss avss nfet_03v3 L=0.28u W=0.22u nf=1
+M7 n4 n3 avdd avdd pfet_03v3 L=0.28u W=0.22u nf=1
+M8 n3 nvpre vpot avdd pfet_03v3 L=0.28u W=0.22u nf=1
+M9 n5 n5 avss avss nfet_03v3 L=0.28u W=0.22u nf=1
+M12 n5 vpost vdep avss nfet_03v3 L=0.28u W=0.22u nf=1
+M17 vpot vb_itp avdd avdd pfet_03v3 L=4.6u W=0.3u nf=1
+MCM_1 n4 vb_pot avss avss nfet_03v3 L=2.8u W=0.61u nf=1
+M16 n5 vb_idep avdd avdd pfet_03v3 L=2.8u W=10.2u nf=1
+MCM_5 vdep vb_itd n6 avss nfet_03v3 L=10u W=0.5u nf=1
+MCM_6 n6 vb_itd n7 avss nfet_03v3 L=10u W=0.5u nf=1
+MCM_7 n7 vb_itd n8 avss nfet_03v3 L=10u W=0.5u nf=1
+MCM_8 n8 vb_itd n9 avss nfet_03v3 L=10u W=0.5u nf=1
+MCM_9 n9 vb_itd avss avss nfet_03v3 L=10u W=0.5u nf=1
+x1[0] vdep avss unitcap
+x1[1] vdep avss unitcap
+x2[0] vw avss unitcap
+x2[1] vw avss unitcap
+x2[2] vw avss unitcap
+x2[3] vw avss unitcap
+x2[4] vw avss unitcap
+x2[5] vw avss unitcap
+x2[6] vw avss unitcap
+x2[7] vw avss unitcap
+x2[8] vw avss unitcap
+x2[9] vw avss unitcap
+x3[0] avdd vpot unitcap
+x3[1] avdd vpot unitcap
+M5 iout vw avdd avdd pfet_03v3 L=15u W=0.5u nf=1
+.ends
+
+* expanding   symbol:  unitcap.sym # of pins=2
+** sym_path: /foss/designs/CapiMagics/sch/stdp/unitcap.sym
+** sch_path: /foss/designs/CapiMagics/sch/stdp/unitcap.sch
+.subckt unitcap tp bp
+*.PININFO tp:B bp:B
+XCdep tp bp cap_mim_2f0fF c_width=5e-6 c_length=5e-6
+.ends
+
