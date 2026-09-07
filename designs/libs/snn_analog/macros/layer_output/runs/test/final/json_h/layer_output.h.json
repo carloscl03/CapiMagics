@@ -1,0 +1,154 @@
+{
+  "creator": "Yosys 0.64 (git sha1 6d2c445ae, g++ 13.3.0-6ubuntu2~24.04.1 -fPIC -O3)",
+  "modules": {
+    "layer_output": {
+      "attributes": {
+        "hdlname": "layer_output",
+        "top": "00000000000000000000000000000001",
+        "src": "/foss/designs/libs/snn_analog/macros/layer_output/layer_output.v:1.1-40.10"
+      },
+      "ports": {
+        "vdd": {
+          "direction": "inout",
+          "bits": [ 2 ]
+        },
+        "vss": {
+          "direction": "inout",
+          "bits": [ 3 ]
+        },
+        "Iext1": {
+          "direction": "input",
+          "bits": [ 4 ]
+        },
+        "vout_1": {
+          "direction": "output",
+          "bits": [ 5 ]
+        },
+        "nvout_1": {
+          "direction": "output",
+          "bits": [ 6 ]
+        },
+        "Iext2": {
+          "direction": "input",
+          "bits": [ 7 ]
+        },
+        "vout_2": {
+          "direction": "output",
+          "bits": [ 8 ]
+        },
+        "nvout_2": {
+          "direction": "output",
+          "bits": [ 9 ]
+        }
+      },
+      "cells": {
+        "x1": {
+          "hide_name": 0,
+          "type": "neurona_lvs",
+          "parameters": {
+          },
+          "attributes": {
+            "module_not_derived": "00000000000000000000000000000001",
+            "src": "/foss/designs/libs/snn_analog/macros/layer_output/layer_output.v:24.17-30.6"
+          },
+          "port_directions": {
+            "Iin": "input",
+            "spike": "output",
+            "spike_neg": "output",
+            "vdd": "inout",
+            "vss": "inout"
+          },
+          "connections": {
+            "Iin": [ 4 ],
+            "spike": [ 5 ],
+            "spike_neg": [ 6 ],
+            "vdd": [ 2 ],
+            "vss": [ 3 ]
+          }
+        },
+        "x2": {
+          "hide_name": 0,
+          "type": "neurona_lvs",
+          "parameters": {
+          },
+          "attributes": {
+            "module_not_derived": "00000000000000000000000000000001",
+            "src": "/foss/designs/libs/snn_analog/macros/layer_output/layer_output.v:32.17-38.6"
+          },
+          "port_directions": {
+            "Iin": "input",
+            "spike": "output",
+            "spike_neg": "output",
+            "vdd": "inout",
+            "vss": "inout"
+          },
+          "connections": {
+            "Iin": [ 7 ],
+            "spike": [ 8 ],
+            "spike_neg": [ 9 ],
+            "vdd": [ 2 ],
+            "vss": [ 3 ]
+          }
+        }
+      },
+      "netnames": {
+        "Iext1": {
+          "hide_name": 0,
+          "bits": [ 4 ],
+          "attributes": {
+            "src": "/foss/designs/libs/snn_analog/macros/layer_output/layer_output.v:15.12-15.17"
+          }
+        },
+        "Iext2": {
+          "hide_name": 0,
+          "bits": [ 7 ],
+          "attributes": {
+            "src": "/foss/designs/libs/snn_analog/macros/layer_output/layer_output.v:19.12-19.17"
+          }
+        },
+        "nvout_1": {
+          "hide_name": 0,
+          "bits": [ 6 ],
+          "attributes": {
+            "src": "/foss/designs/libs/snn_analog/macros/layer_output/layer_output.v:17.12-17.19"
+          }
+        },
+        "nvout_2": {
+          "hide_name": 0,
+          "bits": [ 9 ],
+          "attributes": {
+            "src": "/foss/designs/libs/snn_analog/macros/layer_output/layer_output.v:21.12-21.19"
+          }
+        },
+        "vdd": {
+          "hide_name": 0,
+          "bits": [ 2 ],
+          "attributes": {
+            "src": "/foss/designs/libs/snn_analog/macros/layer_output/layer_output.v:12.12-12.15"
+          }
+        },
+        "vout_1": {
+          "hide_name": 0,
+          "bits": [ 5 ],
+          "attributes": {
+            "src": "/foss/designs/libs/snn_analog/macros/layer_output/layer_output.v:16.12-16.18"
+          }
+        },
+        "vout_2": {
+          "hide_name": 0,
+          "bits": [ 8 ],
+          "attributes": {
+            "src": "/foss/designs/libs/snn_analog/macros/layer_output/layer_output.v:20.12-20.18"
+          }
+        },
+        "vss": {
+          "hide_name": 0,
+          "bits": [ 3 ],
+          "attributes": {
+            "src": "/foss/designs/libs/snn_analog/macros/layer_output/layer_output.v:13.12-13.15"
+          }
+        }
+      }
+    }
+  }
+}

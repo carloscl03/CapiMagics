@@ -1,6 +1,6 @@
 module layer_input (
-    avdd,
-    avss,
+    vdd,
+    vss,
     Iext1,
     vout_1,
     nvout_1,
@@ -15,8 +15,8 @@ module layer_input (
     nvout_4
 );
  
-    inout  avdd;   
-    inout  avss;   
+    inout  vdd;   
+    inout  vss;   
     input  Iext1;  
     output vout_1; 
     output nvout_1;
@@ -31,32 +31,32 @@ module layer_input (
     output nvout_4;
 
     neurona_lvs x1 (
-        .Vdd       (avdd),
-        .Vss       (avss),
+        .vdd       (vdd),
+        .vss       (vss),
         .Iin       (Iext1),
         .spike     (vout_1),
         .spike_neg (nvout_1)
     );
 
     neurona_lvs x2 (
-        .Vdd       (avdd),
-        .Vss       (avss),
+        .vdd       (vdd),
+        .vss       (vss),
         .Iin       (Iext2),
         .spike     (vout_2),
         .spike_neg (nvout_2)
     );
 
     neurona_lvs x3 (
-        .Vdd       (avdd),
-        .Vss       (avss),
+        .vdd       (vdd),
+        .vss       (vss),
         .Iin       (Iext3),
         .spike     (vout_3),
         .spike_neg (nvout_3)
     );
 
     neurona_lvs x4 (
-        .Vdd       (avdd),
-        .Vss       (avss),
+        .vdd       (vdd),
+        .vss       (vss),
         .Iin       (Iext4),
         .spike     (vout_4),
         .spike_neg (nvout_4)

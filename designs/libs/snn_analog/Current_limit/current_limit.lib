@@ -1,0 +1,28 @@
+library (Current_limit_lvs_lib) {
+  
+  slew_derate_from_library : 1.0;
+  slew_lower_threshold_pct_fall : 20.0;
+  slew_upper_threshold_pct_fall : 80.0;
+  slew_lower_threshold_pct_rise : 20.0;
+  slew_upper_threshold_pct_rise : 80.0;
+  input_threshold_pct_fall : 50.0;
+  input_threshold_pct_rise : 50.0;
+  output_threshold_pct_fall : 50.0;
+  output_threshold_pct_rise : 50.0;
+
+  cell (Current_limit_lvs) {
+    area : 1156.8269;
+    pin (avdd) {
+      direction : inout;
+      pg_type : primary_power;
+    }
+    pin (ifwd) {
+      direction : input;
+      capacitance : 0.001;
+    }
+    pin (isum) {
+      direction : input;
+      capacitance : 0.001;
+    }
+  }
+}

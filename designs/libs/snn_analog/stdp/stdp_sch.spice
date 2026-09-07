@@ -1,15 +1,15 @@
 ** sch_path: /foss/designs/CapiMagics/sch/stdp/stdp_lvs.sch
-.subckt stdp avss avdd nvpost nvpre vpost vpre vb_idep vb_itd vb_itp vb_pot vw iout
+.subckt stdp avdd avss nvpre nvpost vpre vpost vb_itd vb_idep vb_itp vb_pot vw iout
 *.PININFO avss:B avdd:B nvpost:B nvpre:B vpost:B vpre:B vb_idep:B vb_itd:B vb_itp:B vb_pot:B vw:B iout:O
-M1 n1 vpot avdd avdd pfet_03v3 L=0.28u W=0.22u nf=1
-M2 vw nvpost n1 avdd pfet_03v3 L=0.28u W=0.22u nf=1
-M3 vw vpre n2 avss nfet_03v3 L=0.28u W=0.22u nf=1
-M4 n2 vdep avss avss nfet_03v3 L=0.28u W=0.22u nf=1
-M7 n4 n3 avdd avdd pfet_03v3 L=0.28u W=0.22u nf=1
-M8 n3 nvpre vpot avdd pfet_03v3 L=0.28u W=0.22u nf=1
-M9 n5 n5 avss avss nfet_03v3 L=0.28u W=0.22u nf=1
-M12 n5 vpost vdep avss nfet_03v3 L=0.28u W=0.22u nf=1
-M17 vpot vb_itp avdd avdd pfet_03v3 L=4.6u W=0.3u nf=1
+M1 n1 vpot avdd avdd pfet_03v3 L=0.63u W=0.5u nf=1
+M2 vw nvpost n1 avdd pfet_03v3 L=0.63u W=0.5u nf=1
+M3 vw vpre n2 avss nfet_03v3 L=0.63u W=0.5u nf=1
+M4 n2 vdep avss avss nfet_03v3 L=0.63u W=0.5u nf=1
+M7 n4 n3 avdd avdd pfet_03v3 L=0.63u W=0.5u nf=1
+M8 n3 nvpre vpot avdd pfet_03v3 L=0.63u W=0.5u nf=1
+M9 n5 n5 avss avss nfet_03v3 L=0.63u W=0.5u nf=1
+M12 n5 vpost vdep avss nfet_03v3 L=0.63u W=0.5u nf=1
+M17 vpot vb_itp avdd avdd pfet_03v3 L=4.6u W=0.5u nf=1
 MCM_1 n4 vb_pot avss avss nfet_03v3 L=2.8u W=0.61u nf=1
 M16 n5 vb_idep avdd avdd pfet_03v3 L=2.8u W=10.2u nf=1
 MCM_5 vdep vb_itd n6 avss nfet_03v3 L=10u W=0.5u nf=1
@@ -34,11 +34,10 @@ x3[1] avdd vpot unitcap
 M5 iout vw avdd avdd pfet_03v3 L=15u W=0.5u nf=1
 .ends
 
-* expanding   symbol:  unitcap.sym # of pins=2
+* expanding   symbol:  stdp/unitcap.sym # of pins=2
 ** sym_path: /foss/designs/CapiMagics/sch/stdp/unitcap.sym
 ** sch_path: /foss/designs/CapiMagics/sch/stdp/unitcap.sch
 .subckt unitcap tp bp
 *.PININFO tp:B bp:B
 XCdep tp bp cap_mim_2f0fF c_width=5e-6 c_length=5e-6
 .ends
-

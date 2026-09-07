@@ -8,71 +8,130 @@ DESIGN_NAME: layer_output
 VERILOG_FILES:
   - dir::layer_output.v
 
-# --- Parámetros de Floorplaning (Alineados a rejilla 7T GF180MCU) ---
+FP_PIN_ORDER_CFG: dir::pin.cfg
+# --- Floorplaning ---
 FP_SIZING: absolute
 DIE_AREA:
   - 0
   - 0
-  - 85
-  - 80
-CORE_AREA:
-  - 5.04
-  - 7.84
-  - 78.40
-  - 74.48
-
-# --- Desactivar Optimización y Reparación de Celdas Estándar Temporal en lo que arreglan lo de los capacitores :/, Esto se deberia de cambiar a true cuando se tenga cada uno de los parametros conectado a cada uno de sus pines, debido a que no se encuentran, esto se debe que libreline lo quiere reparar para llegar al vdd del elemento, pero como no existe da error, para evitar eso se desactivo temporalmente para seguir con el flujo lo mas deseado posible y observar que todo funciona correctamente---
-
-#A evaluar 
-RUN_POST_GPL_DESIGN_REPAIR: false
-RUN_REPAIR_DESIGN: false
-
-#forzoso mantener desactivado
-RUN_CTS: false
-
+  - 240
+  - 100
+  # - 300
+  # - 150
+#CORE_AREA:
+#  - 5.04
+#  - 7.84
+#  - 78.40
+#  - 74.48
 
 # --- Alimentación y Potencia ---
 VDD_NETS:
-  - avdd
+  - vdd
   - VDD
   
 GND_NETS:
-  - avss
+  - vss
   - VSS
+# --- Desactivar Optimización y Reparación de Celdas Estándar Temporal en lo que arreglan lo de los capacitores :/, Esto se deberia de cambiar a true cuando se tenga cada uno de los parametros conectado a cada uno de sus pines, debido a que no se encuentran, esto se debe que libreline lo quiere reparar para llegar al vdd del elemento, pero como no existe da error, para evitar eso se desactivo temporalmente para seguir con el flujo lo mas deseado posible y observar que todo funciona correctamente---
 
+PDN_ENABLE_RAILS: false
+PDN_MULTILAYER: true
+PDN_VWIDTH: 1.2
+PDN_HWIDTH: 1.2
+PDN_VSPACING: 2
+PDN_HSPACING: 2
+PDN_VPITCH: 100
+PDN_HPITCH: 50
+PDN_CORE_RING: true
+PDN_CORE_RING_VWIDTH: 1.5
+PDN_CORE_RING_HWIDTH: 1.5
+PDN_CORE_RING_VSPACING: 1.5
+PDN_CORE_RING_HSPACING: 1.5
+PDN_VOFFSET: 20.0
+PDN_HOFFSET: 50.0
 # --- Conexiones de Potencia para los Macros ---
 PDN_MACRO_CONNECTIONS:
-  - ".*x.* avdd avss VDD VSS"
+  - "x1 vdd vss vdd vss"
+  - "x2 vdd vss vdd vss"
+
+#A evaluar 
+PL_TIMING_DRIVEN: false            # Disables OpenROAD timing-driven placement
+RUN_POST_GPL_DESIGN_REPAIR: false
+RUN_REPAIR_DESIGN: false
+RUN_CTS: false
+RUN_POST_CTS_RESIZER_TIMING: false
+RUN_POST_GRT_RESIZER_TIMING: false
+RUN_HEURISTIC_DIODE_INSERTION: false
+RUN_FILL_INSERTION: false
+RUN_TAP_ENDCAP_INSERTION: false
+ERROR_ON_PDN_VIOLATIONS: false
+
+# --- Direct LEF/GDS Blackbox Include ---
+EXTRA_LEFS:
+  - /foss/designs/libs/snn_analog/lif/neurona_lvs.lef
+EXTRA_GDS:
+  - /foss/designs/libs/snn_analog/lif/neurona_lvs.gds
 
 # --- Reglas de Enrutamiento y Capas (GF180MCU) ---
 PRIMARY_GDSII_STREAMOUT_TOOL: klayout
+MAGIC_ZEROIZE_ORIGIN: false
+ERROR_ON_MAGIC_DRC: false
+KLAYOUT_FILLER_OPTIONS:
+  Metal2_ignore_active: true
+MAGIC_EXT_UNIQUE: notopports
+
+# MAGIC_GDS_FLATGLOB:
+# - "*_CDNS_*"
+# - "*$$*"
+# - "M1_N*"
+# - "M1_P*"
+# - "M2_M1*"
+# - "M3_M2*"
+# - "nmos_5p0*"
+# - "nmos_1p2*"
+# - "pmos_5p0*"
+# - "pmos_1p2*"
+# - "via1_*"
+# - "ypass_gate*"
+# - "G_ring_*"
+# - "dcap_103*"
+# - "din_*"
+# - "mux821_*"
+# - "rdummy_*"
+# - "pmoscap_*"
+# - "xdec_*"
+# - "ypredec*"
+# - "xpredec*"
+# - "prexdec_*"
+# - "xdec8_*"
+# - "xdec16_*"
+# - "xdec32_*"
+# - "sa_*"
 RT_MIN_LAYER: Metal3
 RT_MAX_LAYER: Metal5
 DRT_THREADS: 12
 GRT_ALLOW_CONGESTION: true
 
-# --- Halo y Espaciado de Macros ---
-FP_MACRO_HORIZONTAL_HALO: 2
-FP_MACRO_VERTICAL_HALO: 2
 
 MACROS:
   neurona_lvs:
     gds:
-      - dir::../../lif/neurona_lvs.gds
+      - /foss/designs/libs/snn_analog/lif/neurona_lvs.gds
     lef:
-      - dir::../../lif/neurona_lvs.lef
+      - /foss/designs/libs/snn_analog/lif/neurona_lvs.lef
     spice:
-      - dir::../../lif/neurona_lvs.spice
+      - /foss/designs/libs/snn_analog/lif/neurona_lvs.spice
     vh:
-      - dir::../../lif/neurona_lvs.v
+      - /foss/designs/libs/snn_analog/lif/neurona_lvs.v
+    lib:
+      "*":
+        - /foss/designs/libs/snn_analog/lif/neurona_lvs.lib
+
     instances:
+
       x1:
-        location:
-          - 10.08
-          - 11.76
+        location: [20, 20]
         orientation: N
       x2:
-        location:
-          - 10.08
-          - 43.12
+        location: [120, 20]
         orientation: N

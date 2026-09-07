@@ -1,0 +1,20 @@
+(DELAYFILE
+ (SDFVERSION "3.0")
+ (DESIGN "D14_topcell")
+ (DATE "Sat Sep  5 01:30:32 2026")
+ (VENDOR "Parallax")
+ (PROGRAM "STA")
+ (VERSION "2.7.0")
+ (DIVIDER .)
+ (TIMESCALE 1ns)
+ (CELL
+  (CELLTYPE "D14_topcell")
+  (INSTANCE)
+  (DELAY
+   (ABSOLUTE
+    (INTERCONNECT Vin u_encoder.Vin (0.053:0.053:0.053) (0.032:0.032:0.032))
+    (INTERCONNECT Vin_neg u_encoder.Vin_neg (0.095:0.095:0.095) (0.058:0.058:0.058))
+   )
+  )
+ )
+)

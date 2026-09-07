@@ -1,12 +1,16 @@
 module layer_output (
-    avdd,
-    avss,
-    Iext1, vout_1, nvout_1,
-    Iext2, vout_2, nvout_2
+    vdd,
+    vss,
+    Iext1,
+    vout_1,
+    nvout_1,
+    Iext2,
+    vout_2,
+    nvout_2
 );
 
-    inout  avdd;      // alimentacion
-    inout  avss;      // tierra
+    inout  vdd;      // alimentacion
+    inout  vss;      // tierra
 
     input  Iext1;     // corriente de entrada neurona 1
     output vout_1;    // salida de disparo neurona 1
@@ -18,16 +22,16 @@ module layer_output (
 
     // --- Instancias de la macro 
     neurona_lvs x1 (
-        .Vdd       (avdd),
-        .Vss       (avss),
+        .vdd       (vdd),
+        .vss       (vss),
         .Iin       (Iext1),
         .spike     (vout_1),
         .spike_neg (nvout_1)
     );
 
     neurona_lvs x2 (
-        .Vdd       (avdd),
-        .Vss       (avss),
+        .vdd       (vdd),
+        .vss       (vss),
         .Iin       (Iext2),
         .spike     (vout_2),
         .spike_neg (nvout_2)

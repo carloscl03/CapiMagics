@@ -1,0 +1,9 @@
+** sch_path: /foss/designs/libs/snn_analog/Integrator/integrator.sch
+.subckt integrator avss Vext_pin i_50 avdd
+*.PININFO avss:B Vext_pin:I i_50:I avdd:B
+M1 n2 n2 n1 avdd pfet_03v3 L=.28u W=1u nf=1
+M6 avdd Vext_pin n1 avss nfet_03v3 L=0.28u W=1u nf=1
+M2 n2 i_50 avss avss nfet_03v3 L=0.28u W=1u nf=1
+M3 i_50 i_50 avss avss nfet_03v3 L=0.28u W=1u nf=1
+XC5 n1 avss cap_mim_2f0fF c_width=17.68e-6 c_length=17.68e-6 m=8
+.ends

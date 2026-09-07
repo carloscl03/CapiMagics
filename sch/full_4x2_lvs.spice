@@ -24,8 +24,8 @@ x5 avdd avss nvpre1 nvpost2 vpre1 vpost2 A B B A net4 net8 stdp_lvs
 x6 avdd avss nvpre2 nvpost2 vpre2 vpost2 A B B A net6 net8 stdp_lvs
 x7 avdd avss nvpre3 nvpost2 vpre3 vpost2 A B B A net5 net8 stdp_lvs
 x8 avdd avss nvpre4 nvpost2 vpre4 vpost2 A B B A vw42 net8 stdp_lvs
-x9 net7 avdd ifwd1 Current-limit
-x10 net8 avdd ifwd2 Current-limit
+x9 net7 avdd ifwd1 avss Current-limit
+x10 net8 avdd ifwd2 avss Current-limit
 * noconn #net3
 * noconn #net4
 * noconn #net6
@@ -40,15 +40,15 @@ x10 net8 avdd ifwd2 Current-limit
 ** sch_path: /foss/designs/CapiMagics/sch/encoder/encoder.sch
 .subckt encoder Vdd Vss Vin Vin_neg Iex_1_i Iex_2_i Iex_3_i Iex_4_i
 *.PININFO Vdd:B Vss:B Vin:I Vin_neg:I Iex_1_i:O Iex_4_i:O Iex_2_i:O Iex_3_i:O
-M1 x Vin a Vss nfet_03v3 L=10u W=0.28u nf=1
-M2 y Vin_neg a Vss nfet_03v3 L=10u W=0.28u nf=1
+M1 x Vin a Vss nfet_03v3 L=10u W=0.5u nf=1
+M2 y Vin_neg a Vss nfet_03v3 L=10u W=0.5u nf=1
 M3 x x Vdd Vdd pfet_03v3 L=0.28u W=2u nf=1
 M4 y y Vdd Vdd pfet_03v3 L=0.28u W=2u nf=1
 M5 Iex_2_i x Vdd Vdd pfet_03v3 L=1.86u W=0.93u nf=1
 M7 Iex_3_i y Vdd Vdd pfet_03v3 L=1.86u W=0.93u nf=1
-M9 a net1 Vss Vss nfet_03v3 L=0.28u W=0.28u nf=1
-M10 net1 net1 Vss Vss nfet_03v3 L=0.28u W=0.28u nf=1
-M11 net1 net1 Vdd Vdd pfet_03v3 L=0.28u W=0.28u nf=1
+M9 a net1 Vss Vss nfet_03v3 L=0.28u W=0.5u nf=1
+M10 net1 net1 Vss Vss nfet_03v3 L=0.28u W=0.5u nf=1
+M11 net1 net1 Vdd Vdd pfet_03v3 L=0.28u W=0.5u nf=1
 M6 Iex_4_i y Vdd Vdd pfet_03v3 L=1.86u W=0.93u nf=1
 M8 Iex_1_i x Vdd Vdd pfet_03v3 L=1.86u W=0.93u nf=1
 .ends
@@ -94,14 +94,14 @@ x7 avdd avss Iext2 vout_2 nvout_2 neurona_input_current
 ** sch_path: /foss/designs/CapiMagics/sch/stdp/stdp_lvs.sch
 .subckt stdp_lvs avdd avss nvpre nvpost vpre vpost vb_itd vb_idep vb_itp vb_pot vw iout
 *.PININFO avss:B avdd:B nvpost:B nvpre:B vpost:B vpre:B vb_idep:B vb_itd:B vb_itp:B vb_pot:B vw:B iout:O
-M1 n1 vpot avdd avdd pfet_03v3 L=0.28u W=0.22u nf=1
-M2 vw nvpost n1 avdd pfet_03v3 L=0.28u W=0.22u nf=1
-M3 vw vpre n2 avss nfet_03v3 L=0.28u W=0.22u nf=1
-M4 n2 vdep avss avss nfet_03v3 L=0.28u W=0.22u nf=1
-M7 n4 n3 avdd avdd pfet_03v3 L=0.28u W=0.22u nf=1
-M8 n3 nvpre vpot avdd pfet_03v3 L=0.28u W=0.22u nf=1
-M9 n5 n5 avss avss nfet_03v3 L=0.28u W=0.22u nf=1
-M12 n5 vpost vdep avss nfet_03v3 L=0.28u W=0.22u nf=1
+M1 n1 vpot avdd avdd pfet_03v3 L=0.63u W=0.5u nf=1
+M2 vw nvpost n1 avdd pfet_03v3 L=0.63u W=0.5u nf=1
+M3 vw vpre n2 avss nfet_03v3 L=0.63u W=0.5u nf=1
+M4 n2 vdep avss avss nfet_03v3 L=0.63u W=0.5u nf=1
+M7 n4 n3 avdd avdd pfet_03v3 L=0.63u W=0.5u nf=1
+M8 n3 nvpre vpot avdd pfet_03v3 L=0.63u W=0.5u nf=1
+M9 n5 n5 avss avss nfet_03v3 L=0.63u W=0.5u nf=1
+M12 n5 vpost vdep avss nfet_03v3 L=0.63u W=0.5u nf=1
 M17 vpot vb_itp avdd avdd pfet_03v3 L=4.6u W=0.3u nf=1
 MCM_1 n4 vb_pot avss avss nfet_03v3 L=2.8u W=0.61u nf=1
 M16 n5 vb_idep avdd avdd pfet_03v3 L=2.8u W=10.2u nf=1
@@ -128,13 +128,14 @@ M5 iout vw avdd avdd pfet_03v3 L=15u W=0.5u nf=1
 .ends
 
 
-* expanding   symbol:  Current_limit/Current-limit.sym # of pins=3
+* expanding   symbol:  Current_limit/Current-limit.sym # of pins=4
 ** sym_path: /foss/designs/CapiMagics/sch/Current_limit/Current-limit.sym
 ** sch_path: /foss/designs/CapiMagics/sch/Current_limit/Current-limit.sch
-.subckt Current-limit i_SUM avdd ifwd
-*.PININFO avdd:B ifwd:B i_SUM:B
+.subckt Current-limit i_SUM avdd ifwd avss
+*.PININFO avdd:B ifwd:B i_SUM:B avss:B
 M4 net1 net1 i_SUM avdd pfet_03v3 L=5u W=0.5u nf=1
 M6 ifwd ifwd net1 avdd pfet_03v3 L=5u W=0.5u nf=1
+M1 avss avss avss avss nfet_03v3 L=0.28u W=0.5u nf=1
 .ends
 
 

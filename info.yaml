@@ -16,7 +16,7 @@ project:
   team: "CapiMagics"                      # Your Team name
   discord: "alejandrojuarezlora"                   # Optional: Discord username (for support / communication)
   description: "Set of analog neuromorphic standard cell to be assembled into a net"  # Short one-line description
-  lvs_config: "./designs/libs/snn_analog"
+  lvs_config: "./designs/libs/snn_analog/lvs_config.json"
 
 pins: 
   - name: avss

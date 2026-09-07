@@ -1,4 +1,4 @@
-v {xschem version=3.4.8RC file_version=1.2}
+v {xschem version=3.4.8RC file_version=1.3}
 G {}
 K {}
 V {}
@@ -35,20 +35,20 @@ N 310 110 310 140 {lab=Vdd}
 N 310 200 310 230 {lab=Vss}
 N -50 230 310 230 {lab=Vss}
 N -50 200 -50 230 {lab=Vss}
-N 310 170 420 170 {lab=spike/reset}
-N -100 200 -90 200 {lab=spike/reset}
+N 310 170 420 170 {lab=spike_reset}
+N -100 200 -90 200 {lab=spike_reset}
 N -50 170 80 170 {lab=Iin}
 N 210 20 210 170 {lab=spike_neg}
-N 310 50 310 80 {lab=GND}
+N 310 50 310 80 {lab=#net1}
 N 310 -40 310 -10 {lab=Vdd}
-N -100 200 -100 270 {lab=spike/reset}
-N 420 170 430 170 {lab=spike/reset}
-N -100 270 20 270 {lab=spike/reset}
+N -100 200 -100 270 {lab=spike_reset}
+N 420 170 430 170 {lab=spike_reset}
+N -100 270 20 270 {lab=spike_reset}
 N 310 20 400 20 {lab=spike}
-N 430 170 430 250 {lab=spike/reset}
-N 250 250 430 250 {lab=spike/reset}
-N 250 250 250 270 {lab=spike/reset}
-N 20 270 250 270 {lab=spike/reset}
+N 430 170 430 250 {lab=spike_reset}
+N 250 250 430 250 {lab=spike_reset}
+N 250 250 250 270 {lab=spike_reset}
+N 20 270 250 270 {lab=spike_reset}
 N 120 230 120 250 {lab=Vss}
 N -50 120 -50 170 {lab=Iin}
 C {symbols/pfet_03v3.sym} 100 140 0 0 {name=M1
@@ -159,8 +159,7 @@ value=150f
 footprint=1206
 device=polarized_capacitor
 spice_ignore=true}
-C {lab_pin.sym} 250 260 0 1 {name=p9 sig_type=std_logic lab=spike/reset}
-C {gnd.sym} 310 80 0 0 {name=l3 lab=GND}
+C {lab_pin.sym} 250 260 0 1 {name=p9 sig_type=std_logic lab=spike_reset}
 C {lab_pin.sym} 240 170 1 0 {name=p8 sig_type=std_logic lab=spike_neg}
 C {lab_pin.sym} -50 120 0 0 {name=p5 sig_type=std_logic lab=Iin}
 C {iopin.sym} 50 -90 2 0 {name=p10 lab=Vdd}
@@ -175,8 +174,9 @@ C {lab_pin.sym} 50 -120 2 0 {name=p18 sig_type=std_logic lab=Iin}
 C {lab_pin.sym} 50 0 2 0 {name=p19 sig_type=std_logic lab=spike_neg}
 C {lab_pin.sym} 50 -30 2 0 {name=p20 sig_type=std_logic lab=spike}
 C {symbols/cap_mim_2f0fF.sym} 20 200 0 0 {name=C2
-W=20e-6
-L=14e-6
+W=15e-6
+L=5e-6
 model=cap_mim_2f0fF
 spiceprefix=X
 m=3}
+C {lab_pin.sym} 310 80 0 0 {name=p6 sig_type=std_logic lab=Vss}

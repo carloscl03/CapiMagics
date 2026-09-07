@@ -1,0 +1,102 @@
+*SPEF "ieee 1481-1999"
+*DESIGN "layer_output"
+*DATE "02:14:51 Saturday August 29, 2026"
+*VENDOR "The OpenROAD Project"
+*PROGRAM "OpenROAD"
+*VERSION "26Q1-1024-gdcf36133a"
+*DESIGN_FLOW "NAME_SCOPE LOCAL" "PIN_CAP NONE"
+*DIVIDER /
+*DELIMITER :
+*BUS_DELIMITER []
+*T_UNIT 1 NS
+*C_UNIT 1 PF
+*R_UNIT 1 OHM
+*L_UNIT 1 HENRY
+
+*NAME_MAP
+*1 Iext1
+*2 Iext2
+*5 nvout_1
+*6 nvout_2
+*8 vout_1
+*9 vout_2
+*10 x1
+*11 x2
+
+*PORTS
+Iext1 I
+Iext2 I
+nvout_1 O
+nvout_2 O
+vout_1 O
+vout_2 O
+
+*D_NET *1 0.00372263
+*CONN
+*P Iext1 I
+*I *10:Iin I *D neurona_lvs
+*CAP
+1 Iext1 0.00186131
+2 *10:Iin 0.00186131
+*RES
+1 Iext1 *10:Iin 25.6671 
+*END
+
+*D_NET *2 0.00409915
+*CONN
+*P Iext2 I
+*I *11:Iin I *D neurona_lvs
+*CAP
+1 Iext2 0.00204957
+2 *11:Iin 0.00204957
+*RES
+1 Iext2 *11:Iin 26.7324 
+*END
+
+*D_NET *5 0.0106505
+*CONN
+*P nvout_1 O
+*I *10:spike_neg I *D neurona_lvs
+*CAP
+1 nvout_1 0.0049777
+2 *10:spike_neg 0.0049777
+3 *10:spike_neg *10:spike 0.000695078
+*RES
+1 nvout_1 *10:spike_neg 38.352 
+*END
+
+*D_NET *6 0.00970453
+*CONN
+*P nvout_2 O
+*I *11:spike_neg I *D neurona_lvs
+*CAP
+1 nvout_2 0.00481239
+2 *11:spike_neg 0.00481239
+3 *11:spike_neg *11:spike 7.97597e-05
+*RES
+1 nvout_2 *11:spike_neg 47.488 
+*END
+
+*D_NET *8 0.0065017
+*CONN
+*P vout_1 O
+*I *10:spike I *D neurona_lvs
+*CAP
+1 vout_1 0.00290331
+2 *10:spike 0.00290331
+3 *10:spike_neg *10:spike 0.000695078
+*RES
+1 vout_1 *10:spike 34.416 
+*END
+
+*D_NET *9 0.00532114
+*CONN
+*P vout_2 O
+*I *11:spike I *D neurona_lvs
+*CAP
+1 vout_2 0.00262069
+2 *11:spike 0.00262069
+3 *11:spike_neg *11:spike 7.97597e-05
+*RES
+1 vout_2 *11:spike 25.812 
+*END

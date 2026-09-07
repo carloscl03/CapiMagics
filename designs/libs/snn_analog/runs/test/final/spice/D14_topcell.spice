@@ -1,0 +1,19 @@
+* NGSPICE file created from D14_topcell.ext - technology: gf180mcuD
+
+* Black-box entry subcircuit for layer_input abstract view
+.subckt layer_input Iext1 Iext2 Iext3 Iext4 nvout_1 nvout_2 nvout_3 nvout_4 vdd vout_1
++ vout_2 vout_3 vout_4 vss
+.ends
+
+* Black-box entry subcircuit for encoder abstract view
+.subckt encoder vss vdd Vin Vin_neg Iex_1_i Iex_2_i Iex_3_i Iex_4_i
+.ends
+
+.subckt D14_topcell Vin Vin_neg avdd avss nvout_1 nvout_2 nvout_3 nvout_4 vout_1 vout_2
++ vout_3 vout_4
+Xu_layer_input u_encoder/Iex_1_i u_encoder/Iex_2_i u_encoder/Iex_3_i u_encoder/Iex_4_i
++ nvout_1 nvout_2 nvout_3 nvout_4 avdd vout_1 vout_2 vout_3 vout_4 avss layer_input
+Xu_encoder avss avdd Vin Vin_neg u_encoder/Iex_1_i u_encoder/Iex_2_i u_encoder/Iex_3_i
++ u_encoder/Iex_4_i encoder
+.ends
+

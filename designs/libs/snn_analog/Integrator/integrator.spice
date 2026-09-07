@@ -1,0 +1,310 @@
+* NGSPICE file created from integrator.ext - technology: gf180mcuD
+
+.subckt xm3 a_n50_n389# a_n388_n554# a_28_n181# a_n178_n181#
+X0 a_28_n181# a_n50_n389# a_n178_n181# a_n388_n554# nfet_03v3 ad=0.75p pd=3.5u as=0.75p ps=3.5u w=1u l=0.28u
+C0 a_n178_n181# a_28_n181# 0.40419f
+C1 a_n178_n181# a_n50_n389# 0.02978f
+C2 a_n50_n389# a_28_n181# 0.01582f
+C3 a_28_n181# a_n388_n554# 0.58399f
+C4 a_n178_n181# a_n388_n554# 0.32687f
+C5 a_n50_n389# a_n388_n554# 0.43951f
+.ends
+
+.subckt xm1 a_n50_n389# w_n444_n610# a_28_n181# a_n178_n181# VSUBS
+X0 a_28_n181# a_n50_n389# a_n178_n181# w_n444_n610# pfet_03v3 ad=0.75p pd=3.5u as=0.75p ps=3.5u w=1u l=0.28u
+C0 a_n50_n389# a_n178_n181# 0.02978f
+C1 a_n50_n389# w_n444_n610# 0.39101f
+C2 a_28_n181# a_n178_n181# 0.40419f
+C3 a_28_n181# w_n444_n610# 0.5272f
+C4 w_n444_n610# a_n178_n181# 0.27119f
+C5 a_n50_n389# a_28_n181# 0.01582f
+C6 a_28_n181# VSUBS 0.05681f
+C7 a_n178_n181# VSUBS 0.05568f
+C8 a_n50_n389# VSUBS 0.0485f
+C9 w_n444_n610# VSUBS 4.03502f
+.ends
+
+.subckt xm6 a_n50_n389# a_n388_n554# a_28_n181# a_n178_n181#
+X0 a_28_n181# a_n50_n389# a_n178_n181# a_n388_n554# nfet_03v3 ad=0.75p pd=3.5u as=0.75p ps=3.5u w=1u l=0.28u
+C0 a_n178_n181# a_28_n181# 0.40419f
+C1 a_n178_n181# a_n50_n389# 0.02978f
+C2 a_n50_n389# a_28_n181# 0.01582f
+C3 a_28_n181# a_n388_n554# 0.58399f
+C4 a_n178_n181# a_n388_n554# 0.32687f
+C5 a_n50_n389# a_n388_n554# 0.43951f
+.ends
+
+.subckt xm2 a_n50_n389# a_n388_n554# a_28_n181# a_n178_n181#
+X0 a_28_n181# a_n50_n389# a_n178_n181# a_n388_n554# nfet_03v3 ad=0.75p pd=3.5u as=0.75p ps=3.5u w=1u l=0.28u
+C0 a_n178_n181# a_28_n181# 0.40419f
+C1 a_n178_n181# a_n50_n389# 0.02978f
+C2 a_n50_n389# a_28_n181# 0.01582f
+C3 a_28_n181# a_n388_n554# 0.58399f
+C4 a_n178_n181# a_n388_n554# 0.32687f
+C5 a_n50_n389# a_n388_n554# 0.43951f
+.ends
+
+.subckt xc3 m4_n1968_n1968# m4_n1768_n1768# VSUBS
+X0 m4_n1768_n1768# m4_n1968_n1968# cap_mim_2f0_m4m5_noshield c_width=17.68u c_length=17.68u
+X1 m4_n1768_n1768# m4_n1968_n1968# cap_mim_2f0_m4m5_noshield c_width=17.68u c_length=17.68u
+X2 m4_n1768_n1768# m4_n1968_n1968# cap_mim_2f0_m4m5_noshield c_width=17.68u c_length=17.68u
+X3 m4_n1768_n1768# m4_n1968_n1968# cap_mim_2f0_m4m5_noshield c_width=17.68u c_length=17.68u
+X4 m4_n1768_n1768# m4_n1968_n1968# cap_mim_2f0_m4m5_noshield c_width=17.68u c_length=17.68u
+X5 m4_n1768_n1768# m4_n1968_n1968# cap_mim_2f0_m4m5_noshield c_width=17.68u c_length=17.68u
+X6 m4_n1768_n1768# m4_n1968_n1968# cap_mim_2f0_m4m5_noshield c_width=17.68u c_length=17.68u
+X7 m4_n1768_n1768# m4_n1968_n1968# cap_mim_2f0_m4m5_noshield c_width=17.68u c_length=17.68u
+C0 m4_n1768_n1768# m4_n1968_n1968# 26.6391f
+C1 m4_n1768_n1768# VSUBS 26.2832f
+C2 m4_n1968_n1968# VSUBS 11.885f
+.ends
+
+.subckt integrator avdd avss Vext_pin i_50
+Xxm3_0 i_50 avss i_50 avss xm3
+Xxm1_0 xm2_0/a_28_n181# avdd xm2_0/a_28_n181# xm6_0/a_n178_n181# avss xm1
+Xxm6_0 Vext_pin avss avdd xm6_0/a_n178_n181# xm6
+Xxm2_0 i_50 avss xm2_0/a_28_n181# avss xm2
+Xxc3_0 avss xm6_0/a_n178_n181# avss xc3
+R0 i_50.n2 i_50.n0 44.613
+R1 i_50.n2 i_50.n1 43.6698
+R2 i_50.n4 i_50.n3 13.9125
+R3 i_50.n4 i_50.n2 9.9131
+R4 i_50 i_50.n4 4.5005
+R5 Vext_pin Vext_pin.n0 47.7648
+R6 avss.n48 avss.n47 4778.41
+R7 avss.n46 avss.n5 898.506
+R8 avss.n45 avss.n10 496.315
+R9 avss.n47 avss.n46 492.483
+R10 avss.n59 avss.n58 93.9922
+R11 avss.n48 avss.n5 92.2322
+R12 avss.n31 avss.n8 73.3061
+R13 avss.n44 avss.n28 73.3061
+R14 avss.n44 avss.n29 73.3061
+R15 avss.n39 avss.n8 73.3061
+R16 avss.n27 avss.n11 73.3061
+R17 avss.n27 avss.n12 73.3061
+R18 avss.n21 avss.n9 73.3061
+R19 avss.n15 avss.n9 73.3061
+R20 avss.n57 avss.n56 73.3061
+R21 avss.n57 avss.n3 73.3061
+R22 avss.n50 avss.n4 73.3061
+R23 avss.n60 avss.n4 73.3061
+R24 avss avss.n65 7.2455
+R25 avss.n36 avss.n0 6.01508
+R26 avss.n25 avss.n0 5.45528
+R27 avss.n65 avss.n64 5.45528
+R28 avss.n35 avss.n34 5.24453
+R29 avss.n43 avss.n30 5.24453
+R30 avss.n43 avss.n42 5.24453
+R31 avss.n26 avss.n13 5.24453
+R32 avss.n19 avss.n18 5.24453
+R33 avss.n52 avss.n2 5.24453
+R34 avss.n53 avss.n52 5.24453
+R35 avss.n18 avss.n17 5.2367
+R36 avss.n54 avss.n1 5.2367
+R37 avss.n14 avss.n11 5.2005
+R38 avss.n16 avss.n15 5.2005
+R39 avss.n23 avss.n12 5.2005
+R40 avss.n22 avss.n21 5.2005
+R41 avss.n41 avss.n29 5.2005
+R42 avss.n40 avss.n39 5.2005
+R43 avss.n33 avss.n31 5.2005
+R44 avss.n32 avss.n28 5.2005
+R45 avss.n51 avss.n50 5.2005
+R46 avss.n56 avss.n55 5.2005
+R47 avss.n61 avss.n60 5.2005
+R48 avss.n62 avss.n3 5.2005
+R49 avss.n37 avss.n36 4.7417
+R50 avss.n25 avss.n24 4.7417
+R51 avss.n64 avss.n63 4.7417
+R52 avss.n34 avss.n33 4.5005
+R53 avss.n32 avss.n30 4.5005
+R54 avss.n42 avss.n41 4.5005
+R55 avss.n40 avss.n37 4.5005
+R56 avss.n24 avss.n23 4.5005
+R57 avss.n22 avss.n19 4.5005
+R58 avss.n14 avss.n13 4.5005
+R59 avss.n17 avss.n16 4.5005
+R60 avss.n61 avss.n2 4.5005
+R61 avss.n63 avss.n62 4.5005
+R62 avss.n53 avss.n51 4.5005
+R63 avss.n55 avss.n54 4.5005
+R64 avss.n46 avss.n45 3.83305
+R65 avss.n31 avss.n6 3.11744
+R66 avss.n38 avss.n29 3.11744
+R67 avss.n20 avss.n12 3.11744
+R68 avss.n11 avss.n7 3.11744
+R69 avss.n15 avss.n7 3.11744
+R70 avss.n21 avss.n20 3.11744
+R71 avss.n39 avss.n38 3.11744
+R72 avss.n28 avss.n6 3.11744
+R73 avss.n56 avss.n49 3.11744
+R74 avss.n50 avss.n49 3.11744
+R75 avss.n59 avss.n3 3.11744
+R76 avss.n60 avss.n59 3.11744
+R77 avss.n65 avss.n0 1.1939
+R78 avss.n47 avss.n7 1.04278
+R79 avss.n20 avss.n10 1.04278
+R80 avss.n38 avss.n10 1.04278
+R81 avss.n47 avss.n6 1.04278
+R82 avss.n49 avss.n48 1.04278
+R83 avss.n58 avss.n5 0.718256
+R84 avss.n18 avss.n9 0.6505
+R85 avss.n45 avss.n9 0.6505
+R86 avss.n27 avss.n26 0.6505
+R87 avss.n45 avss.n27 0.6505
+R88 avss.n35 avss.n8 0.6505
+R89 avss.n45 avss.n8 0.6505
+R90 avss.n44 avss.n43 0.6505
+R91 avss.n45 avss.n44 0.6505
+R92 avss.n52 avss.n4 0.6505
+R93 avss.n58 avss.n4 0.6505
+R94 avss.n57 avss.n1 0.6505
+R95 avss.n58 avss.n57 0.6505
+R96 avss.n36 avss.n35 0.503326
+R97 avss.n26 avss.n25 0.503326
+R98 avss.n64 avss.n1 0.503326
+R99 avss.n41 avss.n40 0.1445
+R100 avss.n33 avss.n32 0.1445
+R101 avss.n34 avss.n30 0.1445
+R102 avss.n42 avss.n37 0.1445
+R103 avss.n23 avss.n22 0.1445
+R104 avss.n24 avss.n19 0.1445
+R105 avss.n17 avss.n13 0.1445
+R106 avss.n16 avss.n14 0.1445
+R107 avss.n55 avss.n51 0.1445
+R108 avss.n62 avss.n61 0.1445
+R109 avss.n63 avss.n2 0.1445
+R110 avss.n54 avss.n53 0.1445
+R111 avdd.n13 avdd.n3 584.827
+R112 avdd.n13 avdd.n6 584.827
+R113 avdd.n15 avdd.n14 65.9755
+R114 avdd.n14 avdd.n4 65.9755
+R115 avdd.n12 avdd.n11 65.9755
+R116 avdd.n12 avdd.n2 65.9755
+R117 avdd avdd.n19 16.9497
+R118 avdd.n7 avdd.n4 6.3005
+R119 avdd.n11 avdd.n10 6.3005
+R120 avdd.n17 avdd.n2 6.3005
+R121 avdd.n16 avdd.n15 6.3005
+R122 avdd.n5 avdd.n1 5.24453
+R123 avdd.n8 avdd.n5 5.24453
+R124 avdd.n9 avdd.n0 5.24453
+R125 avdd.n19 avdd.n18 4.7417
+R126 avdd.n18 avdd.n17 4.5005
+R127 avdd.n16 avdd.n1 4.5005
+R128 avdd.n8 avdd.n7 4.5005
+R129 avdd.n10 avdd.n9 4.5005
+R130 avdd.n11 avdd.n6 3.31679
+R131 avdd.n6 avdd.n4 3.31679
+R132 avdd.n15 avdd.n3 3.31679
+R133 avdd.n3 avdd.n2 3.31679
+R134 avdd.n14 avdd.n5 0.788
+R135 avdd.n14 avdd.n13 0.788
+R136 avdd.n12 avdd.n0 0.788
+R137 avdd.n13 avdd.n12 0.788
+R138 avdd.n19 avdd.n0 0.503326
+R139 avdd.n10 avdd.n7 0.1445
+R140 avdd.n17 avdd.n16 0.1445
+R141 avdd.n18 avdd.n1 0.1445
+R142 avdd.n9 avdd.n8 0.1445
+C0 xm6_0/a_n178_n181# avdd 1.4067f
+C1 i_50 xm2_0/a_28_n181# 0.08062f
+C2 Vext_pin xm6_0/a_n178_n181# 0.00154f
+C3 xm6_0/a_n178_n181# xm2_0/a_28_n181# 0.26293f
+C4 Vext_pin avdd 0.00109f
+C5 xm2_0/a_28_n181# avdd 0.50163f
+C6 i_50 xm6_0/a_n178_n181# 0.02345f
+C7 avdd.n0 avss 0.00335f
+C8 avdd.n1 avss 0.00187f
+C9 avdd.n2 avss 0.00155f
+C10 avdd.n3 avss 0.01395f
+C11 avdd.n4 avss 0.00155f
+C12 avdd.n5 avss 0.00458f
+C13 avdd.n6 avss 0.01395f
+C14 avdd.n7 avss 0
+C15 avdd.n8 avss 0.00187f
+C16 avdd.n9 avss 0.00187f
+C17 avdd.n10 avss 0
+C18 avdd.n11 avss 0.00155f
+C19 avdd.n12 avss 0.00252f
+C20 avdd.n13 avss 0.02071f
+C21 avdd.n14 avss 0.00252f
+C22 avdd.n15 avss 0.00155f
+C23 avdd.n16 avss 0
+C24 avdd.n17 avss 0
+C25 avdd.n18 avss 0.00174f
+C26 avdd.n19 avss 0.10091f
+C27 avss.n0 avss 0.00146f
+C28 avss.n1 avss 0
+C29 avss.n2 avss 0
+C30 avss.n3 avss 0
+C31 avss.n4 avss 0
+C32 avss.n5 avss 0.01214f
+C33 avss.n8 avss 0
+C34 avss.n9 avss 0
+C35 avss.n10 avss 0.00904f
+C36 avss.n11 avss 0
+C37 avss.n12 avss 0
+C38 avss.n13 avss 0
+C39 avss.n14 avss 0
+C40 avss.n15 avss 0
+C41 avss.n16 avss 0
+C42 avss.n17 avss 0
+C43 avss.n18 avss 0
+C44 avss.n19 avss 0
+C45 avss.n21 avss 0
+C46 avss.n22 avss 0
+C47 avss.n23 avss 0
+C48 avss.n24 avss 0
+C49 avss.n25 avss 0
+C50 avss.n26 avss 0
+C51 avss.n27 avss 0
+C52 avss.n28 avss 0
+C53 avss.n29 avss 0
+C54 avss.n30 avss 0
+C55 avss.n31 avss 0
+C56 avss.n32 avss 0
+C57 avss.n33 avss 0
+C58 avss.n34 avss 0
+C59 avss.n35 avss 0
+C60 avss.n36 avss 0
+C61 avss.n37 avss 0
+C62 avss.n39 avss 0
+C63 avss.n40 avss 0
+C64 avss.n41 avss 0
+C65 avss.n42 avss 0
+C66 avss.n43 avss 0
+C67 avss.n44 avss 0
+C68 avss.n45 avss 0.00176f
+C69 avss.n46 avss 0.00457f
+C70 avss.n47 avss 0.06282f
+C71 avss.n48 avss 0.2655f
+C72 avss.n50 avss 0
+C73 avss.n51 avss 0
+C74 avss.n52 avss 0
+C75 avss.n53 avss 0
+C76 avss.n54 avss 0
+C77 avss.n55 avss 0
+C78 avss.n56 avss 0
+C79 avss.n57 avss 0
+C80 avss.n58 avss 0.00992f
+C81 avss.n59 avss 0.04775f
+C82 avss.n60 avss 0
+C83 avss.n61 avss 0
+C84 avss.n62 avss 0
+C85 avss.n63 avss 0
+C86 avss.n64 avss 0
+C87 avss.n65 avss 0.05484f
+C88 Vext_pin.n0 avss 0.00427f
+C89 i_50.n0 avss 0.0328f
+C90 i_50.n1 avss 0.02814f
+C91 i_50.n2 avss 0.51081f
+C92 i_50.n3 avss 0.06154f
+C93 i_50.n4 avss 0.22606f
+C94 xm6_0/a_n178_n181# avss -0.79166f
+C95 Vext_pin avss -0.05975f
+C96 xm2_0/a_28_n181# avss -0.66968f
+C97 i_50 avss -0.21235f
+C98 avdd avss -5.20771f
+.ends
+

@@ -1,5 +1,5 @@
 {
-	"STD_CELL_LIBRARY": "gf180mcu_fd_sc_mcu7t5v0",
+	"STD_CELL_LIBRARY": "",
 	"INCLUDE_CONFIGS": [
 		"$LVS_ROOT/tech/$PDK/lvs_config.base.json"
 	],
@@ -28,4 +28,3 @@
 	],
 	"LAYOUT_FILE": "$UPRJ_ROOT/gds/$TOP_LAYOUT.gds"
 }
-Not sure how to fill lvs_config.json. 

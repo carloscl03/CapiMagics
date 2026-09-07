@@ -29,6 +29,32 @@ Circuit 1: nfet_03v3                       |Circuit 2: nfet_03v3
 Cell pin lists are equivalent.
 Device classes nfet_03v3 and nfet_03v3 are equivalent.
 
+Circuit 1 cell cap_mim_2f0_m4m5_noshield and Circuit 2 cell cap_mim_2f0_m4m5_noshield are black boxes.
+Warning: Equate pins:  cell cap_mim_2f0_m4m5_noshield is a placeholder, treated as a black box.
+Warning: Equate pins:  cell cap_mim_2f0_m4m5_noshield is a placeholder, treated as a black box.
+
+Subcircuit pins:
+Circuit 1: cap_mim_2f0_m4m5_noshield       |Circuit 2: cap_mim_2f0_m4m5_noshield       
+-------------------------------------------|-------------------------------------------
+1                                          |1                                          
+2                                          |2                                          
+---------------------------------------------------------------------------------------
+Cell pin lists are equivalent.
+Device classes cap_mim_2f0_m4m5_noshield and cap_mim_2f0_m4m5_noshield are equivalent.
+
+Circuit 1 cell cap_mim_2f0_m4m5_noshield and Circuit 2 cell cap_mim_2f0fF are black boxes.
+Warning: Equate pins:  cell cap_mim_2f0_m4m5_noshield is a placeholder, treated as a black box.
+Warning: Equate pins:  cell cap_mim_2f0fF is a placeholder, treated as a black box.
+
+Subcircuit pins:
+Circuit 1: cap_mim_2f0_m4m5_noshield       |Circuit 2: cap_mim_2f0fF                   
+-------------------------------------------|-------------------------------------------
+1                                          |1                                          
+2                                          |2                                          
+---------------------------------------------------------------------------------------
+Cell pin lists are equivalent.
+Device classes cap_mim_2f0_m4m5_noshield and cap_mim_2f0fF are equivalent.
+
 Subcircuit summary:
 Circuit 1: xm5                             |Circuit 2: xm5                             
 -------------------------------------------|-------------------------------------------
@@ -43,22 +69,22 @@ Circuit 1: xm5                             |Circuit 2: xm5
 ---------------------------------------------------------------------------------------
 Net: a_1500_n131#                          |Net: a_1500_n131#                          
   pfet_03v3/(1|3) = 1                      |  pfet_03v3/(1|3) = 1                      
-                                           |  c/top = 4                                
+                                           |  c/top = 2                                
+                                           |  c/bottom = 2                             
                                            |                                           
 Net: a_n1620_n131#                         |Net: a_n1620_n131#                         
   pfet_03v3/(1|3) = 1                      |  pfet_03v3/(1|3) = 1                      
-                                           |  c/top = 3                                
-                                           |  c/bottom = 1                             
+                                           |  c/bottom = 3                             
+                                           |  c/top = 1                                
                                            |                                           
 Net: a_n1500_n339#                         |Net: a_n1500_n339#                         
   pfet_03v3/2 = 1                          |  pfet_03v3/2 = 1                          
-                                           |  c/bottom = 2                             
-                                           |  c/top = 2                                
+                                           |  c/bottom = 1                             
+                                           |  c/top = 3                                
                                            |                                           
 Net: w_n1886_n560#                         |Net: w_n1886_n560#                         
   pfet_03v3/4 = 1                          |  pfet_03v3/4 = 1                          
-                                           |  c/bottom = 3                             
-                                           |  c/top = 1                                
+                                           |  c/top = 4                                
                                            |                                           
 (no matching net)                          |Net: VSUBS                                 
                                            |  c/bottom = 4                             
@@ -125,12 +151,12 @@ Circuit 1: xm3                             |Circuit 2: xm3
 ---------------------------------------------------------------------------------------
 Net: a_63_n131#                            |Net: a_63_n131#                            
   nfet_03v3/(1|3) = 1                      |  nfet_03v3/(1|3) = 1                      
-                                           |  c/top = 3                                
+                                           |  c/bottom = 2                             
+                                           |  c/top = 1                                
                                            |                                           
 Net: a_n63_n339#                           |Net: a_n63_n339#                           
   nfet_03v3/2 = 1                          |  nfet_03v3/2 = 1                          
-                                           |  c/bottom = 2                             
-                                           |  c/top = 1                                
+                                           |  c/top = 3                                
                                            |                                           
 Net: a_n183_n131#                          |Net: a_n183_n131#                          
   nfet_03v3/(1|3) = 1                      |  nfet_03v3/(1|3) = 1                      
@@ -187,22 +213,22 @@ Circuit 1: xm1                             |Circuit 2: xm1
 ---------------------------------------------------------------------------------------
 Net: a_63_n131#                            |Net: a_63_n131#                            
   pfet_03v3/(1|3) = 1                      |  pfet_03v3/(1|3) = 1                      
-                                           |  c/top = 4                                
+                                           |  c/top = 2                                
+                                           |  c/bottom = 2                             
                                            |                                           
 Net: a_n183_n131#                          |Net: a_n183_n131#                          
   pfet_03v3/(1|3) = 1                      |  pfet_03v3/(1|3) = 1                      
-                                           |  c/top = 3                                
-                                           |  c/bottom = 1                             
+                                           |  c/bottom = 3                             
+                                           |  c/top = 1                                
                                            |                                           
 Net: a_n63_n339#                           |Net: a_n63_n339#                           
   pfet_03v3/2 = 1                          |  pfet_03v3/2 = 1                          
-                                           |  c/bottom = 2                             
-                                           |  c/top = 2                                
+                                           |  c/bottom = 1                             
+                                           |  c/top = 3                                
                                            |                                           
 Net: w_n449_n560#                          |Net: w_n449_n560#                          
   pfet_03v3/4 = 1                          |  pfet_03v3/4 = 1                          
-                                           |  c/bottom = 3                             
-                                           |  c/top = 1                                
+                                           |  c/top = 4                                
                                            |                                           
 (no matching net)                          |Net: VSUBS                                 
                                            |  c/bottom = 4                             
@@ -269,12 +295,12 @@ Circuit 1: xmcm_chain_4                    |Circuit 2: xmcm_chain_4
 ---------------------------------------------------------------------------------------
 Net: a_1000_n131#                          |Net: a_1000_n131#                          
   nfet_03v3/(1|3) = 1                      |  nfet_03v3/(1|3) = 1                      
-                                           |  c/top = 3                                
+                                           |  c/bottom = 2                             
+                                           |  c/top = 1                                
                                            |                                           
 Net: a_n1000_n339#                         |Net: a_n1000_n339#                         
   nfet_03v3/2 = 1                          |  nfet_03v3/2 = 1                          
-                                           |  c/bottom = 2                             
-                                           |  c/top = 1                                
+                                           |  c/top = 3                                
                                            |                                           
 Net: a_n1120_n131#                         |Net: a_n1120_n131#                         
   nfet_03v3/(1|3) = 1                      |  nfet_03v3/(1|3) = 1                      
@@ -317,6 +343,52 @@ Netlists do not match.
 Port matching may fail to disambiguate symmetries.
   Flattening non-matched subcircuits xmcm_chain_4 xmcm_chain_4
 
+Class cpot (0):  Merged 1 parallel devices.
+Class cpot (1):  Merged 1 parallel devices.
+Subcircuit summary:
+Circuit 1: cpot                            |Circuit 2: cpot                            
+-------------------------------------------|-------------------------------------------
+cap_mim_2f0_m4m5_noshield (2->1)           |cap_mim_2f0_m4m5_noshield (2->1)           
+(no matching element)                      |c (3)                                      
+Number of devices: 1 **Mismatch**          |Number of devices: 4 **Mismatch**          
+Number of nets: 2 **Mismatch**             |Number of nets: 3 **Mismatch**             
+---------------------------------------------------------------------------------------
+NET mismatches: Class fragments follow (with fanout counts):
+Circuit 1: cpot                            |Circuit 2: cpot                            
+
+---------------------------------------------------------------------------------------
+Net: m4_n500_n500#                         |Net: m4_n500_n500#                         
+  cap_mim_2f0_m4m5_noshield/1 = 1          |  cap_mim_2f0_m4m5_noshield/1 = 1          
+                                           |  c/bottom = 1                             
+                                           |  c/top = 1                                
+                                           |                                           
+Net: m4_n700_n700#                         |Net: m4_n700_n700#                         
+  cap_mim_2f0_m4m5_noshield/2 = 1          |  cap_mim_2f0_m4m5_noshield/2 = 1          
+                                           |  c/top = 2                                
+                                           |                                           
+(no matching net)                          |Net: VSUBS                                 
+                                           |  c/bottom = 2                             
+---------------------------------------------------------------------------------------
+DEVICE mismatches: Class fragments follow (with node fanout counts):
+Circuit 1: cpot                            |Circuit 2: cpot                            
+
+---------------------------------------------------------------------------------------
+(no matching instance)                     |Instance: c:0                              
+                                           |  top = 3                                  
+                                           |  bottom = 3                               
+                                           |                                           
+(no matching instance)                     |Instance: c:1                              
+                                           |  top = 3                                  
+                                           |  bottom = 2                               
+                                           |                                           
+(no matching instance)                     |Instance: c:2                              
+                                           |  top = 3                                  
+                                           |  bottom = 2                               
+---------------------------------------------------------------------------------------
+Netlists do not match.
+Port matching may fail to disambiguate symmetries.
+  Flattening non-matched subcircuits cpot cpot
+
 Subcircuit summary:
 Circuit 1: xm8                             |Circuit 2: xm8                             
 -------------------------------------------|-------------------------------------------
@@ -331,22 +403,22 @@ Circuit 1: xm8                             |Circuit 2: xm8
 ---------------------------------------------------------------------------------------
 Net: a_63_n131#                            |Net: a_63_n131#                            
   pfet_03v3/(1|3) = 1                      |  pfet_03v3/(1|3) = 1                      
-                                           |  c/top = 4                                
+                                           |  c/top = 2                                
+                                           |  c/bottom = 2                             
                                            |                                           
 Net: a_n183_n131#                          |Net: a_n183_n131#                          
   pfet_03v3/(1|3) = 1                      |  pfet_03v3/(1|3) = 1                      
-                                           |  c/top = 3                                
-                                           |  c/bottom = 1                             
+                                           |  c/bottom = 3                             
+                                           |  c/top = 1                                
                                            |                                           
 Net: a_n63_n339#                           |Net: a_n63_n339#                           
   pfet_03v3/2 = 1                          |  pfet_03v3/2 = 1                          
-                                           |  c/bottom = 2                             
-                                           |  c/top = 2                                
+                                           |  c/bottom = 1                             
+                                           |  c/top = 3                                
                                            |                                           
 Net: w_n449_n560#                          |Net: w_n449_n560#                          
   pfet_03v3/4 = 1                          |  pfet_03v3/4 = 1                          
-                                           |  c/bottom = 3                             
-                                           |  c/top = 1                                
+                                           |  c/top = 4                                
                                            |                                           
 (no matching net)                          |Net: VSUBS                                 
                                            |  c/bottom = 4                             
@@ -413,12 +485,12 @@ Circuit 1: xmcm_chain_2                    |Circuit 2: xmcm_chain_2
 ---------------------------------------------------------------------------------------
 Net: a_1000_n131#                          |Net: a_1000_n131#                          
   nfet_03v3/(1|3) = 1                      |  nfet_03v3/(1|3) = 1                      
-                                           |  c/top = 3                                
+                                           |  c/bottom = 2                             
+                                           |  c/top = 1                                
                                            |                                           
 Net: a_n1000_n339#                         |Net: a_n1000_n339#                         
   nfet_03v3/2 = 1                          |  nfet_03v3/2 = 1                          
-                                           |  c/bottom = 2                             
-                                           |  c/top = 1                                
+                                           |  c/top = 3                                
                                            |                                           
 Net: a_n1120_n131#                         |Net: a_n1120_n131#                         
   nfet_03v3/(1|3) = 1                      |  nfet_03v3/(1|3) = 1                      
@@ -475,22 +547,22 @@ Circuit 1: xm16                            |Circuit 2: xm16
 ---------------------------------------------------------------------------------------
 Net: a_280_n1101#                          |Net: a_280_n1101#                          
   pfet_03v3/(1|3) = 1                      |  pfet_03v3/(1|3) = 1                      
-                                           |  c/top = 4                                
+                                           |  c/top = 2                                
+                                           |  c/bottom = 2                             
                                            |                                           
 Net: a_n400_n1101#                         |Net: a_n400_n1101#                         
   pfet_03v3/(1|3) = 1                      |  pfet_03v3/(1|3) = 1                      
-                                           |  c/top = 3                                
-                                           |  c/bottom = 1                             
+                                           |  c/bottom = 3                             
+                                           |  c/top = 1                                
                                            |                                           
 Net: a_n280_n1309#                         |Net: a_n280_n1309#                         
   pfet_03v3/2 = 1                          |  pfet_03v3/2 = 1                          
-                                           |  c/bottom = 2                             
-                                           |  c/top = 2                                
+                                           |  c/bottom = 1                             
+                                           |  c/top = 3                                
                                            |                                           
 Net: w_n666_n1529#                         |Net: w_n666_n1529#                         
   pfet_03v3/4 = 1                          |  pfet_03v3/4 = 1                          
-                                           |  c/bottom = 3                             
-                                           |  c/top = 1                                
+                                           |  c/top = 4                                
                                            |                                           
 (no matching net)                          |Net: VSUBS                                 
                                            |  c/bottom = 4                             
@@ -557,12 +629,12 @@ Circuit 1: xmcm_chain_0                    |Circuit 2: xmcm_chain_0
 ---------------------------------------------------------------------------------------
 Net: a_1000_n131#                          |Net: a_1000_n131#                          
   nfet_03v3/(1|3) = 1                      |  nfet_03v3/(1|3) = 1                      
-                                           |  c/top = 3                                
+                                           |  c/bottom = 2                             
+                                           |  c/top = 1                                
                                            |                                           
 Net: a_n1000_n339#                         |Net: a_n1000_n339#                         
   nfet_03v3/2 = 1                          |  nfet_03v3/2 = 1                          
-                                           |  c/bottom = 2                             
-                                           |  c/top = 1                                
+                                           |  c/top = 3                                
                                            |                                           
 Net: a_n1120_n131#                         |Net: a_n1120_n131#                         
   nfet_03v3/(1|3) = 1                      |  nfet_03v3/(1|3) = 1                      
@@ -605,6 +677,52 @@ Netlists do not match.
 Port matching may fail to disambiguate symmetries.
   Flattening non-matched subcircuits xmcm_chain_0 xmcm_chain_0
 
+Class cw (0):  Merged 9 parallel devices.
+Class cw (1):  Merged 9 parallel devices.
+Subcircuit summary:
+Circuit 1: cw                              |Circuit 2: cw                              
+-------------------------------------------|-------------------------------------------
+cap_mim_2f0_m4m5_noshield (10->1)          |cap_mim_2f0_m4m5_noshield (10->1)          
+(no matching element)                      |c (3)                                      
+Number of devices: 1 **Mismatch**          |Number of devices: 4 **Mismatch**          
+Number of nets: 2 **Mismatch**             |Number of nets: 3 **Mismatch**             
+---------------------------------------------------------------------------------------
+NET mismatches: Class fragments follow (with fanout counts):
+Circuit 1: cw                              |Circuit 2: cw                              
+
+---------------------------------------------------------------------------------------
+Net: m4_n500_n500#                         |Net: m4_n500_n500#                         
+  cap_mim_2f0_m4m5_noshield/1 = 1          |  cap_mim_2f0_m4m5_noshield/1 = 1          
+                                           |  c/bottom = 1                             
+                                           |  c/top = 1                                
+                                           |                                           
+Net: m4_n700_n700#                         |Net: m4_n700_n700#                         
+  cap_mim_2f0_m4m5_noshield/2 = 1          |  cap_mim_2f0_m4m5_noshield/2 = 1          
+                                           |  c/top = 2                                
+                                           |                                           
+(no matching net)                          |Net: VSUBS                                 
+                                           |  c/bottom = 2                             
+---------------------------------------------------------------------------------------
+DEVICE mismatches: Class fragments follow (with node fanout counts):
+Circuit 1: cw                              |Circuit 2: cw                              
+
+---------------------------------------------------------------------------------------
+(no matching instance)                     |Instance: c:0                              
+                                           |  top = 3                                  
+                                           |  bottom = 3                               
+                                           |                                           
+(no matching instance)                     |Instance: c:1                              
+                                           |  top = 3                                  
+                                           |  bottom = 2                               
+                                           |                                           
+(no matching instance)                     |Instance: c:2                              
+                                           |  top = 3                                  
+                                           |  bottom = 2                               
+---------------------------------------------------------------------------------------
+Netlists do not match.
+Port matching may fail to disambiguate symmetries.
+  Flattening non-matched subcircuits cw cw
+
 Subcircuit summary:
 Circuit 1: xm4                             |Circuit 2: xm4                             
 -------------------------------------------|-------------------------------------------
@@ -619,12 +737,12 @@ Circuit 1: xm4                             |Circuit 2: xm4
 ---------------------------------------------------------------------------------------
 Net: a_63_n131#                            |Net: a_63_n131#                            
   nfet_03v3/(1|3) = 1                      |  nfet_03v3/(1|3) = 1                      
-                                           |  c/top = 3                                
+                                           |  c/bottom = 2                             
+                                           |  c/top = 1                                
                                            |                                           
 Net: a_n63_n339#                           |Net: a_n63_n339#                           
   nfet_03v3/2 = 1                          |  nfet_03v3/2 = 1                          
-                                           |  c/bottom = 2                             
-                                           |  c/top = 1                                
+                                           |  c/top = 3                                
                                            |                                           
 Net: a_n183_n131#                          |Net: a_n183_n131#                          
   nfet_03v3/(1|3) = 1                      |  nfet_03v3/(1|3) = 1                      
@@ -681,12 +799,12 @@ Circuit 1: xm12                            |Circuit 2: xm12
 ---------------------------------------------------------------------------------------
 Net: a_63_n131#                            |Net: a_63_n131#                            
   nfet_03v3/(1|3) = 1                      |  nfet_03v3/(1|3) = 1                      
-                                           |  c/top = 3                                
+                                           |  c/bottom = 2                             
+                                           |  c/top = 1                                
                                            |                                           
 Net: a_n63_n339#                           |Net: a_n63_n339#                           
   nfet_03v3/2 = 1                          |  nfet_03v3/2 = 1                          
-                                           |  c/bottom = 2                             
-                                           |  c/top = 1                                
+                                           |  c/top = 3                                
                                            |                                           
 Net: a_n183_n131#                          |Net: a_n183_n131#                          
   nfet_03v3/(1|3) = 1                      |  nfet_03v3/(1|3) = 1                      
@@ -743,22 +861,22 @@ Circuit 1: xm2                             |Circuit 2: xm2
 ---------------------------------------------------------------------------------------
 Net: a_63_n131#                            |Net: a_63_n131#                            
   pfet_03v3/(1|3) = 1                      |  pfet_03v3/(1|3) = 1                      
-                                           |  c/top = 4                                
+                                           |  c/top = 2                                
+                                           |  c/bottom = 2                             
                                            |                                           
 Net: a_n183_n131#                          |Net: a_n183_n131#                          
   pfet_03v3/(1|3) = 1                      |  pfet_03v3/(1|3) = 1                      
-                                           |  c/top = 3                                
-                                           |  c/bottom = 1                             
+                                           |  c/bottom = 3                             
+                                           |  c/top = 1                                
                                            |                                           
 Net: a_n63_n339#                           |Net: a_n63_n339#                           
   pfet_03v3/2 = 1                          |  pfet_03v3/2 = 1                          
-                                           |  c/bottom = 2                             
-                                           |  c/top = 2                                
+                                           |  c/bottom = 1                             
+                                           |  c/top = 3                                
                                            |                                           
 Net: w_n449_n560#                          |Net: w_n449_n560#                          
   pfet_03v3/4 = 1                          |  pfet_03v3/4 = 1                          
-                                           |  c/bottom = 3                             
-                                           |  c/top = 1                                
+                                           |  c/top = 4                                
                                            |                                           
 (no matching net)                          |Net: VSUBS                                 
                                            |  c/bottom = 4                             
@@ -811,6 +929,52 @@ Netlists do not match.
 Port matching may fail to disambiguate symmetries.
   Flattening non-matched subcircuits xm2 xm2
 
+Class cdep (0):  Merged 1 parallel devices.
+Class cdep (1):  Merged 1 parallel devices.
+Subcircuit summary:
+Circuit 1: cdep                            |Circuit 2: cdep                            
+-------------------------------------------|-------------------------------------------
+cap_mim_2f0_m4m5_noshield (2->1)           |cap_mim_2f0_m4m5_noshield (2->1)           
+(no matching element)                      |c (3)                                      
+Number of devices: 1 **Mismatch**          |Number of devices: 4 **Mismatch**          
+Number of nets: 2 **Mismatch**             |Number of nets: 3 **Mismatch**             
+---------------------------------------------------------------------------------------
+NET mismatches: Class fragments follow (with fanout counts):
+Circuit 1: cdep                            |Circuit 2: cdep                            
+
+---------------------------------------------------------------------------------------
+Net: m4_n500_n500#                         |Net: m4_n500_n500#                         
+  cap_mim_2f0_m4m5_noshield/1 = 1          |  cap_mim_2f0_m4m5_noshield/1 = 1          
+                                           |  c/bottom = 1                             
+                                           |  c/top = 1                                
+                                           |                                           
+Net: m4_n700_n700#                         |Net: m4_n700_n700#                         
+  cap_mim_2f0_m4m5_noshield/2 = 1          |  cap_mim_2f0_m4m5_noshield/2 = 1          
+                                           |  c/top = 2                                
+                                           |                                           
+(no matching net)                          |Net: VSUBS                                 
+                                           |  c/bottom = 2                             
+---------------------------------------------------------------------------------------
+DEVICE mismatches: Class fragments follow (with node fanout counts):
+Circuit 1: cdep                            |Circuit 2: cdep                            
+
+---------------------------------------------------------------------------------------
+(no matching instance)                     |Instance: c:0                              
+                                           |  top = 3                                  
+                                           |  bottom = 3                               
+                                           |                                           
+(no matching instance)                     |Instance: c:1                              
+                                           |  top = 3                                  
+                                           |  bottom = 2                               
+                                           |                                           
+(no matching instance)                     |Instance: c:2                              
+                                           |  top = 3                                  
+                                           |  bottom = 2                               
+---------------------------------------------------------------------------------------
+Netlists do not match.
+Port matching may fail to disambiguate symmetries.
+  Flattening non-matched subcircuits cdep cdep
+
 Subcircuit summary:
 Circuit 1: xmcm_1                          |Circuit 2: xmcm_1                          
 -------------------------------------------|-------------------------------------------
@@ -825,12 +989,12 @@ Circuit 1: xmcm_1                          |Circuit 2: xmcm_1
 ---------------------------------------------------------------------------------------
 Net: a_280_n141#                           |Net: a_280_n141#                           
   nfet_03v3/(1|3) = 1                      |  nfet_03v3/(1|3) = 1                      
-                                           |  c/top = 3                                
+                                           |  c/bottom = 2                             
+                                           |  c/top = 1                                
                                            |                                           
 Net: a_n280_n350#                          |Net: a_n280_n350#                          
   nfet_03v3/2 = 1                          |  nfet_03v3/2 = 1                          
-                                           |  c/bottom = 2                             
-                                           |  c/top = 1                                
+                                           |  c/top = 3                                
                                            |                                           
 Net: a_n400_n141#                          |Net: a_n400_n141#                          
   nfet_03v3/(1|3) = 1                      |  nfet_03v3/(1|3) = 1                      
@@ -887,12 +1051,12 @@ Circuit 1: xm9                             |Circuit 2: xm9
 ---------------------------------------------------------------------------------------
 Net: a_63_n131#                            |Net: a_63_n131#                            
   nfet_03v3/(1|3) = 1                      |  nfet_03v3/(1|3) = 1                      
-                                           |  c/top = 3                                
+                                           |  c/bottom = 2                             
+                                           |  c/top = 1                                
                                            |                                           
 Net: a_n63_n339#                           |Net: a_n63_n339#                           
   nfet_03v3/2 = 1                          |  nfet_03v3/2 = 1                          
-                                           |  c/bottom = 2                             
-                                           |  c/top = 1                                
+                                           |  c/top = 3                                
                                            |                                           
 Net: a_n183_n131#                          |Net: a_n183_n131#                          
   nfet_03v3/(1|3) = 1                      |  nfet_03v3/(1|3) = 1                      
@@ -949,12 +1113,12 @@ Circuit 1: xmcm_chain_3                    |Circuit 2: xmcm_chain_3
 ---------------------------------------------------------------------------------------
 Net: a_1000_n131#                          |Net: a_1000_n131#                          
   nfet_03v3/(1|3) = 1                      |  nfet_03v3/(1|3) = 1                      
-                                           |  c/top = 3                                
+                                           |  c/bottom = 2                             
+                                           |  c/top = 1                                
                                            |                                           
 Net: a_n1000_n339#                         |Net: a_n1000_n339#                         
   nfet_03v3/2 = 1                          |  nfet_03v3/2 = 1                          
-                                           |  c/bottom = 2                             
-                                           |  c/top = 1                                
+                                           |  c/top = 3                                
                                            |                                           
 Net: a_n1120_n131#                         |Net: a_n1120_n131#                         
   nfet_03v3/(1|3) = 1                      |  nfet_03v3/(1|3) = 1                      
@@ -1011,22 +1175,22 @@ Circuit 1: xm17                            |Circuit 2: xm17
 ---------------------------------------------------------------------------------------
 Net: a_460_n131#                           |Net: a_460_n131#                           
   pfet_03v3/(1|3) = 1                      |  pfet_03v3/(1|3) = 1                      
-                                           |  c/top = 4                                
+                                           |  c/top = 2                                
+                                           |  c/bottom = 2                             
                                            |                                           
 Net: a_n580_n131#                          |Net: a_n580_n131#                          
   pfet_03v3/(1|3) = 1                      |  pfet_03v3/(1|3) = 1                      
-                                           |  c/top = 3                                
-                                           |  c/bottom = 1                             
+                                           |  c/bottom = 3                             
+                                           |  c/top = 1                                
                                            |                                           
 Net: a_n460_n339#                          |Net: a_n460_n339#                          
   pfet_03v3/2 = 1                          |  pfet_03v3/2 = 1                          
-                                           |  c/bottom = 2                             
-                                           |  c/top = 2                                
+                                           |  c/bottom = 1                             
+                                           |  c/top = 3                                
                                            |                                           
 Net: w_n846_n560#                          |Net: w_n846_n560#                          
   pfet_03v3/4 = 1                          |  pfet_03v3/4 = 1                          
-                                           |  c/bottom = 3                             
-                                           |  c/top = 1                                
+                                           |  c/top = 4                                
                                            |                                           
 (no matching net)                          |Net: VSUBS                                 
                                            |  c/bottom = 4                             
@@ -1093,22 +1257,22 @@ Circuit 1: xm7                             |Circuit 2: xm7
 ---------------------------------------------------------------------------------------
 Net: a_63_n131#                            |Net: a_63_n131#                            
   pfet_03v3/(1|3) = 1                      |  pfet_03v3/(1|3) = 1                      
-                                           |  c/top = 4                                
+                                           |  c/top = 2                                
+                                           |  c/bottom = 2                             
                                            |                                           
 Net: a_n183_n131#                          |Net: a_n183_n131#                          
   pfet_03v3/(1|3) = 1                      |  pfet_03v3/(1|3) = 1                      
-                                           |  c/top = 3                                
-                                           |  c/bottom = 1                             
+                                           |  c/bottom = 3                             
+                                           |  c/top = 1                                
                                            |                                           
 Net: a_n63_n339#                           |Net: a_n63_n339#                           
   pfet_03v3/2 = 1                          |  pfet_03v3/2 = 1                          
-                                           |  c/bottom = 2                             
-                                           |  c/top = 2                                
+                                           |  c/bottom = 1                             
+                                           |  c/top = 3                                
                                            |                                           
 Net: w_n449_n560#                          |Net: w_n449_n560#                          
   pfet_03v3/4 = 1                          |  pfet_03v3/4 = 1                          
-                                           |  c/bottom = 3                             
-                                           |  c/top = 1                                
+                                           |  c/top = 4                                
                                            |                                           
 (no matching net)                          |Net: VSUBS                                 
                                            |  c/bottom = 4                             
@@ -1175,12 +1339,12 @@ Circuit 1: xmcm_chain_1                    |Circuit 2: xmcm_chain_1
 ---------------------------------------------------------------------------------------
 Net: a_1000_n131#                          |Net: a_1000_n131#                          
   nfet_03v3/(1|3) = 1                      |  nfet_03v3/(1|3) = 1                      
-                                           |  c/top = 3                                
+                                           |  c/bottom = 2                             
+                                           |  c/top = 1                                
                                            |                                           
 Net: a_n1000_n339#                         |Net: a_n1000_n339#                         
   nfet_03v3/2 = 1                          |  nfet_03v3/2 = 1                          
-                                           |  c/bottom = 2                             
-                                           |  c/top = 1                                
+                                           |  c/top = 3                                
                                            |                                           
 Net: a_n1120_n131#                         |Net: a_n1120_n131#                         
   nfet_03v3/(1|3) = 1                      |  nfet_03v3/(1|3) = 1                      
@@ -1224,258 +1388,36 @@ Port matching may fail to disambiguate symmetries.
   Flattening non-matched subcircuits xmcm_chain_1 xmcm_chain_1
 Flattening unmatched subcell unitcap in circuit stdp (1)(14 instances)
 
-Cell stdp (0) disconnected node: vw
-Class stdp (0):  Merged 5 parallel devices.
 Class stdp (1):  Merged 11 parallel devices.
-Cell stdp (0) disconnected node: vw
 Subcircuit summary:
 Circuit 1: stdp                            |Circuit 2: stdp                            
 -------------------------------------------|-------------------------------------------
-pfet_03v3 (7->6)                           |pfet_03v3 (7) **Mismatch**                 
-nfet_03v3 (10->6)                          |nfet_03v3 (10) **Mismatch**                
-(no matching element)                      |cap_mim_2f0fF (14->3)                      
-Number of devices: 12 **Mismatch**         |Number of devices: 20 **Mismatch**         
-Number of nets: 32 **Mismatch**            |Number of nets: 23 **Mismatch**            
+pfet_03v3 (7)                              |pfet_03v3 (7)                              
+nfet_03v3 (10)                             |nfet_03v3 (10)                             
+cap_mim_2f0_m4m5_noshield (14->3)          |cap_mim_2f0_m4m5_noshield (14->3)          
+Number of devices: 20                      |Number of devices: 20                      
+Number of nets: 23                         |Number of nets: 23                         
 ---------------------------------------------------------------------------------------
-NET mismatches: Class fragments follow (with fanout counts):
-Circuit 1: stdp                            |Circuit 2: stdp                            
-
----------------------------------------------------------------------------------------
-Net: Iout                                  |Net: iout                                  
-  pfet_03v3/(1|3) = 1                      |  pfet_03v3/(1|3) = 1                      
-                                           |                                           
-Net: vpre                                  |Net: vpre                                  
-  nfet_03v3/2 = 1                          |  nfet_03v3/2 = 1                          
-                                           |                                           
-Net: vpost                                 |Net: vpost                                 
-  nfet_03v3/2 = 1                          |  nfet_03v3/2 = 1                          
-                                           |                                           
-Net: vb_pot                                |Net: vb_pot                                
-  nfet_03v3/2 = 1                          |  nfet_03v3/2 = 1                          
-                                           |                                           
-Net: nvpost                                |Net: nvpost                                
-  pfet_03v3/2 = 1                          |  pfet_03v3/2 = 1                          
-                                           |                                           
-Net: nvpre                                 |Net: nvpre                                 
-  pfet_03v3/2 = 1                          |  pfet_03v3/2 = 1                          
-                                           |                                           
-Net: vb_itp                                |Net: vb_itp                                
-  pfet_03v3/2 = 1                          |  pfet_03v3/2 = 1                          
-                                           |                                           
-Net: vb_idep                               |Net: vb_idep                               
-  pfet_03v3/2 = 1                          |  pfet_03v3/2 = 1                          
-                                           |                                           
-Net: /xm17_0/a_460_n131#                   |Net: n1                                    
-  pfet_03v3/(1|3) = 1                      |  pfet_03v3/(1|3) = 2                      
-                                           |                                           
-Net: /xm1_0/a_n63_n339#                    |Net: n2                                    
-  pfet_03v3/2 = 1                          |  nfet_03v3/(1|3) = 2                      
-                                           |                                           
-Net: /xm3_0/a_n183_n131#                   |Net: n6                                    
-  nfet_03v3/(1|3) = 1                      |  nfet_03v3/(1|3) = 2                      
-                                           |                                           
-Net: /xm1_0/a_63_n131#                     |Net: n7                                    
-  pfet_03v3/(1|3) = 1                      |  nfet_03v3/(1|3) = 2                      
-                                           |                                           
-Net: /xm8_0/a_63_n131#                     |Net: n8                                    
-  pfet_03v3/(1|3) = 1                      |  nfet_03v3/(1|3) = 2                      
-                                           |                                           
-Net: /xmcm_chain_4_0/a_n1000_n339#         |Net: n9                                    
-  nfet_03v3/2 = 1                          |  nfet_03v3/(1|3) = 2                      
-                                           |                                           
-Net: /xmcm_chain_2_0/a_n1000_n339#         |Net: n4                                    
-  nfet_03v3/2 = 1                          |  pfet_03v3/(1|3) = 1                      
-                                           |  nfet_03v3/(1|3) = 1                      
-                                           |                                           
-Net: /xm16_0/a_280_n1101#                  |Net: n3                                    
-  pfet_03v3/(1|3) = 1                      |  pfet_03v3/2 = 1                          
-                                           |  pfet_03v3/(1|3) = 1                      
-                                           |                                           
-Net: /xm2_0/a_n183_n131#                   |Net: vpot                                  
-  pfet_03v3/(1|3) = 1                      |  pfet_03v3/2 = 1                          
-                                           |  pfet_03v3/(1|3) = 2                      
-                                           |  cap_mim_2f0fF/2 = 1                      
-                                           |                                           
-Net: /xm8_0/a_n183_n131#                   |Net: vw                                    
-  pfet_03v3/(1|3) = 1                      |  pfet_03v3/(1|3) = 1                      
-                                           |  nfet_03v3/(1|3) = 1                      
-                                           |  cap_mim_2f0fF/1 = 1                      
-                                           |  pfet_03v3/2 = 1                          
-                                           |                                           
-Net: /xm2_0/a_63_n131#                     |Net: vdep                                  
-  pfet_03v3/(1|3) = 1                      |  nfet_03v3/2 = 1                          
-                                           |  nfet_03v3/(1|3) = 2                      
-                                           |  cap_mim_2f0fF/1 = 1                      
-                                           |                                           
-Net: /xm5_0/a_n1500_n339#                  |Net: n5                                    
-  pfet_03v3/2 = 1                          |  nfet_03v3/(1|3) = 2                      
-                                           |  nfet_03v3/2 = 1                          
-                                           |  pfet_03v3/(1|3) = 1                      
-                                           |                                           
-Net: avdd                                  |Net: avdd                                  
-  pfet_03v3/(1|3) = 4                      |  pfet_03v3/(1|3) = 5                      
-  pfet_03v3/4 = 6                          |  pfet_03v3/4 = 7                          
-                                           |  cap_mim_2f0fF/1 = 1                      
-                                           |                                           
-Net: avss                                  |Net: avss                                  
-  nfet_03v3/4 = 6                          |  nfet_03v3/4 = 10                         
-  nfet_03v3/(1|3) = 2                      |  nfet_03v3/(1|3) = 4                      
-                                           |  cap_mim_2f0fF/2 = 2                      
-                                           |                                           
-Net: vb_itd                                |Net: vb_itd                                
-  nfet_03v3/2 = 1                          |  nfet_03v3/2 = 5                          
-                                           |                                           
-Net: /xmcm_chain_4_0/a_1000_n131#          |(no matching net)                          
-  nfet_03v3/(1|3) = 1                      |                                           
-                                           |                                           
-Net: /xmcm_chain_2_0/a_1000_n131#          |(no matching net)                          
-  nfet_03v3/(1|3) = 1                      |                                           
-                                           |                                           
-Net: /xmcm_chain_2_0/a_n1120_n131#         |(no matching net)                          
-  nfet_03v3/(1|3) = 1                      |                                           
-                                           |                                           
-Net: /xmcm_chain_0_0/a_1000_n131#          |(no matching net)                          
-  nfet_03v3/(1|3) = 1                      |                                           
-                                           |                                           
-Net: /xmcm_chain_0_0/a_n1120_n131#         |(no matching net)                          
-  nfet_03v3/(1|3) = 1                      |                                           
-                                           |                                           
-Net: /xm12_0/a_63_n131#                    |(no matching net)                          
-  nfet_03v3/(1|3) = 1                      |                                           
-                                           |                                           
-Net: /xm12_0/a_n183_n131#                  |(no matching net)                          
-  nfet_03v3/(1|3) = 1                      |                                           
-                                           |                                           
-Net: /xmcm_1_0/a_280_n141#                 |(no matching net)                          
-  nfet_03v3/(1|3) = 1                      |                                           
-                                           |                                           
-Net: /xm3_0/a_63_n131#                     |(no matching net)                          
-  nfet_03v3/(1|3) = 1                      |                                           
----------------------------------------------------------------------------------------
-DEVICE mismatches: Class fragments follow (with node fanout counts):
-Circuit 1: stdp                            |Circuit 2: stdp                            
-
----------------------------------------------------------------------------------------
-Instance: xm5_0/pfet_03v3:0                |Instance: pfet_03v3:1                      
-  (1,3) = (10,1)                           |  (1,3) = (13,2)                           
-  2 = 1                                    |  2 = 4                                    
-  4 = 10                                   |  4 = 13                                   
-                                           |                                           
-Instance: xm1_0/pfet_03v3:0                |Instance: pfet_03v3:2                      
-  (1,3) = (10,1)                           |  (1,3) = (4,2)                            
-  2 = 1                                    |  2 = 1                                    
-  4 = 10                                   |  4 = 13                                   
-                                           |                                           
-Instance: xm8_0/pfet_03v3:0                |Instance: pfet_03v3:7                      
-  (1,3) = (1,1)                            |  (1,3) = (13,2)                           
-  2 = 1                                    |  2 = 2                                    
-  4 = 10                                   |  4 = 13                                   
-                                           |                                           
-Instance: xm16_0/pfet_03v3:0               |Instance: pfet_03v3:8                      
-  (1,3) = (10,1)                           |  (1,3) = (4,2)                            
-  2 = 1                                    |  2 = 1                                    
-  4 = 10                                   |  4 = 13                                   
-                                           |                                           
-Instance: xm2_0/pfet_03v3:0                |Instance: pfet_03v3:17                     
-  (1,3) = (1,1)                            |  (1,3) = (13,4)                           
-  2 = 1                                    |  2 = 1                                    
-  4 = 10                                   |  4 = 13                                   
-                                           |                                           
-Instance: xm17_0/pfet_03v3:0               |Instance: pfet_03v3:16                     
-  (1,3) = (10,1)                           |  (1,3) = (13,4)                           
-  2 = 1                                    |  2 = 1                                    
-  4 = 10                                   |  4 = 13                                   
-                                           |                                           
-Instance: xm3_0/nfet_03v3:0                |Instance: pfet_03v3:5                      
-  (1,3) = (1,1)                            |  (1,3) = (13,1)                           
-  2 = 1                                    |  2 = 4                                    
-  4 = 8                                    |  4 = 13                                   
-                                           |                                           
-Instance: xmcm_chain_4_0/nfet_03v3:0       |Instance: nfet_03v3:3                      
-  (1,3) = (8,1)                            |  (1,3) = (4,2)                            
-  2 = 1                                    |  2 = 1                                    
-  4 = 8                                    |  4 = 16                                   
-                                           |                                           
-Instance: xmcm_chain_2_0/nfet_03v3:0       |Instance: nfet_03v3:4                      
-  (1,3) = (1,1)                            |  (1,3) = (16,2)                           
-  2 = 1                                    |  2 = 4                                    
-  4 = 8                                    |  4 = 16                                   
-                                           |                                           
-Instance: xmcm_chain_0_0/nfet_03v3:0       |Instance: nfet_03v3:9                      
-  (1,3) = (1,1)                            |  (1,3) = (16,4)                           
-  2 = 1                                    |  2 = 4                                    
-  4 = 8                                    |  4 = 16                                   
-                                           |                                           
-Instance: xm12_0/nfet_03v3:0               |Instance: nfet_03v3:12                     
-  (1,3) = (1,1)                            |  (1,3) = (4,4)                            
-  2 = 1                                    |  2 = 1                                    
-  4 = 8                                    |  4 = 16                                   
-                                           |                                           
-Instance: xmcm_1_0/nfet_03v3:0             |Instance: nfet_03v3:CM_1                   
-  (1,3) = (8,1)                            |  (1,3) = (16,2)                           
-  2 = 1                                    |  2 = 1                                    
-  4 = 8                                    |  4 = 16                                   
-                                           |                                           
-(no matching instance)                     |Instance: nfet_03v3:CM_5                   
-                                           |  (1,3) = (4,2)                            
-                                           |  2 = 5                                    
-                                           |  4 = 16                                   
-                                           |                                           
-                                           |                                           
-(no matching instance)                     |Instance: nfet_03v3:CM_6                   
-                                           |  (1,3) = (2,2)                            
-                                           |  2 = 5                                    
-                                           |  4 = 16                                   
-                                           |                                           
-                                           |                                           
-(no matching instance)                     |Instance: nfet_03v3:CM_7                   
-                                           |  (1,3) = (2,2)                            
-                                           |  2 = 5                                    
-                                           |  4 = 16                                   
-                                           |                                           
-                                           |                                           
-(no matching instance)                     |Instance: nfet_03v3:CM_8                   
-                                           |  (1,3) = (2,2)                            
-                                           |  2 = 5                                    
-                                           |  4 = 16                                   
-                                           |                                           
-                                           |                                           
-(no matching instance)                     |Instance: nfet_03v3:CM_9                   
-                                           |  (1,3) = (16,2)                           
-                                           |  2 = 5                                    
-                                           |  4 = 16                                   
-                                           |                                           
-                                           |                                           
-(no matching instance)                     |Instance: unitcap:1[0]/cap_mim_2f0fF:Cdep  
-                                           |  1 = 4                                    
-                                           |  2 = 16                                   
-                                           |                                           
-(no matching instance)                     |Instance: unitcap:2[0]/cap_mim_2f0fF:Cdep  
-                                           |  1 = 4                                    
-                                           |  2 = 16                                   
-                                           |                                           
-(no matching instance)                     |Instance: unitcap:3[0]/cap_mim_2f0fF:Cdep  
-                                           |  1 = 13                                   
-                                           |  2 = 4                                    
----------------------------------------------------------------------------------------
-Netlists do not match.
-Port matching may fail to disambiguate symmetries.
+Netlists match uniquely.
 
 Subcircuit pins:
 Circuit 1: stdp                            |Circuit 2: stdp                            
 -------------------------------------------|-------------------------------------------
-avdd                                       |iout **Mismatch**                          
-Iout                                       |vpre **Mismatch**                          
-vpre                                       |(no pin, node is n2)                       
-vb_itd                                     |(no pin, node is n6)                       
-vpost                                      |(no pin, node is n7)                       
-vb_pot                                     |(no pin, node is n8)                       
-nvpre                                      |(no pin, node is n3)                       
-vb_idep                                    |(no pin, node is vpot)                     
-nvpost                                     |vw **Mismatch**                            
-vb_itp                                     |(no pin, node is vdep)                     
+vb_itd                                     |vb_itd                                     
+avss                                       |avss                                       
+vpre                                       |vpre                                       
+nvpost                                     |nvpost                                     
+nvpre                                      |nvpre                                      
+vpost                                      |vpost                                      
+vb_pot                                     |vb_pot                                     
+vb_itp                                     |vb_itp                                     
+vb_idep                                    |vb_idep                                    
+Iout                                       |iout                                       
+avdd                                       |avdd                                       
+vw                                         |vw                                         
+---------------------------------------------------------------------------------------
 Cell pin lists are equivalent.
 Device classes stdp and stdp are equivalent.
 
-Final result: Netlists do not match.
-Port matching may fail to disambiguate symmetries.
+Final result: Circuits match uniquely.
+.

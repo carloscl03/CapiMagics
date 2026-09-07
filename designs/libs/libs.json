@@ -2,9 +2,21 @@
   "core_analog_unit_nmos": "/foss/designs/libs/core_analog/unit_nmos/unit_nmos.gds",
   "core_analog_ota_5t": "/foss/designs/libs/core_analog/ota_5t/ota_5t.gds",
   "core_analog_unit_pmos": "/foss/designs/libs/core_analog/unit_pmos/unit_pmos.gds",
+  "libs_D14_topcell": "/foss/designs/libs/snn_analog/D14_topcell.gds",
+  "snn_analog_integrator": "/foss/designs/libs/snn_analog/Integrator/integrator.gds",
   "snn_analog_neurona_lvs": "/foss/designs/libs/snn_analog/lif/neurona_lvs.gds",
   "snn_analog_current_mirror": "/foss/designs/libs/snn_analog/current_mirror/current_mirror.gds",
   "snn_analog_encoder": "/foss/designs/libs/snn_analog/Encoder/encoder.gds",
   "snn_analog_stdp": "/foss/designs/libs/snn_analog/stdp/stdp.gds",
-  "snn_analog_Current_limit": "/foss/designs/libs/snn_analog/Current_limit/Current_limit.gds"
+  "snn_analog_Current_limit": "/foss/designs/libs/snn_analog/Current_limit/Current_limit.gds",
+  "gf180_mapped_pnp_10p00x10p00": "/foss/designs/libs/gLayout/src/glayout/pdk/gf180_mapped/bjt/pnp_10p00x10p00.gds",
+  "gf180_mapped_npn_05p00x05p00": "/foss/designs/libs/gLayout/src/glayout/pdk/gf180_mapped/bjt/npn_05p00x05p00.gds",
+  "gf180_mapped_pnp_05p00x05p00": "/foss/designs/libs/gLayout/src/glayout/pdk/gf180_mapped/bjt/pnp_05p00x05p00.gds",
+  "gf180_mapped_npn_10p00x10p00": "/foss/designs/libs/gLayout/src/glayout/pdk/gf180_mapped/bjt/npn_10p00x10p00.gds",
+  "gf180_mapped_npn_00p54x08p00": "/foss/designs/libs/gLayout/src/glayout/pdk/gf180_mapped/bjt/npn_00p54x08p00.gds",
+  "gf180_mapped_npn_00p54x16p00": "/foss/designs/libs/gLayout/src/glayout/pdk/gf180_mapped/bjt/npn_00p54x16p00.gds",
+  "gf180_mapped_npn_00p54x04p00": "/foss/designs/libs/gLayout/src/glayout/pdk/gf180_mapped/bjt/npn_00p54x04p00.gds",
+  "gf180_mapped_npn_00p54x02p00": "/foss/designs/libs/gLayout/src/glayout/pdk/gf180_mapped/bjt/npn_00p54x02p00.gds",
+  "gf180_mapped_pnp_05p00x00p42": "/foss/designs/libs/gLayout/src/glayout/pdk/gf180_mapped/bjt/pnp_05p00x00p42.gds",
+  "gf180_mapped_pnp_10p00x00p42": "/foss/designs/libs/gLayout/src/glayout/pdk/gf180_mapped/bjt/pnp_10p00x00p42.gds"
 }

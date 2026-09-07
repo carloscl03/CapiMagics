@@ -1,6 +1,7 @@
-module stdp_lvs (
-    input  avdd,     // alimentacion
-    input  avss,     // tierra
+(*blackbox*)
+module stdp (
+    inout  avdd,     // alimentacion
+    inout  avss,     // tierra
     input  nvpre,    // pre-sinaptico negado
     input  nvpost,   // post-sinaptico negado
     input  vpre,     // pre-sinaptico
@@ -9,8 +10,8 @@ module stdp_lvs (
     input  vb_idep,  // polarizacion (bias) idep
     input  vb_itp,   // polarizacion (bias) itp
     input  vb_pot,   // polarizacion (bias) potenciacion
-    input  vw,       // peso sinaptico (nodo de almacenamiento)
-    output iout      // corriente de salida
+    output vw,       // peso sinaptico (nodo de almacenamiento)
+    output Iout      // corriente de salida
 );
 
 endmodule

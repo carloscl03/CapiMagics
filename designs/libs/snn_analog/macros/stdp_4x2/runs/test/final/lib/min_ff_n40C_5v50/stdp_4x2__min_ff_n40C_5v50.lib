@@ -1,0 +1,105 @@
+library (stdp_4x2) {
+  comment                        : "";
+  delay_model                    : table_lookup;
+  simulation                     : false;
+  capacitive_load_unit (1,pF);
+  leakage_power_unit             : 1pW;
+  current_unit                   : "1mA";
+  pulling_resistance_unit        : "1ohm";
+  time_unit                      : "1ns";
+  voltage_unit                   : "1v";
+  library_features(report_delay_calculation);
+
+  input_threshold_pct_rise : 50;
+  input_threshold_pct_fall : 50;
+  output_threshold_pct_rise : 50;
+  output_threshold_pct_fall : 50;
+  slew_lower_threshold_pct_rise : 30;
+  slew_lower_threshold_pct_fall : 30;
+  slew_upper_threshold_pct_rise : 70;
+  slew_upper_threshold_pct_fall : 70;
+  slew_derate_from_library : 1.0;
+
+
+  nom_process                    : 1.0;
+  nom_temperature                : -40.0;
+  nom_voltage                    : 5.50;
+
+
+  cell ("stdp_4x2") {
+    is_macro_cell : true;
+    pin("A") {
+      direction : inout;
+      capacitance : 0.1276;
+    }
+    pin("B") {
+      direction : inout;
+      capacitance : 0.1321;
+    }
+    pin("ifwd1") {
+      direction : output;
+      capacitance : 0.0122;
+    }
+    pin("ifwd2") {
+      direction : output;
+      capacitance : 0.0092;
+    }
+    pin("nvpost1") {
+      direction : input;
+      capacitance : 0.0411;
+    }
+    pin("nvpost2") {
+      direction : input;
+      capacitance : 0.0383;
+    }
+    pin("nvpre1") {
+      direction : input;
+      capacitance : 0.0168;
+    }
+    pin("nvpre2") {
+      direction : input;
+      capacitance : 0.0119;
+    }
+    pin("nvpre3") {
+      direction : input;
+      capacitance : 0.0117;
+    }
+    pin("nvpre4") {
+      direction : input;
+      capacitance : 0.0151;
+    }
+    pin("vpost1") {
+      direction : input;
+      capacitance : 0.0182;
+    }
+    pin("vpost2") {
+      direction : input;
+      capacitance : 0.0199;
+    }
+    pin("vpre1") {
+      direction : input;
+      capacitance : 0.0150;
+    }
+    pin("vpre2") {
+      direction : input;
+      capacitance : 0.0122;
+    }
+    pin("vpre3") {
+      direction : input;
+      capacitance : 0.0136;
+    }
+    pin("vpre4") {
+      direction : input;
+      capacitance : 0.0135;
+    }
+    pin("vw11") {
+      direction : inout;
+      capacitance : 0.0750;
+    }
+    pin("vw42") {
+      direction : inout;
+      capacitance : 0.0818;
+    }
+  }
+
+}

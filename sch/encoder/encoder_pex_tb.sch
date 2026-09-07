@@ -29,7 +29,7 @@ node="vin_neg
 vin
 x1.a"}
 B 2 -120 230 680 630 {flags=graph
-y1=-7.9e-12
+y1=-8.5e-12
 y2=4.4e-07
 ypos1=0
 ypos2=2
@@ -47,11 +47,9 @@ unitx=1
 logx=0
 logy=0
 hilight_wave=1
-color="6 11 10 21"
+color="6 11"
 node="i(vmeas)
-i(vmeas2)
-i(vmeas4)
-i(vmeas6)"}
+i(vmeas2)"}
 N 10 -220 60 -220 {lab=#net1}
 N 10 -190 60 -190 {lab=#net2}
 N 10 -160 60 -160 {lab=#net3}
@@ -125,7 +123,7 @@ value="
 .lib $::180MCU_MODELS/smbb000149.ngspice typical
 "}
 C {code_shown.sym} -920 -360 0 0 {name=spice only_toplevel=false value="
-.include /foss/designs/CapiMagics/layout/encoder/encoder.spice 
+.include /foss/designs/CapiMagics/designs/libs/snn_analog/encoder/encoder.spice 
 .tran 0.1u 200u
 .control
  save all

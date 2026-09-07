@@ -1,0 +1,15 @@
+* NGSPICE file created from Current_limit.ext - technology: gf180mcuD
+
+.subckt XM1 a_500_n131# a_n500_n339# w_n886_n560# a_n620_n131#
+X0 a_500_n131# a_n500_n339# a_n620_n131# w_n886_n560# pfet_03v3 ad=0.3p pd=2.2u as=0.3p ps=2.2u w=0.5u l=5u
+.ends
+
+.subckt XM0 a_500_n131# a_n500_n339# w_n886_n560# a_n620_n131#
+X0 a_500_n131# a_n500_n339# a_n620_n131# w_n886_n560# pfet_03v3 ad=0.3p pd=2.2u as=0.3p ps=2.2u w=0.5u l=5u
+.ends
+
+.subckt Current_limit i_SUM ifwd avdd
+XXM1_0 ifwd ifwd avdd XM0_0/a_500_n131# XM1
+XXM0_0 XM0_0/a_500_n131# XM0_0/a_500_n131# avdd i_SUM XM0
+.ends
+

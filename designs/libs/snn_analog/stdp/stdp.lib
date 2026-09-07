@@ -1,0 +1,68 @@
+library (stdp_lib) {
+  delay_model : "table_lookup" ;
+  slew_derate_from_library : 1.0 ;
+  input_threshold_pct_rise : 50.0 ;
+  input_threshold_pct_fall : 50.0 ;
+  output_threshold_pct_rise : 50.0 ;
+  output_threshold_pct_fall : 50.0 ;
+  slew_lower_threshold_pct_rise : 20.0 ;
+  slew_lower_threshold_pct_fall : 20.0 ;
+  slew_upper_threshold_pct_rise : 80.0 ;
+  slew_upper_threshold_pct_fall : 80.0 ;
+  default_leakage_power_density : 0.0 ;
+  default_cell_leakage_power : 0.0 ;
+
+  cell (stdp) {
+    area : 8301.50;
+    pin (avdd) {
+      direction : inout;
+      pg_type : primary_power;
+      capacitance : 0.001;
+    }
+    pin (avss) {
+      direction : inout;
+      pg_type : primary_ground;
+      capacitance : 0.001;
+    }
+    pin (nvpost) {
+      direction : input;
+      capacitance : 0.001;
+    }
+    pin (nvpre) {
+      direction : input;
+      capacitance : 0.001;
+    }
+    pin (vpost) {
+      direction : input;
+      capacitance : 0.001;
+    }
+    pin (vpre) {
+      direction : input;
+      capacitance : 0.001;
+    }
+    pin (vb_idep) {
+      direction : input;
+      capacitance : 0.001;
+    }
+    pin (vb_itd) {
+      direction : input;
+      capacitance : 0.001;
+    }
+    pin (vb_itp) {
+      direction : input;
+      capacitance : 0.001;
+    }
+    pin (vb_pot) {
+      direction : input;
+      capacitance : 0.001;
+    }
+    pin (vw) {
+      direction : input;
+      capacitance : 0.001;
+    }
+    pin (Iout) {
+      direction : output;
+      capacitance : 0.001;
+    }
+  }
+}

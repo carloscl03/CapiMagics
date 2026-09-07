@@ -1,0 +1,614 @@
+*SPEF "ieee 1481-1999"
+*DESIGN "stdp_4x2"
+*DATE "19:56:25 Monday September 07, 2026"
+*VENDOR "The OpenROAD Project"
+*PROGRAM "OpenROAD"
+*VERSION "26Q1-1024-gdcf36133a"
+*DESIGN_FLOW "NAME_SCOPE LOCAL" "PIN_CAP NONE"
+*DIVIDER /
+*DELIMITER :
+*BUS_DELIMITER []
+*T_UNIT 1 NS
+*C_UNIT 1 PF
+*R_UNIT 1 OHM
+*L_UNIT 1 HENRY
+
+*NAME_MAP
+*1 A
+*2 B
+*5 ifwd1
+*6 ifwd2
+*7 nvpost1
+*8 nvpost2
+*9 nvpre1
+*10 nvpre2
+*11 nvpre3
+*12 nvpre4
+*13 vpost1
+*14 vpost2
+*15 vpre1
+*16 vpre2
+*17 vpre3
+*18 vpre4
+*19 vw11
+*20 vw42
+*21 net7
+*22 net8
+*23 x1
+*24 x10
+*25 x2
+*26 x3
+*27 x4
+*28 x5
+*29 x6
+*30 x7
+*31 x8
+*32 x9
+
+*PORTS
+A I
+B I
+ifwd1 O
+ifwd2 O
+nvpost1 I
+nvpost2 I
+nvpre1 I
+nvpre2 I
+nvpre3 I
+nvpre4 I
+vpost1 I
+vpost2 I
+vpre1 I
+vpre2 I
+vpre3 I
+vpre4 I
+vw11 I
+vw42 I
+
+*D_NET *1 0.0594938
+*CONN
+*P A I
+*I *28:vb_itd I *D stdp
+*I *29:vb_itd I *D stdp
+*I *30:vb_itd I *D stdp
+*I *28:vb_pot I *D stdp
+*I *29:vb_pot I *D stdp
+*I *30:vb_pot I *D stdp
+*I *31:vb_pot I *D stdp
+*I *23:vb_pot I *D stdp
+*I *25:vb_pot I *D stdp
+*I *26:vb_pot I *D stdp
+*I *31:vb_itd I *D stdp
+*I *23:vb_itd I *D stdp
+*I *25:vb_itd I *D stdp
+*I *26:vb_itd I *D stdp
+*I *27:vb_itd I *D stdp
+*I *27:vb_pot I *D stdp
+*CAP
+1 A 0.00434251
+2 *28:vb_itd 0.000280531
+3 *29:vb_itd 0.000280531
+4 *30:vb_itd 0.000388428
+5 *28:vb_pot 0.00155006
+6 *29:vb_pot 0.000280531
+7 *30:vb_pot 0.000388428
+8 *31:vb_pot 0.00172736
+9 *23:vb_pot 0.000262379
+10 *25:vb_pot 0.00030211
+11 *26:vb_pot 0.000177933
+12 *31:vb_itd 0.00215172
+13 *23:vb_itd 0.0029046
+14 *25:vb_itd 0.000557558
+15 *26:vb_itd 0.000402923
+16 *27:vb_itd 0.00435975
+17 *27:vb_pot 0.00464463
+18 *1:139 0.00253908
+19 *1:132 0.00271638
+20 *1:48 0.00499087
+21 *1:38 0.00450464
+22 *23:vb_itd *28:vpre 0
+23 *23:vb_pot *28:vpre 8.64658e-05
+24 *26:vb_itd *30:vpre 6.61516e-05
+25 *26:vb_pot *30:vpre 0.000330215
+26 *27:vb_itd *31:vpre 0.000203015
+27 *27:vb_pot *2:9 0
+28 *28:vb_pot *2:185 0.000772262
+29 *28:vb_pot *2:210 0.00561094
+30 *31:vb_itd *31:vpre 0.000392273
+31 *1:38 *31:vpre 0
+32 *1:48 *30:vpre 0
+33 *1:132 *30:vpost 0
+34 *1:132 *31:vb_itp 6.07953e-06
+35 *1:132 *2:144 0.00574318
+36 *1:139 *2:144 0.000772262
+37 *1:139 *2:185 0.00575803
+*RES
+1 A *27:vb_pot 36.99 
+2 *27:vb_pot *27:vb_itd 2.52 
+3 *27:vb_itd *1:38 26.01 
+4 *1:38 *26:vb_itd 6.525 
+5 *1:38 *1:48 16.47 
+6 *1:48 *25:vb_itd 6.525 
+7 *1:48 *23:vb_itd 25.515 
+8 *27:vb_itd *31:vb_itd 28.845 
+9 *26:vb_itd *26:vb_pot 2.52 
+10 *25:vb_itd *25:vb_pot 2.52 
+11 *23:vb_itd *23:vb_pot 2.52 
+12 *31:vb_itd *31:vb_pot 2.34 
+13 *31:vb_pot *1:132 22.41 
+14 *1:132 *30:vb_pot 4.5 
+15 *1:132 *1:139 17.73 
+16 *1:139 *29:vb_pot 4.5 
+17 *1:139 *28:vb_pot 22.05 
+18 *30:vb_pot *30:vb_itd 3.24 
+19 *29:vb_pot *29:vb_itd 2.34 
+20 *28:vb_pot *28:vb_itd 2.34 
+*END
+
+*D_NET *2 0.0642952
+*CONN
+*P B I
+*I *28:vb_idep I *D stdp
+*I *28:vb_itp I *D stdp
+*I *29:vb_idep I *D stdp
+*I *29:vb_itp I *D stdp
+*I *31:vb_idep I *D stdp
+*I *30:vb_idep I *D stdp
+*I *30:vb_itp I *D stdp
+*I *31:vb_itp I *D stdp
+*I *23:vb_itp I *D stdp
+*I *23:vb_idep I *D stdp
+*I *25:vb_itp I *D stdp
+*I *25:vb_idep I *D stdp
+*I *27:vb_idep I *D stdp
+*I *26:vb_idep I *D stdp
+*I *26:vb_itp I *D stdp
+*I *27:vb_itp I *D stdp
+*CAP
+1 B 0.00315983
+2 *28:vb_idep 0.000426192
+3 *28:vb_itp 0.00015645
+4 *29:vb_idep 0.000426192
+5 *29:vb_itp 0.00138571
+6 *31:vb_idep 0.00056107
+7 *30:vb_idep 0.000404612
+8 *30:vb_itp 0.00123343
+9 *31:vb_itp 0.00465113
+10 *23:vb_itp 0.000169549
+11 *23:vb_idep 0.000460451
+12 *25:vb_itp 0
+13 *25:vb_idep 0.000460451
+14 *27:vb_idep 0.00352137
+15 *26:vb_idep 0.000431594
+16 *26:vb_itp 0.00215494
+17 *27:vb_itp 0.000551265
+18 *2:210 0.0018119
+19 *2:185 0.00165962
+20 *2:144 0.00168102
+21 *2:90 0.00277543
+22 *2:83 0.00231776
+23 *2:71 0.00265626
+24 *2:20 0.0026766
+25 *2:9 0.00527337
+26 *31:vb_itp *30:vpost 1.03223e-05
+27 *31:vb_itp *31:nvpre 0.00461588
+28 *27:vb_pot *2:9 0
+29 *28:vb_pot *2:185 0.000772262
+30 *28:vb_pot *2:210 0.00561094
+31 *1:132 *31:vb_itp 6.07953e-06
+32 *1:132 *2:144 0.00574318
+33 *1:139 *2:144 0.000772262
+34 *1:139 *2:185 0.00575803
+*RES
+1 B *2:9 28.575 
+2 *2:9 *27:vb_itp 4.5 
+3 *2:9 *2:20 21.06 
+4 *2:20 *26:vb_itp 1.125 
+5 *2:20 *26:vb_idep 3.735 
+6 *27:vb_itp *27:vb_idep 13.32 
+7 *26:vb_itp *2:71 20.61 
+8 *2:71 *25:vb_idep 8.235 
+9 *2:71 *2:83 1.35 
+10 *2:83 *25:vb_itp 4.5 
+11 *2:83 *2:90 16.83 
+12 *2:90 *23:vb_idep 8.235 
+13 *2:90 *23:vb_itp 5.85 
+14 *27:vb_idep *31:vb_itp 41.9973 
+15 *31:vb_itp *2:144 25.38 
+16 *2:144 *30:vb_itp 1.305 
+17 *2:144 *30:vb_idep 3.375 
+18 *31:vb_itp *31:vb_idep 4.77 
+19 *30:vb_itp *2:185 25.38 
+20 *2:185 *29:vb_itp 1.305 
+21 *2:185 *29:vb_idep 3.555 
+22 *29:vb_itp *2:210 25.56 
+23 *2:210 *28:vb_itp 1.305 
+24 *2:210 *28:vb_idep 3.555 
+*END
+
+*D_NET *5 0.0136096
+*CONN
+*P ifwd1 O
+*I *32:ifwd I *D Current_limit
+*CAP
+1 ifwd1 0.00322824
+2 *32:ifwd 0.00322824
+3 *32:ifwd *7:12 0.00715315
+*RES
+1 ifwd1 *32:ifwd 44.01 
+*END
+
+*D_NET *6 0.0101201
+*CONN
+*P ifwd2 O
+*I *24:ifwd I *D Current_limit
+*CAP
+1 ifwd2 0.0034229
+2 *24:ifwd 0.0034229
+3 *24:ifwd *31:vpost 0.00222317
+4 *24:ifwd *8:16 0.00105112
+*RES
+1 ifwd2 *24:ifwd 44.55 
+*END
+
+*D_NET *7 0.0461104
+*CONN
+*P nvpost1 I
+*I *23:nvpost I *D stdp
+*I *25:nvpost I *D stdp
+*I *26:nvpost I *D stdp
+*I *27:nvpost I *D stdp
+*CAP
+1 nvpost1 0.00298334
+2 *23:nvpost 0.00115965
+3 *25:nvpost 0.00238988
+4 *26:nvpost 0
+5 *27:nvpost 0
+6 *7:19 0.0024772
+7 *7:12 0.00423031
+8 *23:nvpost *23:Iout 0.00566244
+9 *23:nvpost *25:Iout 0.000579311
+10 *23:nvpost *16:9 0
+11 *25:nvpost *25:Iout 0.0055077
+12 *25:nvpost *26:Iout 0.00108606
+13 *7:12 *27:vpost 0.000920295
+14 *7:12 *21:14 0.00511792
+15 *7:19 *26:Iout 0.00557087
+16 *7:19 *21:14 0.00127226
+17 *32:ifwd *7:12 0.00715315
+*RES
+1 nvpost1 *7:12 47.07 
+2 *7:12 *27:nvpost 4.5 
+3 *7:12 *7:19 17.73 
+4 *7:19 *26:nvpost 4.5 
+5 *7:19 *25:nvpost 21.87 
+6 *25:nvpost *23:nvpost 26.55 
+*END
+
+*D_NET *8 0.0425516
+*CONN
+*P nvpost2 I
+*I *28:nvpost I *D stdp
+*I *29:nvpost I *D stdp
+*I *30:nvpost I *D stdp
+*I *31:nvpost I *D stdp
+*CAP
+1 nvpost2 0.00257906
+2 *28:nvpost 0.00111462
+3 *29:nvpost 0
+4 *30:nvpost 0
+5 *31:nvpost 0.00198649
+6 *8:37 0.00225201
+7 *8:30 0.00229419
+8 *8:16 0.00340875
+9 *28:nvpost *28:Iout 0.00563669
+10 *28:nvpost *22:13 0.0014342
+11 *31:nvpost *22:40 0.00483485
+12 *8:16 *22:40 0.00240272
+13 *8:30 *22:6 0.00572834
+14 *8:30 *22:40 0.000614421
+15 *8:37 *22:6 0.00150775
+16 *8:37 *22:13 0.00570642
+17 *24:ifwd *8:16 0.00105112
+*RES
+1 nvpost2 *8:16 47.07 
+2 *8:16 *31:nvpost 16.65 
+3 *31:nvpost *8:30 22.23 
+4 *8:30 *30:nvpost 4.5 
+5 *8:30 *8:37 17.91 
+6 *8:37 *29:nvpost 4.5 
+7 *8:37 *28:nvpost 22.05 
+*END
+
+*D_NET *9 0.0180147
+*CONN
+*P nvpre1 I
+*I *23:nvpre I *D stdp
+*I *28:nvpre I *D stdp
+*CAP
+1 nvpre1 0.00174312
+2 *23:nvpre 0.000474815
+3 *28:nvpre 0
+4 *9:41 0.00425987
+5 *9:17 0.0064778
+6 *23:nvpre *23:vpost 2.56788e-05
+7 *9:17 *23:vpost 0.000130627
+8 *9:17 *23:vpre 0.000126619
+9 *9:17 *28:vpre 0.00239818
+10 *9:41 *28:vpre 0.00237798
+*RES
+1 nvpre1 *9:17 21.1211 
+2 *9:17 *9:41 47.3561 
+3 *9:41 *28:nvpre 4.5 
+4 *9:17 *23:nvpre 8.62393 
+*END
+
+*D_NET *10 0.0126784
+*CONN
+*P nvpre2 I
+*I *29:nvpre I *D stdp
+*I *25:nvpre I *D stdp
+*CAP
+1 nvpre2 0.0021983
+2 *29:nvpre 0.00405222
+3 *25:nvpre 1.57958e-05
+4 *10:21 0.00626632
+5 *25:nvpre *23:vpost 1.64794e-05
+6 *29:nvpre *28:vpost 3.70577e-05
+7 *10:21 *25:Iout 9.22671e-05
+8 *10:21 *29:vpre 0
+*RES
+1 nvpre2 *10:21 29.9506 
+2 *10:21 *25:nvpre 9.11893 
+3 *10:21 *29:nvpre 48.8463 
+*END
+
+*D_NET *11 0.0124762
+*CONN
+*P nvpre3 I
+*I *30:nvpre I *D stdp
+*I *26:nvpre I *D stdp
+*CAP
+1 nvpre3 0.00215706
+2 *30:nvpre 0.00397306
+3 *26:nvpre 8.0304e-05
+4 *11:15 0.00621042
+5 *26:nvpre *25:vpost 1.24068e-05
+6 *30:nvpre *29:vpost 3.90608e-05
+7 *11:15 *26:vpre 3.88777e-06
+*RES
+1 nvpre3 *11:15 20.1862 
+2 *11:15 *26:nvpre 9.53036 
+3 *11:15 *30:nvpre 48.8711 
+*END
+
+*D_NET *12 0.0163188
+*CONN
+*P nvpre4 I
+*I *31:nvpre I *D stdp
+*I *27:nvpre I *D stdp
+*CAP
+1 nvpre4 0.00225994
+2 *31:nvpre 0.00346899
+3 *27:nvpre 0.00572893
+4 *27:nvpre *13:24 0.000245058
+5 *31:vb_itp *31:nvpre 0.00461588
+*RES
+1 nvpre4 *27:nvpre 26.06 
+2 *27:nvpre *31:nvpre 49.8345 
+*END
+
+*D_NET *13 0.0193531
+*CONN
+*P vpost1 I
+*I *23:vpost I *D stdp
+*I *25:vpost I *D stdp
+*I *26:vpost I *D stdp
+*I *27:vpost I *D stdp
+*CAP
+1 vpost1 0.00225112
+2 *23:vpost 0.00231065
+3 *25:vpost 0.00444074
+4 *26:vpost 0
+5 *27:vpost 0.00448866
+6 *13:24 0.00436764
+7 *23:vpost *28:vpre 0.00014375
+8 *23:nvpre *23:vpost 2.56788e-05
+9 *25:nvpre *23:vpost 1.64794e-05
+10 *26:nvpre *25:vpost 1.24068e-05
+11 *27:nvpre *13:24 0.000245058
+12 *7:12 *27:vpost 0.000920295
+13 *9:17 *23:vpost 0.000130627
+*RES
+1 vpost1 *27:vpost 31.23 
+2 *27:vpost *13:24 22.41 
+3 *13:24 *26:vpost 4.5 
+4 *13:24 *25:vpost 21.69 
+5 *25:vpost *23:vpost 27.36 
+*END
+
+*D_NET *14 0.0212872
+*CONN
+*P vpost2 I
+*I *28:vpost I *D stdp
+*I *29:vpost I *D stdp
+*I *30:vpost I *D stdp
+*I *31:vpost I *D stdp
+*CAP
+1 vpost2 0.00248026
+2 *28:vpost 0.00234423
+3 *29:vpost 0.00458579
+4 *30:vpost 0.00466429
+5 *31:vpost 0.00490299
+6 *24:ifwd *31:vpost 0.00222317
+7 *29:nvpre *28:vpost 3.70577e-05
+8 *30:nvpre *29:vpost 3.90608e-05
+9 *31:vb_itp *30:vpost 1.03223e-05
+10 *1:132 *30:vpost 0
+*RES
+1 vpost2 *31:vpost 34.56 
+2 *31:vpost *30:vpost 28.17 
+3 *30:vpost *29:vpost 26.82 
+4 *29:vpost *28:vpost 27.63 
+*END
+
+*D_NET *15 0.0160686
+*CONN
+*P vpre1 I
+*I *28:vpre I *D stdp
+*I *23:vpre I *D stdp
+*CAP
+1 vpre1 0.00205802
+2 *28:vpre 0.00340979
+3 *23:vpre 0.00546781
+4 *23:vpost *28:vpre 0.00014375
+5 *23:vb_itd *28:vpre 0
+6 *23:vb_pot *28:vpre 8.64658e-05
+7 *9:17 *23:vpre 0.000126619
+8 *9:17 *28:vpre 0.00239818
+9 *9:41 *28:vpre 0.00237798
+*RES
+1 vpre1 *23:vpre 25.38 
+2 *23:vpre *28:vpre 35.19 
+*END
+
+*D_NET *16 0.0129576
+*CONN
+*P vpre2 I
+*I *29:vpre I *D stdp
+*I *25:vpre I *D stdp
+*CAP
+1 vpre2 0.00241284
+2 *29:vpre 0.00404362
+3 *25:vpre 2.23398e-05
+4 *16:9 0.00647879
+5 *23:nvpost *16:9 0
+6 *10:21 *29:vpre 0
+*RES
+1 vpre2 *16:9 23.3261 
+2 *16:9 *25:vpre 4.61893 
+3 *16:9 *29:vpre 36.5948 
+*END
+
+*D_NET *17 0.0144407
+*CONN
+*P vpre3 I
+*I *30:vpre I *D stdp
+*I *26:vpre I *D stdp
+*CAP
+1 vpre3 0.00285031
+2 *30:vpre 0.00416991
+3 *26:vpre 0.00702022
+4 *26:vb_itd *30:vpre 6.61516e-05
+5 *26:vb_pot *30:vpre 0.000330215
+6 *1:48 *30:vpre 0
+7 *11:15 *26:vpre 3.88777e-06
+*RES
+1 vpre3 *26:vpre 29.34 
+2 *26:vpre *30:vpre 42.75 
+*END
+
+*D_NET *18 0.0143073
+*CONN
+*P vpre4 I
+*I *31:vpre I *D stdp
+*I *27:vpre I *D stdp
+*CAP
+1 vpre4 0.00293377
+2 *31:vpre 0.00387548
+3 *27:vpre 4.67806e-05
+4 *18:9 0.00685603
+5 *27:vb_itd *31:vpre 0.000203015
+6 *31:vb_itd *31:vpre 0.000392273
+7 *1:38 *31:vpre 0
+*RES
+1 vpre4 *18:9 26.5789 
+2 *18:9 *27:vpre 4.78607 
+3 *18:9 *31:vpre 37.3326 
+*END
+
+*D_NET *19 0.00223392
+*CONN
+*P vw11 I
+*I *23:vw I *D stdp
+*CAP
+1 vw11 0.00111696
+2 *23:vw 0.00111696
+*RES
+1 vw11 *23:vw 21.0343 
+*END
+
+*D_NET *20 0.00979622
+*CONN
+*P vw42 I
+*I *31:vw I *D stdp
+*CAP
+1 vw42 0.00489811
+2 *31:vw 0.00489811
+*RES
+1 vw42 *31:vw 37.4359 
+*END
+
+*D_NET *21 0.0395616
+*CONN
+*I *23:Iout I *D stdp
+*I *25:Iout I *D stdp
+*I *26:Iout I *D stdp
+*I *27:Iout I *D stdp
+*I *32:i_SUM I *D Current_limit
+*CAP
+1 *23:Iout 0.00132455
+2 *25:Iout 0.00241964
+3 *26:Iout 0.00241719
+4 *27:Iout 0.0013221
+5 *32:i_SUM 0.00359467
+6 *21:14 0.00359467
+7 *23:nvpost *23:Iout 0.00566244
+8 *23:nvpost *25:Iout 0.000579311
+9 *25:nvpost *25:Iout 0.0055077
+10 *25:nvpost *26:Iout 0.00108606
+11 *7:12 *21:14 0.00511792
+12 *7:19 *26:Iout 0.00557087
+13 *7:19 *21:14 0.00127226
+14 *10:21 *25:Iout 9.22671e-05
+*RES
+1 *32:i_SUM *21:14 45.72 
+2 *21:14 *27:Iout 4.5 
+3 *27:Iout *26:Iout 27 
+4 *26:Iout *25:Iout 26.19 
+5 *25:Iout *23:Iout 26.55 
+*END
+
+*D_NET *22 0.0406186
+*CONN
+*I *24:i_SUM I *D Current_limit
+*I *28:Iout I *D stdp
+*I *29:Iout I *D stdp
+*I *30:Iout I *D stdp
+*I *31:Iout I *D stdp
+*CAP
+1 *24:i_SUM 0
+2 *28:Iout 0.00131219
+3 *29:Iout 0
+4 *30:Iout 0
+5 *31:Iout 0.00393746
+6 *22:40 0.00278582
+7 *22:13 0.00243915
+8 *22:6 0.0022786
+9 *28:nvpost *28:Iout 0.00563669
+10 *28:nvpost *22:13 0.0014342
+11 *31:nvpost *22:40 0.00483485
+12 *8:16 *22:40 0.00240272
+13 *8:30 *22:6 0.00572834
+14 *8:30 *22:40 0.000614421
+15 *8:37 *22:6 0.00150775
+16 *8:37 *22:13 0.00570642
+*RES
+1 *31:Iout *22:6 22.41 
+2 *22:6 *30:Iout 4.5 
+3 *22:6 *22:13 17.73 
+4 *22:13 *29:Iout 4.5 
+5 *22:13 *28:Iout 22.05 
+6 *31:Iout *22:40 45.9 
+7 *22:40 *24:i_SUM 4.5 
+*END

@@ -45,7 +45,19 @@ else
     python -m ipykernel install --user --name="$ENV_NAME"
 
     # Pip packages
-    pip install glayout
+    #modified to pull latest version of glayout, but using the conda enviroment
+    #seems that conda-forge provides pre-compiled aarch64 binaries for both gdstk and klayout, skipping compilation entirely.
+    #easier way, pre-clone the repository of glayout and modify the code
+    #by alejandro juarez lora
+
+    # pip install glayout
+    if [ -d /foss/designs/${GLAYOUT_PATH}/${GLAYOUT_FOLDER} ]; then
+        echo "gLayout folder found under /foss/designs/${GLAYOUT_PATH}/${GLAYOUT_FOLDER}"
+        pip install -e /foss/designs/${GLAYOUT_PATH}/${GLAYOUT_FOLDER}
+    else
+        echo "gLayout repo not found, please make sure you have cloned it under designs/${GLAYOUT_PATH} foler"
+    fi 
+
     pip install "klayout>=0.28,<0.29"
     pip install svgutils
 

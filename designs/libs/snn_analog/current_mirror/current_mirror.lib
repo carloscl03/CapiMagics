@@ -1,0 +1,30 @@
+library (current_mirror_lib) {
+  slew_derate_from_library : 1.0;
+  slew_lower_threshold_pct_fall : 20.0;
+  slew_upper_threshold_pct_fall : 80.0;
+  slew_lower_threshold_pct_rise : 20.0;
+  slew_upper_threshold_pct_rise : 80.0;
+  input_threshold_pct_fall : 50.0;
+  input_threshold_pct_rise : 50.0;
+  output_threshold_pct_fall : 50.0;
+  output_threshold_pct_rise : 50.0;
+  cell (current_mirror) {
+    area : 2789.81;
+    pin (Avdd) {
+      direction : inout;
+      pg_type : primary_power;
+    }
+    pin (Avss) {
+      direction : inout;
+      pg_type : primary_ground;
+    }
+    pin (B) {
+      direction : output;
+      capacitance : 0.001;
+    }
+    pin (A) {
+      direction : input;
+      capacitance : 0.001;
+    }
+  }
+}

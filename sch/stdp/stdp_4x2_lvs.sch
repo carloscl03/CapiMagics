@@ -38,22 +38,22 @@ N 920 -360 1000 -360 {lab=#net4}
 N 920 400 1000 400 {lab=vw42}
 N 920 150 1000 150 {lab=#net5}
 N 920 -110 1000 -110 {lab=#net6}
-N 465 -300 465 450 {lab=#net7}
+N 465 205 465 455 {lab=#net7}
 N 310 -305 465 -305 {lab=#net7}
-N 465 -305 465 -300 {lab=#net7}
+N 465 -305 465 -55 {lab=#net7}
 N 310 -55 465 -55 {lab=#net7}
 N 310 205 465 205 {lab=#net7}
-N 465 450 465 455 {lab=#net7}
 N 915 455 1075 455 {lab=#net8}
-N 1075 -300 1075 450 {lab=#net8}
+N 1075 205 1075 455 {lab=#net8}
 N 920 -305 1075 -305 {lab=#net8}
-N 1075 -305 1075 -300 {lab=#net8}
+N 1075 -305 1075 -55 {lab=#net8}
 N 920 -55 1075 -55 {lab=#net8}
 N 920 205 1075 205 {lab=#net8}
-N 1075 450 1075 455 {lab=#net8}
 N 310 455 465 455 {lab=#net7}
-N 465 450 465 600 {lab=#net7}
+N 465 455 465 600 {lab=#net7}
 N 1075 455 1075 620 {lab=#net8}
+N 465 -55 465 205 {lab=#net7}
+N 1075 -55 1075 205 {lab=#net8}
 C {stdp/stdp_lvs.sym} 160 -310 0 0 {name=x1}
 C {lab_pin.sym} 10 -340 0 0 {name=p1 sig_type=std_logic lab=vpre1}
 C {lab_pin.sym} 10 -320 0 0 {name=p2 sig_type=std_logic lab=nvpre1}
@@ -186,3 +186,5 @@ C {noconn.sym} 1000 -110 0 1 {name=l3}
 C {noconn.sym} 1000 150 0 1 {name=l4}
 C {noconn.sym} 390 150 0 1 {name=l5}
 C {noconn.sym} 390 400 0 1 {name=l6}
+C {lab_pin.sym} 465 660 0 1 {name=p104 sig_type=std_logic lab=avss}
+C {lab_pin.sym} 1075 680 0 1 {name=p105 sig_type=std_logic lab=avss}
