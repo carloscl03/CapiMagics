@@ -13,7 +13,7 @@ Uso:
     d = design(NeuronSpec(iex_range=(20, 200), freq_range=(200, 1500)))
 
     # con dimensiones ya calculadas por el diseñador
-    d = design(NeuronSpec(W_M5=1.0, freq_range=(500, 500)))
+    d = design(NeuronSpec(W_reset=1.0, freq_range=(500, 500)))
 
     print(d.report())
     if not d.ok:

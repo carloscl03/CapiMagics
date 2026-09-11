@@ -196,9 +196,9 @@ ESPECIFICACIONES = [
     ("2000 kHz",    dict(freq_range=2000, iex_range=100)),
     # el umbral entra en juego y arrastra Cm, o sea el numero de MIM
     ("umbral 2.0V", dict(freq_range=800, iex_range=100, vth=2.0)),
-    # extremo bajo de corriente verificado: saca W_M5 casi al minimo (0.222)
+    # extremo bajo de corriente verificado: saca W_reset casi al minimo (0.222)
     ("Iex 5 nA",    dict(freq_range=300, iex_range=5)),
-    # unica ruta que dimensiona el bufer de salida: W_M7M8 sube y el
+    # unica ruta que dimensiona el bufer de salida: W_buf sube y el
     # inversor de salida cambia de tamaño en el layout
     ("carga 800fF", dict(freq_range=800, iex_range=100, c_load=800)),
 ]

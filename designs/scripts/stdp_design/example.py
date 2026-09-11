@@ -24,8 +24,8 @@ print("=" * 62)
 for a in (0.7, 1.0, 1.4):
     d = design(StdpSpec(tau_us=5.5, asimetria=a))
     if d.ok:
-        print("  A+/A- = %.1f  ->  W4 = %.3f, A- = %s mV"
-              % (a, d.params["W4"], d.predicted["A- por evento [mV]"]))
+        print("  A+/A- = %.1f  ->  W_trrd_dep = %.3f, A- = %s mV"
+              % (a, d.params["W_trrd_dep"], d.predicted["A- por evento [mV]"]))
     else:
         print("  A+/A- = %.1f  ->  %s" % (a, d.errors[0].message))
 

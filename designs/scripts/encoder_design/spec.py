@@ -67,7 +67,7 @@ class EncoderSpec:
                     Vale un factor ~3 en sigma_Vos a especificacion identica.
 
     Dimensiones fijadas (prioridad 2, se ajustan con warning si estorban):
-        Wd, Wl, Ll, L9   [um]
+        W_in, W_load, L_load, L_tail   [um]
 
     Contexto:
         corner      typical | ff | ss | fs | sf
@@ -103,10 +103,10 @@ class EncoderSpec:
     solo_positivas: bool = False   # True: usa solo el canal ON (max 2)
 
     # dimensiones fijadas
-    Wd: float | None = None
-    Wl: float | None = None
-    Ll: float | None = None
-    L9: float | None = None
+    W_in: float | None = None
+    W_load: float | None = None
+    L_load: float | None = None
+    L_tail: float | None = None
 
     # contexto
     corner: str = "typical"
@@ -117,8 +117,8 @@ class EncoderSpec:
 
     def fixed_dims(self) -> dict[str, float]:
         """Las dimensiones que el usuario fijo explicitamente."""
-        return {n: v for n, v in (("Wd", self.Wd), ("Wl", self.Wl),
-                                  ("Ll", self.Ll), ("L9", self.L9))
+        return {n: v for n, v in (("W_in", self.W_in), ("W_load", self.W_load),
+                                  ("L_load", self.L_load), ("L_tail", self.L_tail))
                 if v is not None}
 
     def has_objectives(self) -> bool:

@@ -127,8 +127,8 @@ parámetros con exponentes que no significan nada.
 ## 2b. La etapa diferencial (M1/M2, M3/M4, M9)
 
 Caracterizada con `Vbias` como **entrada** (fuente ideal), no generada por
-M10/M11. Seis parametros: `Wd,Ld` (par M1=M2), `Wl,Ll` (cargas M3=M4),
-`W9,L9` (cola M9). Barrido de `Vbias` 0.40-2.40 V, 41 puntos.
+M10/M11. Seis parametros: `W_in,L_in` (par M1=M2), `W_load,L_load` (cargas M3=M4),
+`W_tail,L_tail` (cola M9). Barrido de `Vbias` 0.40-2.40 V, 41 puntos.
 
 Datos: `dif.npz` (400 geometrias, entrenamiento), `ext_dif.npz` (400 nuevas,
 validacion + condicion desbalanceada), `dif_sweep.csv` (16400 filas legibles).
@@ -183,8 +183,8 @@ asi que la validacion cruzada es fiable aqui y los 21 cruzados no sobreajustan.
 Buscando la direccion de colapso por busqueda global (30000 direcciones +
 refinado, objetivo suave):
 
-    D  <-  (Wd/Ld) / (W9/L9)     el COCIENTE par/cola     signos opuestos
-    A  <-  (Wd/Ld) * (W9/L9)     el PRODUCTO par*cola     mismo signo
+    D  <-  (W_in/L_in) / (W_tail/L_tail)     el COCIENTE par/cola     signos opuestos
+    A  <-  (W_in/L_in) * (W_tail/L_tail)     el PRODUCTO par*cola     mismo signo
 
 Las cargas M3/M4 pesan casi nada en ambas (coeficientes < 0.26 frente a ~1.0).
 Una sola variable explica ~61% de cada una; con dos variables y una superficie
@@ -298,9 +298,9 @@ La ganancia mediana ronda **-0.5 V/V**: la etapa ATENUA. Rango completo 0.017
 a 4.07 V/V (factor 245); algunas geometrias si amplifican.
 
 Colapso de la ganancia, por busqueda global: la variable dominante es
-`(Wl/Ll) / (Wd/Ld)` -- la carga frente al par. Una sola variable explica 36%;
+`(W_load/L_load) / (W_in/L_in)` -- la carga frente al par. Una sola variable explica 36%;
 con dos direcciones sube a 51.4% fuera de muestra, contra 32.0% de los 21
-cruzados. La segunda direccion mezcla `(Wd/Ld)`, `(W9/L9)` y `Vbias`, o sea el
+cruzados. La segunda direccion mezcla `(W_in/L_in)`, `(W_tail/L_tail)` y `Vbias`, o sea el
 punto de operacion. Anadir la densidad de corriente solo suma 4 puntos.
 
 ### Modo comun: importa, y mucho
@@ -531,7 +531,7 @@ medidas, ninguna suficiente por si sola:
 
 Las tres juntas llevan de ±24% a ~±18%. **La cuarta es la que decide**:
 
-    espacio completo (Ld de 0.28 a 20 um, factor 70)      ±19-21%
+    espacio completo (L_in de 0.28 a 20 um, factor 70)      ±19-21%
     entorno x5 del nominal                                ±18-20%
     entorno x3 del nominal                                **±11-12%**
 
@@ -542,7 +542,7 @@ entorno (no filtradas), 5-fold por geometria:
 
 Punto nominal del entorno:
 
-    Wd 0.779   Ld 2.470   Wl 0.952   Ll 1.115   W9 0.912   L9 1.498
+    W_in 0.779   L_in 2.470   W_load 0.952   L_load 1.115   W_tail 0.912   L_tail 1.498
     (espejo fijo Wo=0.93, Lo=1.86; cada parametro entre /3 y x3)
 
 ### Como usar esto
@@ -575,7 +575,7 @@ Caracterizacion final de la salida, que es lo que `NeuronSpec` consume como
 ### Arquitectura de tres bloques, interfaz por TENSION
 
     etapa 1   geometria + Vbias + Vdif  ->  I_rama
-    etapa 2   I_rama + Wl, Ll           ->  V(x)     ±3 mV
+    etapa 2   I_rama + W_load, L_load           ->  V(x)     ±3 mV
     etapa 3   V(x) + Wo, Lo             ->  Iex
 
 Bloques independientes. La etapa 3 se mide aislada (puerta impuesta con fuente
@@ -615,8 +615,8 @@ distintos. Troceando por corriente: ±14%. Por densidad: ±4.4% a densidad alta.
 
 **2. Caracterizar solo la region que sirve al LIF.**
 
-    Wd 0.26-2.2   Ld 1.1-7.3   Wl 0.58-2.9
-    Ll 0.37-1.08  W9 0.30-2.6  L9 0.50-4.5
+    W_in 0.26-2.2   L_in 1.1-7.3   W_load 0.58-2.9
+    L_load 0.37-1.08  W_tail 0.30-2.6  L_tail 0.50-4.5
 
 De 1600 geometrias muestreadas en el espacio amplio, solo **63** entregaban
 5-400 nA. El 96% del esfuerzo caia fuera de lo util.
@@ -934,7 +934,7 @@ El PDK trae modelos de desapareamiento (`fets_mm`, incluido ya por la sección
 `par_vth=0.007148` -> AVT = 7.15 mV·um para el nfet.
 
 Primer frente de Pareto guiado por "agrandar el par de entrada" (área 1.39 a
-6.54 um2, `Wd*Ld` de 0.301 a 4.668 um2, 15.5x). Monte Carlo, 300 tiradas:
+6.54 um2, `W_in*L_in` de 0.301 a 4.668 um2, 15.5x). Monte Carlo, 300 tiradas:
 
     sigma_Vos: 24.8 -> 15.9 mV     mejora 1.71x
     Pelgrom sobre el par de entrada predecía sqrt(15.5) = 3.94x
@@ -955,9 +955,9 @@ V(x)-V(y). `sigma_Vos` de 8.3 a 32.8 mV.
     ajuste 4.8%   externo 5.0%   (la cuadrática no mejora: 4.8%)
 
 Tres lecturas que Pelgrom no da:
-- **`Ll` manda** (-1.023), el doble que cualquier otro. La longitud del par de
+- **`L_load` manda** (-1.023), el doble que cualquier otro. La longitud del par de
   CARGA es la palanca del apareamiento.
-- **`Ld` es POSITIVO** (+0.289): alargar el par de entrada EMPEORA la
+- **`L_in` es POSITIVO** (+0.289): alargar el par de entrada EMPEORA la
   desviación. La desviación referida a la entrada es Delta/gm, y `gm` del par
   cae al alargarlo.
 - **M9 no importa** (+0.026, -0.041): su desapareamiento es modo común.
@@ -1143,11 +1143,11 @@ viabilidad la baja de 7.33% a 4.40%.
 ### 8.1 Colapsar a cocientes NO sirve: reduce cálculos, no variables
 
 Ajustando los seis exponentes de la ganancia por separado salen en +-1/2,
-formando `sqrt((Wd/Ld)/(Wl/Ll))` sin que se les impusiera el cociente -- y M9
+formando `sqrt((W_in/L_in)/(W_load/L_load))` sin que se les impusiera el cociente -- y M9
 sale en 0.02, o sea que la ganancia no depende del transistor de cola. Escrito
 como cociente son 2 coeficientes en vez de 7, con 3.07% en vez de 2.69%.
 
-**Pero eso no reduce variables**: `((Wd/Ld)/(Wl/Ll))` sigue necesitando las
+**Pero eso no reduce variables**: `((W_in/L_in)/(W_load/L_load))` sigue necesitando las
 cuatro. Solo ordena la aritmética, y cuesta 0.4 puntos de precisión. Descartado:
 se queda la forma libre de 7 coeficientes. Lo que se persigue es reducir GRADOS
 DE LIBERTAD, no operaciones.
@@ -1164,13 +1164,13 @@ Cobertura del espacio de `(Iex, G)` alcanzable al clavar dimensiones en su valor
 central, medida sobre 400k geometrías:
 
     fijadas          envolvente    REGIÓN ÚTIL (Iex 20-400 nA, G 0.25-0.55)
-      W9                90.2%          99.5%
-      Ld                85.2%          99.1%
-      Ld + W9           76.1%         100.0%
-      Ld + Ll + W9      61.1%          94.4%
-      Ld+Ll+W9+L9       24.5%          56.9%
+      W_tail                90.2%          99.5%
+      L_in                85.2%          99.1%
+      L_in + W_tail           76.1%         100.0%
+      L_in + L_load + W_tail      61.1%          94.4%
+      L_in+L_load+W_tail+L_tail       24.5%          56.9%
 
-**`Ld` y `W9` se pueden fijar gratis**: pierden el 24% del envolvente entero
+**`L_in` y `W_tail` se pueden fijar gratis**: pierden el 24% del envolvente entero
 pero el 0% de la región que el LIF usa. Toda la pérdida está en los extremos.
 
 (Nota: el razonamiento "la superficie es 2D luego bastan 2 dimensiones" es
@@ -1179,8 +1179,8 @@ región alcanzable: fijar 4 deja el 56.9% de la región útil.)
 
 ### 8.3 Leyes en 4 variables
 
-Barrido propio de 800 geometrías con `Ld = 1.612 um` y `W9 = 0.392 um` fijos,
-variando `Wd, Wl, Ll, L9` (`cuatro.npz`):
+Barrido propio de 800 geometrías con `L_in = 1.612 um` y `W_tail = 0.392 um` fijos,
+variando `W_in, W_load, L_load, L_tail` (`cuatro.npz`):
 
     salida   potencia (5 coef)   cuadrática (15 coef)
     lgIa         6.01%                 0.90%
@@ -1192,7 +1192,7 @@ variando `Wd, Wl, Ll, L9` (`cuatro.npz`):
     lgIb = -5.543 +0.149 lgWd -0.963 lgWl +1.613 lgLl -0.880 lgL9
     lgG  = -0.128 +0.470 lgWd -0.461 lgWl +0.544 lgLl +0.027 lgL9
 
-`L9` sale en 0.027 en la ganancia: con `Ld` y `W9` fijos, **la ganancia depende
+`L_tail` sale en 0.027 en la ganancia: con `L_in` y `W_tail` fijos, **la ganancia depende
 de tres variables**. Segunda confirmación de que la cola no la toca.
 
 Con 4 variables y 15 términos se llega a 0.6-0.9%, donde con 6 variables hacían
@@ -1212,16 +1212,16 @@ Contra 40/40 dentro del +-2% con 6 variables: prácticamente equivalente, con do
 variables menos y **60 coeficientes en vez de 336**. Usando la viabilidad para
 deducir `Iex(-)`, quedan 45.
 
-DECISIÓN: `EncoderSpec` trabaja en 4 variables (`Wd, Wl, Ll, L9`), con `Ld` y
-`W9` fijos a 1.612 y 0.392 um. Los otros dos vuelven a ser libres solo si se
+DECISIÓN: `EncoderSpec` trabaja en 4 variables (`W_in, W_load, L_load, L_tail`), con `L_in` y
+`W_tail` fijos a 1.612 y 0.392 um. Los otros dos vuelven a ser libres solo si se
 piden extremos fuera de la región útil.
 
-### 8.5 A qué valores fijar `Ld` y `W9`
+### 8.5 A qué valores fijar `L_in` y `W_tail`
 
 Rejilla de 5 x 3 valores, midiendo cobertura de la región útil y, para un pedido
 de referencia (100 nA, G=0.35), el área y la `sigma_Vos` alcanzables:
 
-         Ld      W9   cobertura   area min   sigma min   sigma@area min
+         L_in      W_tail   cobertura   area min   sigma min   sigma@area min
        1.05    0.28      95.8%     1.40 um2    11.3 mV       26.1 mV
        1.30    0.28      98.1%     1.49        10.9          26.7
        1.61    0.28      99.5%     1.65        10.1          27.2
@@ -1230,20 +1230,20 @@ de referencia (100 nA, G=0.35), el área y la `sigma_Vos` alcanzables:
        1.61    0.39     100.0%     2.13        10.1          28.1
        2.45    0.50      90.7%     3.63         9.4          24.1
 
-`W9` no aparece ni en la ganancia ni en la desviación: solo cuesta área, así que
+`W_tail` no aparece ni en la ganancia ni en la desviación: solo cuesta área, así que
 conviene pequeño. `V(a)` sale igual en todas las opciones (532-568 mV) y no
 restringe. El frente área/apareamiento se mantiene en 2.6-2.7x al fijar las dos,
 así que la perilla `tradeoff` conserva su recorrido.
 
-**Corrección sobre `Ld`**: la ley de `sigma_Vos` tiene `+0.289 lgLd`, que sugiere
-`Ld` pequeño. Pero eso es una derivada parcial, con todo lo demás quieto. A
+**Corrección sobre `L_in`**: la ley de `sigma_Vos` tiene `+0.289 lgLd`, que sugiere
+`L_in` pequeño. Pero eso es una derivada parcial, con todo lo demás quieto. A
 ESPECIFICACIÓN CONSTANTE las otras variables se reacomodan y el efecto se
-invierte (11.3 -> 9.6 mV al subir `Ld`), aunque solo un 5%.
+invierte (11.3 -> 9.6 mV al subir `L_in`), aunque solo un 5%.
 
-    ELEGIDOS:  Ld = 1.60 um    W9 = 0.30 um
+    ELEGIDOS:  L_in = 1.60 um    W_tail = 0.30 um
 
 23% menos área que el 1.61/0.39 inicial, con la misma cobertura y el mismo
-margen de saturación. `W9 = 0.30` queda un escalón dentro del borde de la caja
+margen de saturación. `W_tail = 0.30` queda un escalón dentro del borde de la caja
 (cuyo mínimo, 0.28, es nuestro, no del proceso: el PDK admite 0.22).
 
 Barrido de confirmación (800 geometrías, `cinco.npz`), cuadrática de 15
@@ -1261,21 +1261,21 @@ término independiente con un barrido pequeño.
 
 ### 8.6 CORRECCIÓN: el suelo de la caja era un artefacto (2026-09-01)
 
-Al preguntar de dónde salía `W9 = 0.30` apareció que el suelo de 0.28 de la caja
+Al preguntar de dónde salía `W_tail = 0.30` apareció que el suelo de 0.28 de la caja
 **no era del proceso ni del circuito, era un artefacto de cómo derivé la caja**.
-Se ve porque `Wd` sí bajaba a 0.260. Datos del PDK: `wmin = 0.22`,
+Se ve porque `W_in` sí bajaba a 0.260. Datos del PDK: `wmin = 0.22`,
 `lmin = 0.28`. (Nota: los `0.28u` del circuito original del equipo son LARGOS al
 `lmin`, no anchos recortados por gLayout.)
 
-**`W9` más pequeño mejora `V(a)` en vez de empeorarlo** (393 mV a 0.22 contra
+**`W_tail` más pequeño mejora `V(a)` en vez de empeorarlo** (393 mV a 0.22 contra
 358 a 0.30): menos ancho es menos corriente de cola, el par de entrada necesita
 menos `Vgs` y el nodo `a` se sienta más alto. El ahorro es del 8% del bloque
-(M9 pasa de 0.514 a 0.377 um2, pero el total ronda 1.6). Elegido `W9 = 0.26`:
+(M9 pasa de 0.514 a 0.377 um2, pero el total ronda 1.6). Elegido `W_tail = 0.26`:
 casi todo el beneficio sin sentarse en el mínimo absoluto del proceso.
 
 Revisados los demás suelos, los diseños de área mínima se salían siempre por
-`Wl` (a 0.31-0.34, suelo 0.55) y `Ll` (a 0.29-0.39, suelo 0.37) -- las dos
-palancas fuertes de la corriente (-0.95 y +1.64). `Wd` y `L9` se quedaban
+`W_load` (a 0.31-0.34, suelo 0.55) y `L_load` (a 0.29-0.39, suelo 0.37) -- las dos
+palancas fuertes de la corriente (-0.95 y +1.64). `W_in` y `L_tail` se quedaban
 dentro. Ampliando solo esos dos bordes se captura TODO el ahorro (1.38 um2
 contra 1.37 de la extensión completa).
 
@@ -1292,9 +1292,9 @@ original, y con 26% menos área. No hay que elegir.
 
 **CONFIGURACIÓN FINAL de EncoderSpec**
 
-    fijos     Ld = 1.60 um     W9 = 0.26 um
-    libres    Wd  0.26 - 1.80      Wl  0.30 - 2.70
-              Ll  0.28 - 0.62      L9  0.80 - 3.78
+    fijos     L_in = 1.60 um     W_tail = 0.26 um
+    libres    W_in  0.26 - 1.80      W_load  0.30 - 2.70
+              L_load  0.28 - 0.62      L_tail  0.80 - 3.78
     leyes     cúbica en 4 variables, 35 términos por salida
               lgIa 0.65%  lgIb 0.58%  lgG 0.26%  va 0.12%
     barrido   `siete.npz` (800 geometrías)
@@ -1343,13 +1343,13 @@ igualan (0.65% y 0.58%) y decide la viabilidad.)
     lg sigma_Vos = -2.231 -0.436 lgWd -0.026 lgWl -1.068 lgLl -0.028 lgL9
                                     externo 5.6% (potencia) / 4.2% (cuadrática)
 
-Depende solo de **`Wd` y `Ll`**; `Wl` y `L9` están en 0.026 y 0.028.
+Depende solo de **`W_in` y `L_load`**; `W_load` y `L_tail` están en 0.026 y 0.028.
 
 ### 8.8 Comprobación cruzada: las dos leyes se reproducen
 
 Las versiones nueva y vieja salen de barridos INDEPENDIENTES (`caja.npz` con 6
-dimensiones libres; `siete.npz`/`mcley7.npz` con 4, en otra caja y con `Ld` y
-`W9` en otros valores). Coinciden:
+dimensiones libres; `siete.npz`/`mcley7.npz` con 4, en otra caja y con `L_in` y
+`W_tail` en otros valores). Coinciden:
 
     viabilidad, sobre los 4 pedidos imposibles históricos:
        60-180 G=0.35   nueva 207.4 nA   vieja 208.0 nA
@@ -1525,18 +1525,18 @@ alcanzar el objetivo, SE LIBERA, con WARNING y cadena causal.
 
 Orden de liberacion por coste de cambio, deducido de las leyes medidas:
 
-    1. L9   no interviene en ganancia (exp 0.03) ni en desapareamiento (0.03),
+    1. L_tail   no interviene en ganancia (exp 0.03) ni en desapareamiento (0.03),
             y no es un par apareado
-    2. Wl   mueve la ganancia pero NO el desapareamiento (exp 0.03)
-    3. Ll   mueve la ganancia Y domina el desapareamiento (exp -1.07)
-    4. Wd   par apareado de entrada: ganancia, desapareamiento y layout
+    2. W_load   mueve la ganancia pero NO el desapareamiento (exp 0.03)
+    3. L_load   mueve la ganancia Y domina el desapareamiento (exp -1.07)
+    4. W_in   par apareado de entrada: ganancia, desapareamiento y layout
 
 Verificado:
 
     fijada y no estorba          -> se respeta, sin avisos
     fijada y estorba             -> liberada, cadena "85.3 % -> 0.1 %"
-    las cuatro fijadas           -> libera L9 (90.8->41.0 %) y Wl (->0.2 %),
-                                    PARA, y deja Wd y Ll como el usuario las puso
+    las cuatro fijadas           -> libera L_tail (90.8->41.0 %) y W_load (->0.2 %),
+                                    PARA, y deja W_in y L_load como el usuario las puso
     objetivo inalcanzable        -> ERROR con lo mas cercano en ambos objetivos
 
 Se libera solo lo necesario y se para al entrar en tolerancia.
@@ -1607,8 +1607,8 @@ La primera version del motor usaba como nominal el centro geometrico de la caja
 neurona no es asi: son las dimensiones de `sch/lif/neurona_input_current.sch`,
 simuladas, y sus leyes las predicen al -1.4 %.
 
-La celda original del equipo NO puede servir de nominal: tiene `Ld = 10 um`,
-muy fuera del `Ld = 1.60` que fijamos.
+La celda original del equipo NO puede servir de nominal: tiene `L_in = 10 um`,
+muy fuera del `L_in = 1.60` que fijamos.
 
 Asi que se define uno y se SIMULA.
 
@@ -1625,7 +1625,7 @@ medida: lejos de los bordes de la caja.
 Buscado CON EL PROPIO MOTOR: la peticion cuya solucion cae mas adentro es
 `iex_min=80, gain=0.40, tradeoff=0.5`, con los cuatro ejes al 43-53 % del borde.
 
-    NOMINAL = Wd 0.725  Wl 0.947  Ll 0.394  L9 1.811   (Ld 1.60, W9 0.26)
+    NOMINAL = W_in 0.725  W_load 0.947  L_load 0.394  L_tail 1.811   (L_in 1.60, W_tail 0.26)
 
 ### 12.1 Tabla de validacion, al estilo de la del LIF
 
@@ -1637,12 +1637,12 @@ Buscado CON EL PROPIO MOTOR: la peticion cuya solucion cae mas adentro es
 Peor error: 2.7 %. La del LIF tiene 2.5 %.
 
 **El criterio se verifica solo**: el nominal interior es el que mejor valida
-(0.5 %) y `lento`, el peor (2.7 %), es precisamente el que tiene `Ll = 0.280`,
+(0.5 %) y `lento`, el peor (2.7 %), es precisamente el que tiene `L_load = 0.280`,
 pegado al borde de la caja.
 
 ### 12.2 La celda original del equipo, simulada
 
-    Wd=0.5  Ld=10  Wl=2  Ll=0.28  Wb=0.5  Lb=0.28
+    W_in=0.5  L_in=10  W_load=2  L_load=0.28  Wb=0.5  Lb=0.28
        ->  40.0 / 56.0 nA     G = 0.075     V(a) = 41 mV
 
 Tres problemas a la vez:
@@ -1669,7 +1669,7 @@ la caja, esos numeros dejan de ser el punto mas comodo y nadie se entera.
 Lo que se guarda es EL CRITERIO:
 
     NOMINAL_SPEC = {"iex_min": 80.0, "gain": 0.40, "tradeoff": 0.5}
-    nominal()  ->  {'Wd': 0.725, 'Wl': 0.947, 'Ll': 0.394, 'L9': 1.811}
+    nominal()  ->  {'W_in': 0.725, 'W_load': 0.947, 'L_load': 0.394, 'L_tail': 1.811}
 
 `nominal()` resuelve esa peticion con el propio motor y cachea el resultado. La
 validacion en ngspice se anota como comentario, con la fecha y la version de las
@@ -1698,11 +1698,11 @@ fuente compartida se suman todas las puertas y sale la capacidad total):
                                      externo 0.73 % con solo 5 coeficientes
                                      (la cuadratica de 15 da 0.45 %)
 
-**Depende casi solo de `Wd`**, con exponente 0.934 -- cerca de 1, como
-corresponde a una capacidad de puerta proporcional al ancho con `Ld` fijo.
-`Wl` y `Ll` estan en 0.01: no intervienen.
+**Depende casi solo de `W_in`**, con exponente 0.934 -- cerca de 1, como
+corresponde a una capacidad de puerta proporcional al ancho con `L_in` fijo.
+`W_load` y `L_load` estan en 0.01: no intervienen.
 
-El 0.934 en vez de 1.0, y el termino de `L9` (-0.09), son el efecto Miller:
+El 0.934 en vez de 1.0, y el termino de `L_tail` (-0.09), son el efecto Miller:
 `Cgd` se multiplica por (1 + ganancia), y la ganancia si depende de las otras
 dimensiones.
 
@@ -1713,8 +1713,8 @@ dimensiones.
     el LIF puede mover hasta                132.00 fF
 
 `EncoderSpec` acepta `c_in_max` y avisa si se pasa. La cota rara vez mordera:
-bajar `C_in` exige reducir `Wd`, que es justo lo que se paga en apareamiento
-(`sigma_Vos` va con `Wd^-0.44`).
+bajar `C_in` exige reducir `W_in`, que es justo lo que se paga en apareamiento
+(`sigma_Vos` va con `W_in^-0.44`).
 
 ## 14. Competicion de formas: por que 35 terminos y no menos (2026-09-02)
 
@@ -1722,17 +1722,17 @@ Las leyes del encoder mapean 4 dimensiones a un escalar, asi que la competicion
 no es entre familias de curvas (como en el integrador) sino entre FORMAS: bases
 con distinto grado maximo por variable.
 
-    forma (grado por Wd, Wl, Ll, L9)   terminos   Iex(-)   Iex(+)   ganancia
+    forma (grado por W_in, W_load, L_load, L_tail)   terminos   Iex(-)   Iex(+)   ganancia
     potencia pura        (1,1,1,1)            5   12.73%    8.60%    3.51%
     cuadratica completa  (2,2,2,2)           15    2.98%    2.50%    0.77%
-    cubica solo en Ll    (1,1,3,1)           20    3.92%    1.16%    1.18%
-    cubica en Ll y L9    (1,1,3,3)           25    3.27%    0.87%    1.14%
-    cubica Ll + cuad     (2,2,3,2)           32    0.95%    0.82%    0.46%
+    cubica solo en L_load    (1,1,3,1)           20    3.92%    1.16%    1.18%
+    cubica en L_load y L_tail    (1,1,3,3)           25    3.27%    0.87%    1.14%
+    cubica L_load + cuad     (2,2,3,2)           32    0.95%    0.82%    0.46%
     cubica completa      (3,3,3,3)           35    0.65%    0.58%    0.26%
 
-`Ll` es la unica que necesita grado alto -- coherente con el ranking de terminos,
-donde `Ll^3`, `Ll^2` y `Ll` entran de los primeros. Pero limitar el grado alto a
-`Ll` no gana a la cuadratica completa salvo en `Iex(+)`.
+`L_load` es la unica que necesita grado alto -- coherente con el ranking de terminos,
+donde `L_load^3`, `L_load^2` y `L_load` entran de los primeros. Pero limitar el grado alto a
+`L_load` no gana a la cuadratica completa salvo en `Iex(+)`.
 
 **Con el liston de 95 % de precision, la cuadratica de 15 terminos parece bastar
 (2.98 / 2.50 / 0.77 %). No basta.** El lazo cerrado sobre los mismos 25 pedidos:
@@ -1886,12 +1886,12 @@ ancho de la caja, simuladas -- `siete.npz` es muestreo aleatorio y no tiene
 rodajas):
 
            recorre     recta   parabola    cubica
-    Wd     0.38 dec     7.8 %     0.4 %     0.3 %
-    Wl     0.79         2.5 %     1.1 %     0.3 %
-    Ll     0.93        35   %     6.5 %     0.7 %
-    L9     1.05         5.6 %     1.4 %     0.5 %
+    W_in     0.38 dec     7.8 %     0.4 %     0.3 %
+    W_load     0.79         2.5 %     1.1 %     0.3 %
+    L_load     0.93        35   %     6.5 %     0.7 %
+    L_tail     1.05         5.6 %     1.4 %     0.5 %
 
-Ninguna pide mas de 3-4 numeros. `Ll` es la unica de verdad curvada; las otras
+Ninguna pide mas de 3-4 numeros. `L_load` es la unica de verdad curvada; las otras
 tres son casi rectas en log-log.
 
 ### 16.2 Lo que cuesta son los CRUCES, no la curvatura
@@ -1923,24 +1923,24 @@ eso deberia factorizar. Probado, y no.
     familia                                 coef   externo
     cubica completa (referencia)              35     0.68 %
     cuadratica completa                       15     2.97 %
-    P3(Ll) x lineal(Wd,Wl,L9)                 16     6.78 %
-    P3(Ll) x [lineal+cruces](Wd,Wl,L9)        28     4.15 %
-    P3(Ll)xlin + P2(L9)xlin(Wd,Wl)            22     3.83 %
-    P3(Ll)P2(L9) x lineal(Wd,Wl)              36     3.47 %   <- MAS coef, peor
-    RANGO 1:  f(Ll) * g(Wd,Wl,L9)              7     6.94 %
+    P3(L_load) x lineal(W_in,W_load,L_tail)                 16     6.78 %
+    P3(L_load) x [lineal+cruces](W_in,W_load,L_tail)        28     4.15 %
+    P3(L_load)xlin + P2(L_tail)xlin(W_in,W_load)            22     3.83 %
+    P3(L_load)P2(L_tail) x lineal(W_in,W_load)              36     3.47 %   <- MAS coef, peor
+    RANGO 1:  f(L_load) * g(W_in,W_load,L_tail)              7     6.94 %
 
-Y no es que `Ll` fuera la variable equivocada -- probadas las cuatro como eje de
-factorizacion (`P3(v) x lineal(resto)`, 13 coef): Wd 9.95 %, Wl 10.92 %,
-Ll 6.81 %, L9 9.33 %.
+Y no es que `L_load` fuera la variable equivocada -- probadas las cuatro como eje de
+factorizacion (`P3(v) x lineal(resto)`, 13 coef): W_in 9.95 %, W_load 10.92 %,
+L_load 6.81 %, L_tail 9.33 %.
 
 ### 16.4 Por que no factoriza: las interacciones son SUPERADITIVAS
 
 Partiendo de la aditiva (13 coef, 6.59 %) y añadiendo los cruces de UNA pareja,
 reajustando todo:
 
-    Wd x L9   -> 4.73 %  (gana 1.86)      Wd x Wl  -> 6.53 %  (gana 0.06)
-    Wl x L9   -> 5.86 %  (gana 0.73)      Wd x Ll  -> 6.52 %  (gana 0.07)
-    Ll x L9   -> 5.97 %  (gana 0.62)      Wl x Ll  -> 6.57 %  (gana 0.01)
+    W_in x L_tail   -> 4.73 %  (gana 1.86)      W_in x W_load  -> 6.53 %  (gana 0.06)
+    W_load x L_tail   -> 5.86 %  (gana 0.73)      W_in x L_load  -> 6.52 %  (gana 0.07)
+    L_load x L_tail   -> 5.97 %  (gana 0.62)      W_load x L_load  -> 6.57 %  (gana 0.01)
                                           suma de las seis = 3.35
     TODAS a la vez (31 coef)  -> 1.05 %   (gana 5.54)
     + los triples   (35 coef) -> 0.68 %
@@ -1973,25 +1973,25 @@ ortogonal, `-1` inversa.
 
 ```
   dim      Iex-       G     Iex+    C_in    area    sVos    V(a)     r_o
-  Wd      -0.47   +0.45   +0.14   +0.93   +0.49   -0.44   +0.14   +0.38
-  Wl      -0.87   -0.44   -0.99      ~0   +0.31   -0.03      ~0   +0.70
-  Ll      +2.51   +0.53   +2.16      ~0   +0.31   -1.07      ~0   -2.03
-  L9      -1.61   +0.02   -1.03   -0.09   +0.20   -0.03   +0.17   +1.30
+  W_in      -0.47   +0.45   +0.14   +0.93   +0.49   -0.44   +0.14   +0.38
+  W_load      -0.87   -0.44   -0.99      ~0   +0.31   -0.03      ~0   +0.70
+  L_load      +2.51   +0.53   +2.16      ~0   +0.31   -1.07      ~0   -2.03
+  L_tail      -1.61   +0.02   -1.03   -0.09   +0.20   -0.03   +0.17   +1.30
 ```
 
 Cuatro lecturas que no estaban documentadas:
 
-**`L9` es ortogonal a la ganancia** (+0.02) y mueve `Iex-` un -1.61. Es la
+**`L_tail` es ortogonal a la ganancia** (+0.02) y mueve `Iex-` un -1.61. Es la
 perilla limpia para desplazar corriente sin tocar ganancia.
 
-**`C_in` lo controla SOLO `Wd`** (+0.93, casi proporcional; las otras tres a
+**`C_in` lo controla SOLO `W_in`** (+0.93, casi proporcional; las otras tres a
 ~0). Como `C_in` es lo que la neurona tiene que mover, el acoplo con el bloque
 vecino depende de una sola dimension.
 
-**El desapareo lo fijan `Wd` y `Ll`** (-0.44 y -1.07). `Wl` y `L9` no lo notan.
+**El desapareo lo fijan `W_in` y `L_load`** (-0.44 y -1.07). `W_load` y `L_tail` no lo notan.
 
 **Ninguna es ortogonal a `r_o`** (+0.38, +0.70, -2.03, +1.30). La impedancia de
-salida esta acoplada a todo, y `Ll` -- que es la perilla dominante de corriente
+salida esta acoplada a todo, y `L_load` -- que es la perilla dominante de corriente
 (+2.51) -- la empeora (-2.03). La tension de `source_ro` que arrastramos es
 ESTRUCTURAL, no un caso particular.
 

@@ -1,7 +1,7 @@
 """Resolucion por capas: intencion -> parametros.
 
 El sistema NO es "spec -> parametros" sino un sistema de restricciones
-parcialmente fijadas. W, L, Cm y W_M7M8 pueden venir dados o quedar libres, y
+parcialmente fijadas. W, L, Cm y W_buf pueden venir dados o quedar libres, y
 se resuelve solo lo libre.
 
 Tres regimenes:
@@ -12,9 +12,9 @@ Tres regimenes:
 
 Orden de ajuste cuando hay que tocar algo fijado, por coste de cambio:
   1. Cm      solo un capacitor
-  2. L_M5    transistor largo
-  3. W_M5    afecta mas al layout
-W_M7M8 queda fuera de la cadena: depende solo del fan-out y no compite con la
+  2. L_reset    transistor largo
+  3. W_reset    afecta mas al layout
+W_buf queda fuera de la cadena: depende solo del fan-out y no compite con la
 frecuencia ni el threshold (la carga no afecta a f, <0.7%).
 """
 from __future__ import annotations
@@ -33,13 +33,13 @@ from .spec import NeuronDesign, NeuronSpec, Severity
 # Se guarda como REFERENCIA para comparar, no como punto de partida: se
 # dimensiono antes de que existiera esta caracterizacion, y el equipo
 # todavia no la tiene.
-CELDA_EQUIPO = {"W_M5": 2.3, "L_M5": 50.0, "Cm": 280.0, "W_M7M8": 0.5}
+CELDA_EQUIPO = {"W_reset": 2.3, "L_reset": 50.0, "Cm": 280.0, "W_buf": 0.5}
 #
 # NOMINAL es EL NUESTRO, derivado de NOMINAL_SPEC con los limites que
 # SI estan medidos:
 #     F_MAX = 4500 kHz   el reset no completa (periodo ~215 ns)
-#     L_M5 >= 25 um      por debajo el error de la ley sube a 5-7 pct
-#     W_M5 <= 3.5 um     a 4.0 um el Vm_min se va a -0.058 V
+#     L_reset >= 25 um      por debajo el error de la ley sube a 5-7 pct
+#     W_reset <= 3.5 um     a 4.0 um el Vm_min se va a -0.058 V
 #
 # Criterio: la MENOR AREA que cumple, con 2.5x de margen a F_MAX y
 # L >= 30 para no disenar pegado a la frontera de precision. Ese
@@ -50,7 +50,7 @@ CELDA_EQUIPO = {"W_M5": 2.3, "L_M5": 50.0, "Cm": 280.0, "W_M7M8": 0.5}
 #     equipo    W=2.300 L=50.0  ->  area 115.0 um2, banda 205-734 kHz
 #     -> 2.45x menos area, con 2.5x de margen a F_MAX en vez de 6.1x
 NOMINAL_SPEC = {"iex_range": (80.0, 286.5), "freq_range": (503.0, 1800.0)}
-NOMINAL = {"W_M5": 1.351, "L_M5": 35.4, "Cm": 178, "W_M7M8": 0.22}
+NOMINAL = {"W_reset": 1.351, "L_reset": 35.4, "Cm": 178, "W_buf": 0.22}
 
 
 def _clamp(v: float, lo: float, hi: float) -> tuple[float, bool]:
@@ -84,8 +84,8 @@ def design(spec: NeuronSpec) -> NeuronDesign:
     # ---- capa 3: buffer de salida (independiente) ------------------------
     w78 = _solve_buffer(spec, d)
 
-    d.params = {"W_M5": round(W, 3), "L_M5": round(Lg, 2),
-                "Cm": round(Cm, 1), "W_M7M8": round(w78, 3)}
+    d.params = {"W_reset": round(W, 3), "L_reset": round(Lg, 2),
+                "Cm": round(Cm, 1), "W_buf": round(w78, 3)}
 
     # ---- capa 4: validacion y prediccion ---------------------------------
     _validate(d, W, Lg, Cm, spec)
@@ -96,7 +96,7 @@ def design(spec: NeuronSpec) -> NeuronDesign:
 # --------------------------------------------------------------------------
 def _solve_geometry(spec: NeuronSpec, d: NeuronDesign) -> tuple[float, float]:
     """(W, L) desde el objetivo de frecuencia, respetando lo que este fijo."""
-    W, Lg = spec.W_M5, spec.L_M5
+    W, Lg = spec.W_reset, spec.L_reset
 
     # que frecuencia se persigue, y a que corriente
     f_target = iex_at = None
@@ -122,8 +122,8 @@ def _solve_geometry(spec: NeuronSpec, d: NeuronDesign) -> tuple[float, float]:
 
     if f_target is None:
         # sin objetivo de frecuencia: completar lo que falte con el nominal
-        return (W if W is not None else NOMINAL["W_M5"],
-                Lg if Lg is not None else NOMINAL["L_M5"])
+        return (W if W is not None else NOMINAL["W_reset"],
+                Lg if Lg is not None else NOMINAL["L_reset"])
 
     # F_MAX es un limite medido, no de las leyes: sobre el, el reset no llega a
     # completarse y la celda deja de disparar como predice la ley. Las leyes
@@ -153,7 +153,7 @@ def _solve_geometry(spec: NeuronSpec, d: NeuronDesign) -> tuple[float, float]:
             w_new = L.solve_W_for_freq(Lg, f_target, iex_at)
             w_new, hit_w = _clamp(w_new, L.W_MIN, L.W_MAX)
             if not hit_w:
-                d.add(Severity.WARNING, "W_M5",
+                d.add(Severity.WARNING, "W_reset",
                       f"cambiada de {W} a {w_new:.3f} um para alcanzar "
                       f"{f_target:.0f} kHz",
                       f"con W={W} fija habria hecho falta L="
@@ -176,7 +176,7 @@ def _solve_geometry(spec: NeuronSpec, d: NeuronDesign) -> tuple[float, float]:
             l_new = L.solve_L_for_freq(W, f_target, iex_at)
             l_new, hit_l = _clamp(l_new, L.L_MIN, L.L_MAX)
             if not hit_l:
-                d.add(Severity.WARNING, "L_M5",
+                d.add(Severity.WARNING, "L_reset",
                       f"cambiada de {Lg} a {l_new:.1f} um para alcanzar "
                       f"{f_target:.0f} kHz",
                       f"con L={Lg} fija habria hecho falta W fuera del rango "
@@ -235,7 +235,7 @@ def _pick_by_margin(d: NeuronDesign, f_target: float, iex_at: float,
             Lg = L.L_MIN + (L.L_MAX - L.L_MIN) * i / steps
             W = L.solve_W_for_freq(Lg, f_target, iex_at)
             if L.W_MIN <= W <= L.W_MAX:
-                d.add(Severity.WARNING, "L_M5",
+                d.add(Severity.WARNING, "L_reset",
                       f"L={Lg:.1f} um esta bajo {L.L_PRECISE_MIN} um: el error "
                       "de la ley de frecuencia sube de ~1% a 5-7%")
                 return W, Lg
@@ -251,7 +251,7 @@ def _pick_by_margin(d: NeuronDesign, f_target: float, iex_at: float,
               f"{f_target:.0f} kHz a {iex_at:.0f} nA no es alcanzable",
               f"rango posible a esa corriente: {fmin:.0f} - {fmax:.0f} kHz"
               + extra)
-        return NOMINAL["W_M5"], NOMINAL["L_M5"]
+        return NOMINAL["W_reset"], NOMINAL["L_reset"]
     d.add(Severity.INFO, "geometria",
           f"W={best[0]:.3f} L={best[1]:.1f} elegidas por margen de validez "
           "(habia una familia de soluciones sobre la curva de iso-frecuencia)")
@@ -265,15 +265,15 @@ def _resolve_freq_conflict(spec: NeuronSpec, d: NeuronDesign, W: float,
     opts = []
     l_need = L.solve_L_for_freq(W, f_target, iex_at)
     if L.L_MIN <= l_need <= L.L_MAX:
-        opts.append(f"liberar L_M5 -> L={l_need:.1f} um")
+        opts.append(f"liberar L_reset -> L={l_need:.1f} um")
     else:
-        opts.append(f"liberar L_M5 -> exigiria L={l_need:.1f} um (fuera de "
+        opts.append(f"liberar L_reset -> exigiria L={l_need:.1f} um (fuera de "
                     f"{L.L_MIN}-{L.L_MAX})")
     w_need = L.solve_W_for_freq(Lg, f_target, iex_at)
     if L.W_MIN <= w_need <= L.W_MAX:
-        opts.append(f"liberar W_M5 -> W={w_need:.3f} um")
+        opts.append(f"liberar W_reset -> W={w_need:.3f} um")
     else:
-        opts.append(f"liberar W_M5 -> exigiria W={w_need:.3f} um (fuera de "
+        opts.append(f"liberar W_reset -> exigiria W={w_need:.3f} um (fuera de "
                     f"{L.W_MIN}-{L.W_MAX})")
     d.add(Severity.WARNING, "frecuencia",
           f"W={W} y L={Lg} fijas dan {f_real:.0f} kHz, no {f_target:.0f}. "
@@ -284,19 +284,19 @@ def _resolve_freq_conflict(spec: NeuronSpec, d: NeuronDesign, W: float,
 def _adjusted_geometry(spec: NeuronSpec, d: NeuronDesign, f_target: float,
                        iex_at: float) -> tuple[float, float]:
     """Ajusta la geometria priorizando el objetivo, tocando L antes que W."""
-    W = spec.W_M5
+    W = spec.W_reset
     l_need = L.solve_L_for_freq(W, f_target, iex_at)
     if L.L_MIN <= l_need <= L.L_MAX:
-        d.add(Severity.WARNING, "L_M5",
-              f"cambiada de {spec.L_M5} a {l_need:.1f} um para alcanzar "
+        d.add(Severity.WARNING, "L_reset",
+              f"cambiada de {spec.L_reset} a {l_need:.1f} um para alcanzar "
               f"{f_target:.0f} kHz")
         return W, l_need
     # L no alcanza: tocar W tambien
     Lg, _ = _clamp(l_need, L.L_MIN, L.L_MAX)
     w_need = L.solve_W_for_freq(Lg, f_target, iex_at)
     w_need, hit = _clamp(w_need, L.W_MIN, L.W_MAX)
-    d.add(Severity.WARNING, "W_M5",
-          f"cambiada de {spec.W_M5} a {w_need:.3f} um; L_M5 tambien a "
+    d.add(Severity.WARNING, "W_reset",
+          f"cambiada de {spec.W_reset} a {w_need:.3f} um; L_reset tambien a "
           f"{Lg:.1f} um")
     if hit:
         f_got = L.freq(w_need, Lg, iex_at)
@@ -353,17 +353,17 @@ def _solve_cm(spec: NeuronSpec, d: NeuronDesign, W: float, Lg: float) -> float:
 def _solve_buffer(spec: NeuronSpec, d: NeuronDesign) -> float:
     """W de M7/M8 desde el fan-out. Independiente del resto."""
     if spec.c_load is None:
-        w = spec.W_M7M8 if spec.W_M7M8 is not None else L.W_MIN
+        w = spec.W_buf if spec.W_buf is not None else L.W_MIN
         return w
     need = L.solve_w_m7m8_for_load(spec.c_load)
-    if spec.W_M7M8 is not None:
-        if L.c_load_max(spec.W_M7M8) < spec.c_load:
-            d.add(Severity.WARNING, "W_M7M8",
-                  f"subida de {spec.W_M7M8} a {need:.3f} um: con la fijada "
-                  f"solo se manejan {L.c_load_max(spec.W_M7M8):.0f} fF de los "
+    if spec.W_buf is not None:
+        if L.c_load_max(spec.W_buf) < spec.c_load:
+            d.add(Severity.WARNING, "W_buf",
+                  f"subida de {spec.W_buf} a {need:.3f} um: con la fijada "
+                  f"solo se manejan {L.c_load_max(spec.W_buf):.0f} fF de los "
                   f"{spec.c_load:.0f} pedidos")
             return need
-        return spec.W_M7M8
+        return spec.W_buf
     return need
 
 
@@ -372,15 +372,15 @@ def _validate(d: NeuronDesign, W: float, Lg: float, Cm: float,
               spec: NeuronSpec) -> None:
     """Limites duros sobre TODO, incluidas las dimensiones fijadas."""
     if not (L.W_MIN <= W <= L.W_MAX):
-        d.add(Severity.WARNING, "W_M5",
+        d.add(Severity.WARNING, "W_reset",
               f"{W:.3f} um esta fuera del rango medido "
               f"({L.W_MIN}-{L.W_MAX}); las leyes no estan validadas ahi")
     if not (L.L_MIN <= Lg <= L.L_MAX):
-        d.add(Severity.WARNING, "L_M5",
+        d.add(Severity.WARNING, "L_reset",
               f"{Lg:.1f} um esta fuera del rango medido "
               f"({L.L_MIN}-{L.L_MAX})")
     elif Lg < L.L_PRECISE_MIN:
-        d.add(Severity.WARNING, "L_M5",
+        d.add(Severity.WARNING, "L_reset",
               f"{Lg:.1f} um: bajo {L.L_PRECISE_MIN} um el error de la ley de "
               "frecuencia sube de ~1% a 5-7%")
     if Cm < L.Cm_min(W, Lg):
@@ -412,19 +412,19 @@ def _validate(d: NeuronDesign, W: float, Lg: float, Cm: float,
     if spec.c_in_max is not None:
         ci = L.c_in(W)
         if ci > spec.c_in_max:
-            # solo se comprueba: C_in depende exclusivamente de W_M5, que es
+            # solo se comprueba: C_in depende exclusivamente de W_reset, que es
             # el ultimo eslabon de la cadena de ajuste. Resolverlo aqui seria
             # gastar el mando mas caro por un margen de 1.1-4.0 fF.
             d.add(Severity.WARNING, "C_in",
                   f"el diseño presenta C_in={ci:.2f} fF a la etapa previa, "
                   f"sobre el maximo pedido de {spec.c_in_max:.2f} fF; haria "
-                  f"falta W_M5 <= {(spec.c_in_max - 0.945) / 0.865:.3f} um")
+                  f"falta W_reset <= {(spec.c_in_max - 0.945) / 0.865:.3f} um")
 
 
 def _predict(d: NeuronDesign, spec: NeuronSpec) -> None:
     """Comportamiento esperado y requisitos sobre el entorno."""
-    W, Lg = d.params["W_M5"], d.params["L_M5"]
-    Cm, w78 = d.params["Cm"], d.params["W_M7M8"]
+    W, Lg = d.params["W_reset"], d.params["L_reset"]
+    Cm, w78 = d.params["Cm"], d.params["W_buf"]
     lo, hi = L.iex_window(W, Lg)
     ir = spec.iex_range or (lo, min(hi, 200.0))
 

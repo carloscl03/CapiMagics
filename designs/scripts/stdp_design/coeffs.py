@@ -12,40 +12,40 @@ sin unir `n3` y `n4` la potenciacion no conduce.
 # --- generado por sch/stdp/tb/scripts/gen_coeffs_stdp.py, no editar a mano ---
 
 # nucleo de DEPRESION, familia M1: log s = c_V*V + c_logV*ln(V) + c_1
-# cada coeficiente es una cuadratica en ln(W4). L4 FIJA = 0.28 um.
+# cada coeficiente es una cuadratica en ln(W_trrd_dep). L4 FIJA = 0.28 um.
 NUC_DEP = (
     (-1.452045e+00, -5.454292e+00, -2.183904e+01),
     (+3.246751e-01, +3.629617e+00, +2.346295e+01),
     (+1.415467e+00, +6.001363e+00, +2.221186e+01),
 )
-# CAJA de `W4`, y QUE la limita. La marca ✅ = frontera MEDIDA:
+# CAJA de `W_trrd_dep`, y QUE la limita. La marca ✅ = frontera MEDIDA:
 #   >= 0.22    minimo del PDK                                    ✅
 #   <= 1.50    hasta aqui la ley vale: LOO 4.02 por ciento, peor 8.68.
 #              HAY datos hasta 4.00 en `nucleo_w_full.npz`, pero ahi
 #              el LOO sube a 8.05 y el peor a 27.89.
-#   en Vdep=1.0 y W4 ~1.5 la senal SATURA en ~1.63 V: choca con el
+#   en Vdep=1.0 y W_trrd_dep ~1.5 la senal SATURA en ~1.63 V: choca con el
 #              recorrido del peso. Ese SI es limite fisico        ✅
 # Antes decia 0.90, que era solo donde deje de medir: hacia que el
 # motor recortase disenos validos por un 1.7 por ciento de amplitud.
 CAJA_W4 = (0.22, 1.50)
-SUELO_DEP = (-2.786000e-03, -1.477326e-03)   # [V] = a*W4 + b
+SUELO_DEP = (-2.786000e-03, -1.477326e-03)   # [V] = a*W_trrd_dep + b
 
-# nucleo de POTENCIACION, familia E3, por cada L1 DISCRETA
-L1_DISC = (0.40, 0.80, 2.00)
+# nucleo de POTENCIACION, familia E3, por cada L_trrd_pot DISCRETA
+L_TRRD_POT_DISC = (0.40, 0.80, 2.00)
 NUC_POT = (
-    (   # L1 = 0.40
+    (   # L_trrd_pot = 0.40
         (-8.666822e-01, -5.748919e-01, +7.907478e+00),
         (+2.537657e+00, +9.879283e-02, -3.544633e+01),
         (-2.557215e+00, +1.969006e+00, +5.447213e+01),
         (+9.843524e-01, -5.805006e-01, -2.863983e+01),
     ),
-    (   # L1 = 0.80
+    (   # L_trrd_pot = 0.80
         (+5.269779e-01, +1.500034e+00, -6.469351e+00),
         (-1.524595e+00, -5.912489e+00, +1.162216e+01),
         (+1.339606e+00, +7.758459e+00, +4.039926e+00),
         (-2.452870e-01, -2.418751e+00, -1.192154e+01),
     ),
-    (   # L1 = 2.00
+    (   # L_trrd_pot = 2.00
         (+7.377913e-01, +8.639781e-01, -1.303014e+01),
         (-2.200821e+00, -3.988731e+00, +3.549414e+01),
         (+2.049600e+00, +5.895829e+00, -2.493628e+01),
@@ -53,14 +53,14 @@ NUC_POT = (
     ),
 )
 CAJA_W1 = (0.23, 1.70)
-SUELO_POT = (+7.666903e-04, -2.738296e-04)   # [V] = a*W1 + b ; cruza en W1=0.357
+SUELO_POT = (+7.666903e-04, -2.738296e-04)   # [V] = a*W_trrd_pot + b ; cruza en W_trrd_pot=0.357
 
 # --- geometrias FIJAS, y por que -------------------------------------------
 # L4 esta fijada al minimo del proceso porque el optimo esta ahi y gana en los
 # TRES ejes a la vez (e-plegado 123.1 mV contra 74.8, suelo -2.09 contra -2.87,
 # senal 499.9 contra 238.9). Ademas entre 0.28 y 0.45 hay una transicion fisica
 # donde la dependencia con W cambia de sentido: la ley NO vale fuera.
-L4_FIJO = 0.28
+L_TRRD_DEP_FIJO = 0.28
 
 # CW de referencia con que se ajustaron los nucleos, en unidades de unitcap.
 NCW_REF = 10
@@ -97,7 +97,7 @@ R_VW = 1.436e11        # [ohm] idem -> tau = 79 ms de RETENCION DEL PESO
 # corregida (transconductor nfet + espejo pfet).
 # Dimensionado por la CADENA, no por la celda: `ifwd` recoge n_post
 # sinapsis en paralelo y el LIF no admite mas de 2758 nA en ninguna
-# geometria, y ese maximo esta en la frontera de W_M5. Con 4 x 252 =
+# geometria, y ese maximo esta en la frontera de W_reset. Con 4 x 252 =
 # 1009 nA la neurona sale W=3.09 L=20, con 12 pct de margen.
 # (La primera version daba 2231 por
 # sinapsis: 8924 con las cuatro, factor 9.8 de exceso.)
@@ -112,22 +112,22 @@ VW_RANGO = (0.80, 2.70)
 # Sin marca, es donde se dejo de medir y NO se puede tratar como limite.
 # ============================================================================
 #
-# `W4` -- lectura de la traza de depresion
+# `W_trrd_dep` -- lectura de la traza de depresion
 #   >= 0.22 um   minimo del PDK                                          ✅
 #   <= 1.50 um   hasta aqui la ley vale: LOO 4.02 pct, peor 8.68.
 #                Hay datos medidos hasta 4.00 en `nucleo_w_full.npz`, pero
 #                alli el LOO sube a 8.05 y el peor a 27.89. El corte es una
 #                decision de precision, no un limite del circuito.
-#   saturacion   con Vdep=1.0 y W4 ~1.5 la senal se aplana en ~1.63 V:
+#   saturacion   con Vdep=1.0 y W_trrd_dep ~1.5 la senal se aplana en ~1.63 V:
 #                choca con el recorrido del peso                         ✅
 #
-# `W1` -- lectura de la traza de potenciacion
+# `W_trrd_pot` -- lectura de la traza de potenciacion
 #   >= 0.23 um   primer punto medido (el minimo del PDK es 0.22)
 #   <= 1.70 um   ultimo punto medido
 #   UTIL <= ~1.28  por encima, A+ se pasa del maximo que la depresion puede
-#                igualar (683.5 mV con W4 <= 1.50), asi que no se puede
+#                igualar (683.5 mV con W_trrd_dep <= 1.50), asi que no se puede
 #                equilibrar. Y ademas el suelo de potenciacion crece
-#                +0.77 mV por um de W1: un W1 grande paga termino no hebbiano
+#                +0.77 mV por um de W_trrd_pot: un W_trrd_pot grande paga termino no hebbiano
 #
 # `Vdep` -- profundidad de la traza en que se lee
 #   >= 0.50 V    por debajo la senal se entierra en el suelo: a 0.40 V el

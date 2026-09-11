@@ -20,16 +20,16 @@ caracterización completa (10.741 puntos) está en
 **El equilibrio no es un objetivo, es una restricción.** En STDP aditivo la
 deriva media del peso con pre y post no correlacionados va como
 `r²·(A₊τ₊ − A₋τ₋)`. Si no es cero, los pesos se van al raíl y da igual lo bien
-dimensionado que esté el resto. El motor *deriva* `W4` de esa condición en vez
+dimensionado que esté el resto. El motor *deriva* `W_trrd_dep` de esa condición en vez
 de dejarla como preferencia.
 
 **Hay un término no hebbiano y no se puede eliminar del todo.** La inyección de
 carga hace derivar el peso con actividad presináptica sola. En potenciación se
-anula eligiendo `W1 = 0.357 µm`; en depresión los dos términos son negativos y
+anula eligiendo `W_trrd_pot = 0.357 µm`; en depresión los dos términos son negativos y
 no cruza cero — el mejor caso son 1.73 mV de peor caso sobre esquinas y
 temperatura, contra 5.51 de la geometría original.
 
-**`L1` es discreta y `L4` es constante.** No es simplificación: dejando fuera
+**`L_trrd_pot` es discreta y `L4` es constante.** No es simplificación: dejando fuera
 una `L` entera el error de predicción es del 43-47 % (hasta 140 % en el peor
 caso). Estos transistores cruzan la transición canal corto/largo y ninguna
 forma de bajo orden la atraviesa. `L4` va al mínimo del proceso porque el óptimo
@@ -46,7 +46,7 @@ un parámetro: es una propiedad que el sistema tiene que saber.
 | núcleo potenciación | LOO **3.5-5.2 %** en `W`; en `L` no se interpola |
 | suelo | 0.03 % (depresión), ~4 % (potenciación) |
 | decaimiento | −1.7 %, físico y sin coeficientes |
-| **lazo cerrado** | **−4.0 % / +5.1 %** sobre 6 pedidos, moviendo `asimetría`, `W1` y `nCW` |
+| **lazo cerrado** | **−4.0 % / +5.1 %** sobre 6 pedidos, moviendo `asimetría`, `W_trrd_pot` y `nCW` |
 
 El error del motor **iguala** al de las leyes: el solver no amplifica. Esa es la
 señal de que está sano, y es lo que en el integrador falló (2.98 % de ley contra

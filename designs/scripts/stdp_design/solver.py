@@ -19,10 +19,10 @@ Y la escalera cuando un objetivo choca con una dimension dada, como en el LIF:
 Orden de resolucion propio de esta celda:
 
   1. `tau` -> `itd`.  Directo y fisico (`tau = eta*Cdep/Itd`), sin ajuste.
-  2. ventana de `W1` que PERMITE equilibrar, para cada `L1` discreta.
-  3. `W1` dentro de esa ventana: el nulo del suelo (0.357) si cabe; si el
+  2. ventana de `W_trrd_pot` que PERMITE equilibrar, para cada `L_trrd_pot` discreta.
+  3. `W_trrd_pot` dentro de esa ventana: el nulo del suelo (0.357) si cabe; si el
      usuario la fijo fuera, se recorta con WARNING.
-  4. `W4` <- EQUILIBRIO. No se elige: lo fija `A+ tau+ = A- tau-`.
+  4. `W_trrd_dep` <- EQUILIBRIO. No se elige: lo fija `A+ tau+ = A- tau-`.
 
 Lo que el motor NO hace: elegir el punto de trabajo de las trazas. `Vdep0` y
 `Vtr0` los fijan los bias y el techo `n5`; aqui entran como dados.
@@ -67,12 +67,12 @@ NCDEP_NOM = 2
 NCW_NOM = 10
 
 
-def _a_dep(W4, ncw):
-    return abs(L.dvw_dep(VDEP0_NOM, W4, ncw))
+def _a_dep(W_trrd_dep, ncw):
+    return abs(L.dvw_dep(VDEP0_NOM, W_trrd_dep, ncw))
 
 
 def _rango_dep(ncw):
-    """Amplitudes de depresion alcanzables en la caja. Monotona en W4."""
+    """Amplitudes de depresion alcanzables en la caja. Monotona en W_trrd_dep."""
     return _a_dep(C.CAJA_W4[0], ncw), _a_dep(C.CAJA_W4[1], ncw)
 
 
@@ -80,7 +80,7 @@ def _invierte(f, y, lo, hi):
     """Biseccion sobre una funcion monotona creciente. RECORTA a los extremos.
 
     Antes devolvia None fuera de rango, y eso rompia el caso de borde: la
-    biseccion de la ventana converge a un `W1` cuyo `A+` queda un pelo fuera
+    biseccion de la ventana converge a un `W_trrd_pot` cuyo `A+` queda un pelo fuera
     por coma flotante, y el siguiente `_invierte` lo rechazaba. La decision de
     VIABILIDAD la toma `_ventana_W1` con comprobaciones explicitas; esto solo
     resuelve, y en el borde devuelve el borde.
@@ -98,20 +98,20 @@ def _invierte(f, y, lo, hi):
     return 0.5 * (lo + hi)
 
 
-def _ventana_W1(L1, asim, ncw):
-    """Rango de `W1` que permite equilibrar con esa `L1`, o None.
+def _ventana_W1(L_trrd_pot, asim, ncw):
+    """Rango de `W_trrd_pot` que permite equilibrar con esa `L_trrd_pot`, o None.
 
-    `A+` crece con `W1`; el equilibrio pide `A+ = asim * A-`, y `A-` solo puede
-    moverse entre sus dos extremos de caja. Asi que la ventana de `W1` es la
+    `A+` crece con `W_trrd_pot`; el equilibrio pide `A+ = asim * A-`, y `A-` solo puede
+    moverse entre sus dos extremos de caja. Asi que la ventana de `W_trrd_pot` es la
     preimagen de [asim*A-_min, asim*A-_max].
     """
     dmin, dmax = _rango_dep(ncw)
-    g = lambda w: L.dvw_pot(VTR0_NOM, w, L1, ncw)
+    g = lambda w: L.dvw_pot(VTR0_NOM, w, L_trrd_pot, ncw)
     glo, ghi = g(C.CAJA_W1[0]), g(C.CAJA_W1[1])
     # `_invierte` devuelve None por ARRIBA y por ABAJO sin distinguir, asi que
     # los dos casos imposibles se comprueban aparte:
     if glo > asim * dmax:
-        return None          # hasta la W1 minima se pasa de amplitud
+        return None          # hasta la W_trrd_pot minima se pasa de amplitud
     if ghi < asim * dmin:
         return None          # ni la maxima llega
     lo = (C.CAJA_W1[0] if glo >= asim * dmin
@@ -126,7 +126,7 @@ def design(spec: StdpSpec) -> StdpDesign:
     if not spec.has_objectives:
         d.add(Severity.ERROR, "objetivos",
               "hace falta `tau_us`: es lo que acopla la ventana con la neurona")
-        d.params = {"W4": 0.30, "W1": 0.357, "L1": 0.40,
+        d.params = {"W_trrd_dep": 0.30, "W_trrd_pot": 0.357, "L_trrd_pot": 0.40,
                     "nCdep": NCDEP_NOM, "nCW": NCW_NOM}
         return d
 
@@ -140,12 +140,12 @@ def design(spec: StdpSpec) -> StdpDesign:
     itd = fx.get("itd") or L.itd_para_tau(tau_s, ncdep, "dep")
     itp = fx.get("itp") or L.itd_para_tau(tau_s * asim, ncdep, "pot")
 
-    # ---- capas 2 y 3: L1 y W1, con la escalera ----------------------------
-    candidatas = [fx["L1"]] if "L1" in fx else list(C.L1_DISC)
-    for L1 in candidatas:
-        if L1 not in C.L1_DISC:
-            d.add(Severity.ERROR, "L1",
-                  f"{L1} um no es interpolable; usa una de {C.L1_DISC}",
+    # ---- capas 2 y 3: L_trrd_pot y W_trrd_pot, con la escalera ----------------------------
+    candidatas = [fx["L_trrd_pot"]] if "L_trrd_pot" in fx else list(C.L_TRRD_POT_DISC)
+    for L_trrd_pot in candidatas:
+        if L_trrd_pot not in C.L_TRRD_POT_DISC:
+            d.add(Severity.ERROR, "L_trrd_pot",
+                  f"{L_trrd_pot} um no es interpolable; usa una de {C.L_TRRD_POT_DISC}",
                   "LOO dejando fuera una L entera: 43-47 %, peor 140 %. Estos "
                   "transistores cruzan la transicion canal corto/largo")
             # se vuelve YA: encadenar el error de equilibrio detras seria
@@ -156,79 +156,79 @@ def design(spec: StdpSpec) -> StdpDesign:
             return d
 
     elegido, diag = None, []
-    for L1 in candidatas:
-        vent = _ventana_W1(L1, asim, ncw)
+    for L_trrd_pot in candidatas:
+        vent = _ventana_W1(L_trrd_pot, asim, ncw)
         if vent is None:
-            amin = L.dvw_pot(VTR0_NOM, C.CAJA_W1[0], L1, ncw)
-            amax = L.dvw_pot(VTR0_NOM, C.CAJA_W1[1], L1, ncw)
+            amin = L.dvw_pot(VTR0_NOM, C.CAJA_W1[0], L_trrd_pot, ncw)
+            amax = L.dvw_pot(VTR0_NOM, C.CAJA_W1[1], L_trrd_pot, ncw)
             dmin, dmax = _rango_dep(ncw)
-            por = ("se PASA: hasta W1={:.2f} da {:.1f} mV y el maximo util es "
+            por = ("se PASA: hasta W_trrd_pot={:.2f} da {:.1f} mV y el maximo util es "
                    "{:.1f}".format(C.CAJA_W1[0], amin*1e3, asim*dmax*1e3)
                    if amin > asim * dmax else
-                   "NO LLEGA: ni con W1={:.2f} ({:.1f} mV) alcanza el minimo "
+                   "NO LLEGA: ni con W_trrd_pot={:.2f} ({:.1f} mV) alcanza el minimo "
                    "util de {:.1f}".format(C.CAJA_W1[1], amax*1e3, asim*dmin*1e3))
-            diag.append((L1, None, por))
+            diag.append((L_trrd_pot, None, por))
             continue
-        W1_pedida = fx.get("W1")
+        W1_pedida = fx.get("W_trrd_pot")
         W1_pref = W1_pedida if W1_pedida is not None else L.w1_suelo_nulo()
-        W1 = min(max(W1_pref, vent[0]), vent[1])
-        elegido = (L1, W1, vent, W1_pedida, W1_pref)
+        W_trrd_pot = min(max(W1_pref, vent[0]), vent[1])
+        elegido = (L_trrd_pot, W_trrd_pot, vent, W1_pedida, W1_pref)
         break
 
     if elegido is None:
         # peldano 3: nada funciona -> ERROR con lo mas cercano
-        for L1, _, por_que in diag:
-            d.add(Severity.INFO, "L1", f"L1 = {L1}: {por_que}")
-        mejor = max(C.L1_DISC,
+        for L_trrd_pot, _, por_que in diag:
+            d.add(Severity.INFO, "L_trrd_pot", f"L_trrd_pot = {L_trrd_pot}: {por_que}")
+        mejor = max(C.L_TRRD_POT_DISC,
                     key=lambda l: L.dvw_pot(VTR0_NOM, C.CAJA_W1[1], l, ncw))
         amax = L.dvw_pot(VTR0_NOM, C.CAJA_W1[1], mejor, ncw)
         dmin, _ = _rango_dep(ncw)
         d.add(Severity.ERROR, "equilibrio",
               f"no hay geometria que de A+/A- = {asim:.2f}",
-              f"lo mas cercano: L1={mejor}, W1={C.CAJA_W1[1]:.2f} dan "
+              f"lo mas cercano: L_trrd_pot={mejor}, W_trrd_pot={C.CAJA_W1[1]:.2f} dan "
               f"A+/A- = {amax/dmin:.2f}. Sube `asimetria` o baja `nCW` "
               f"(escala las dos amplitudes pero mueve la caja util)")
         d.params = {"nCdep": ncdep, "nCW": ncw,
                     "itd_nA": round(itd * 1e9, 4), "itp_nA": round(itp * 1e9, 4)}
         return d
 
-    L1, W1, vent, W1_pedida, W1_pref = elegido
+    L_trrd_pot, W_trrd_pot, vent, W1_pedida, W1_pref = elegido
 
     # peldano 2: se cambio lo que el usuario fijo -> WARNING con contrafactual
-    if W1_pedida is not None and abs(W1 - W1_pedida) > 1e-6:
-        a_ped = L.dvw_pot(VTR0_NOM, W1_pedida, L1, ncw)
+    if W1_pedida is not None and abs(W_trrd_pot - W1_pedida) > 1e-6:
+        a_ped = L.dvw_pot(VTR0_NOM, W1_pedida, L_trrd_pot, ncw)
         dmin, dmax = _rango_dep(ncw)
-        d.add(Severity.WARNING, "W1",
-              f"cambiada de {W1_pedida:.3f} a {W1:.3f} um para poder equilibrar",
-              f"con W1={W1_pedida:.3f} la potenciacion da {a_ped*1e3:.1f} mV y "
+        d.add(Severity.WARNING, "W_trrd_pot",
+              f"cambiada de {W1_pedida:.3f} a {W_trrd_pot:.3f} um para poder equilibrar",
+              f"con W_trrd_pot={W1_pedida:.3f} la potenciacion da {a_ped*1e3:.1f} mV y "
               f"la depresion solo llega de {dmin*1e3:.1f} a {dmax*1e3:.1f}; "
               f"los objetivos tienen prioridad sobre las dimensiones")
-    elif W1_pedida is None and abs(W1 - W1_pref) > 1e-6:
-        d.add(Severity.INFO, "W1",
-              f"{W1:.3f} um en vez del nulo del suelo ({W1_pref:.3f}): el "
+    elif W1_pedida is None and abs(W_trrd_pot - W1_pref) > 1e-6:
+        d.add(Severity.INFO, "W_trrd_pot",
+              f"{W_trrd_pot:.3f} um en vez del nulo del suelo ({W1_pref:.3f}): el "
               f"equilibrio no deja llegar",
-              f"ventana util con L1={L1}: {vent[0]:.3f} a {vent[1]:.3f} um. "
+              f"ventana util con L_trrd_pot={L_trrd_pot}: {vent[0]:.3f} a {vent[1]:.3f} um. "
               f"El suelo de potenciacion no se anula, quedan "
-              f"{L.suelo_pot(W1, ncw)*1e3:+.3f} mV")
+              f"{L.suelo_pot(W_trrd_pot, ncw)*1e3:+.3f} mV")
 
-    a_pot = L.dvw_pot(VTR0_NOM, W1, L1, ncw)
-    W4 = _invierte(lambda w: _a_dep(w, ncw), a_pot / asim, *C.CAJA_W4)
-    a_dep = _a_dep(W4, ncw)
+    a_pot = L.dvw_pot(VTR0_NOM, W_trrd_pot, L_trrd_pot, ncw)
+    W_trrd_dep = _invierte(lambda w: _a_dep(w, ncw), a_pot / asim, *C.CAJA_W4)
+    a_dep = _a_dep(W_trrd_dep, ncw)
 
-    if "W4" in fx and abs(fx["W4"] - W4) > 1e-6:
-        d.add(Severity.WARNING, "W4",
-              f"cambiada de {fx['W4']:.3f} a {W4:.3f} um: NO es libre",
+    if "W_trrd_dep" in fx and abs(fx["W_trrd_dep"] - W_trrd_dep) > 1e-6:
+        d.add(Severity.WARNING, "W_trrd_dep",
+              f"cambiada de {fx['W_trrd_dep']:.3f} a {W_trrd_dep:.3f} um: NO es libre",
               f"la fija la condicion de equilibrio A+ tau+ = A- tau-. Con "
-              f"W4={fx['W4']:.3f} la deriva seria "
-              f"{L.deriva(a_pot, tau_s, _a_dep(fx['W4'], ncw), tau_s):+.3e} y "
+              f"W_trrd_dep={fx['W_trrd_dep']:.3f} la deriva seria "
+              f"{L.deriva(a_pot, tau_s, _a_dep(fx['W_trrd_dep'], ncw), tau_s):+.3e} y "
               f"los pesos se irian al rail")
 
-    d.params = {"W4": round(W4, 3), "L4": C.L4_FIJO, "W1": round(W1, 3),
-                "L1": L1, "nCdep": ncdep, "nCW": ncw,
+    d.params = {"W_trrd_dep": round(W_trrd_dep, 3), "L_trrd_dep": C.L_TRRD_DEP_FIJO, "W_trrd_pot": round(W_trrd_pot, 3),
+                "L_trrd_pot": L_trrd_pot, "nCdep": ncdep, "nCW": ncw,
                 "itd_nA": round(itd * 1e9, 4), "itp_nA": round(itp * 1e9, 4)}
 
     # ---- lo que sale -------------------------------------------------------
-    su_d, su_p = L.suelo_dep(W4, ncw), L.suelo_pot(W1, ncw)
+    su_d, su_p = L.suelo_dep(W_trrd_dep, ncw), L.suelo_pot(W_trrd_pot, ncw)
     tau_d = L.tau(itd, ncdep, "dep")
     tau_p = L.tau(itp, ncdep, "pot")
     d.predicted = {
@@ -284,13 +284,13 @@ def design(spec: StdpSpec) -> StdpDesign:
                   f"{spec.f_min_kHz:.1f} a {spec.f_max_kHz:.0f}")
 
     # ---- peldano 4: la caja, sobre TODO -----------------------------------
-    if not L.en_caja_dep(W4, VDEP0_NOM):
+    if not L.en_caja_dep(W_trrd_dep, VDEP0_NOM):
         d.add(Severity.WARNING, "caja",
-              f"W4={W4:.3f} fuera de {C.CAJA_W4}: las leyes no estan "
+              f"W_trrd_dep={W_trrd_dep:.3f} fuera de {C.CAJA_W4}: las leyes no estan "
               f"validadas ahi")
-    if not L.en_caja_pot(W1, VTR0_NOM):
+    if not L.en_caja_pot(W_trrd_pot, VTR0_NOM):
         d.add(Severity.WARNING, "caja",
-              f"W1={W1:.3f} fuera de {C.CAJA_W1}: idem")
+              f"W_trrd_pot={W_trrd_pot:.3f} fuera de {C.CAJA_W1}: idem")
     if not (C.ITD_CAJA[0] <= itd <= C.ITD_CAJA[1]):
         d.add(Severity.WARNING, "caja",
               f"itd = {itd*1e9:.4f} nA fuera de la caja util "
@@ -298,9 +298,9 @@ def design(spec: StdpSpec) -> StdpDesign:
               f"por debajo de {C.ITD_CAJA[0]*1e12:.0f} pA la fuga del "
               f"dispositivo ({C.FUGA_VDEP*1e12:.1f} pA, medida) pasa del 5 % "
               f"de Itd y la ley se va; tau maxima util ~500 us")
-    if "W1" not in fx and W1 > C.W1_UTIL_MAX:
-        d.add(Severity.INFO, "W1",
-              f"{W1:.3f} um pasa del maximo util ({C.W1_UTIL_MAX})",
+    if "W_trrd_pot" not in fx and W_trrd_pot > C.W1_UTIL_MAX:
+        d.add(Severity.INFO, "W_trrd_pot",
+              f"{W_trrd_pot:.3f} um pasa del maximo util ({C.W1_UTIL_MAX})",
               "por ahi A+ se sale de lo que la depresion puede igualar, y "
               "ademas el suelo de potenciacion crece +0.77 mV por um")
 
@@ -312,8 +312,8 @@ def design(spec: StdpSpec) -> StdpDesign:
                   f"la amplitud NO es libre: la fija el equilibrio. Para "
                   f"moverla hay que cambiar `nCW` (la escala) o aceptar deriva")
 
-    d.add(Severity.INFO, "L4",
-          f"fija en {C.L4_FIJO} um, el minimo del proceso",
+    d.add(Severity.INFO, "L_trrd_dep",
+          f"fija en {C.L_TRRD_DEP_FIJO} um, el minimo del proceso",
           "el optimo esta ahi y gana en los tres ejes; entre 0.28 y 0.45 la "
           "dependencia con W cambia de sentido y la ley no vale")
     return d

@@ -1124,7 +1124,7 @@ def from_design(pdk, design, mim: str = mim_pdk.POR_DEFECTO,
     # Las dimensiones que de verdad se dibujan. El netlist de referencia lee
     # de aqui, no de design.params: si declarase lo pedido, el LVS marcaria la
     # diferencia de rejilla como un ancho que no casa.
-    dims = {k: en_rejilla(p[k]) for k in ("W_M5", "L_M5", "W_M7M8")}
+    dims = {k: en_rejilla(p[k]) for k in ("W_reset", "L_reset", "W_buf")}
     dims.update(W_inv=en_rejilla(INVERSOR_MINIMO["width"]),
                 L_inv=en_rejilla(INVERSOR_MINIMO["length"]))
 
@@ -1132,8 +1132,8 @@ def from_design(pdk, design, mim: str = mim_pdk.POR_DEFECTO,
         pdk,
         inverter=dict(INVERSOR_MINIMO, width=dims["W_inv"],
                       length=dims["L_inv"], **fet),
-        m5=dict(width=dims["W_M5"], length=dims["L_M5"], **fet),
-        output_inverter=dict(width=dims["W_M7M8"],
+        m5=dict(width=dims["W_reset"], length=dims["L_reset"], **fet),
+        output_inverter=dict(width=dims["W_buf"],
                              length=dims["L_inv"], **fet),
         cap_size=lado_real, n_caps=n, rail_layer=rail_layer, name=name)
     handles["dims"] = dims

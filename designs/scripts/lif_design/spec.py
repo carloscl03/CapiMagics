@@ -68,7 +68,7 @@ class NeuronSpec:
         c_load      carga capacitiva que colgara la etapa siguiente [fF]
 
     Dimensiones fijadas (prioridad 2, se ajustan con warning si estorban):
-        W_M5, L_M5, Cm, W_M7M8
+        W_reset, L_reset, Cm, W_buf
 
     Contexto:
         source_ro   impedancia de salida de la fuente de corriente [ohm].
@@ -79,7 +79,7 @@ class NeuronSpec:
                     Se comprueba, no se resuelve: C_in solo va de 1.1 a 4.0 fF
                     en todo el envolvente, asi que la cota practicamente nunca
                     puede morder. Si algun dia lo hace, sube a objetivo y
-                    compite con la frecuencia por W_M5.
+                    compite con la frecuencia por W_reset.
         freq_tolerance  desviacion aceptable al resolver [fraccion]
     """
     # objetivos
@@ -89,10 +89,10 @@ class NeuronSpec:
     c_load: float | None = None
 
     # dimensiones fijadas
-    W_M5: float | None = None
-    L_M5: float | None = None
+    W_reset: float | None = None
+    L_reset: float | None = None
     Cm: float | None = None
-    W_M7M8: float | None = None
+    W_buf: float | None = None
 
     # contexto
     source_ro: float | None = None
@@ -107,8 +107,8 @@ class NeuronSpec:
         """Las dimensiones que el usuario fijo explicitamente."""
         return {
             n: v for n, v in (
-                ("W_M5", self.W_M5), ("L_M5", self.L_M5),
-                ("Cm", self.Cm), ("W_M7M8", self.W_M7M8),
+                ("W_reset", self.W_reset), ("L_reset", self.L_reset),
+                ("Cm", self.Cm), ("W_buf", self.W_buf),
             ) if v is not None
         }
 
@@ -125,7 +125,7 @@ class NeuronDesign:
     alcanzable. Un agente que consume esto necesita datos estructurados sobre
     el conflicto, no un stack trace.
     """
-    params: dict[str, float]              # W_M5, L_M5, Cm, W_M7M8
+    params: dict[str, float]              # W_reset, L_reset, Cm, W_buf
     predicted: dict[str, object] = field(default_factory=dict)
     requirements: dict[str, object] = field(default_factory=dict)
     notes: list[Note] = field(default_factory=list)

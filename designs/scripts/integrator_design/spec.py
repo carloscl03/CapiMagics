@@ -13,15 +13,15 @@ Lo propio del integrador frente a los otros dos:
   * LA BANDA ES UN CONTRATO BIDIRECCIONAL. No se pide una corriente, se pide un
     rango de frecuencias a leer. Y ese rango tiene que caber en lo que la
     cadena produce: `EncoderSpec` -> Iex -> `NeuronSpec`. El motor del LIF da
-    24.7-4500 kHz con la celda v2 y 12.8-4500 con la v3 del equipo (W_M5
+    24.7-4500 kHz con la celda v2 y 12.8-4500 con la v3 del equipo (W_reset
     1.25 -> 2.3; `Cm` NO interviene en la frecuencia, verificado de 280 a
     864 fF). La banda medida de este integrador es 1-3866 kHz, o sea que
     cubre las dos. El '74-4500 kHz' que decia aqui antes no corresponde a
     ninguna celda: era un numero arrastrado.
 
   * LA SATURACION SE REPORTA HACIA ARRIBA. Cada geometria deja de leer a cierta
-    frecuencia, porque `vm` se pega al techo (2.32-2.73 V segun `L6`, y casi
-    todo el cambio entre L6=0.28 y 0.50). Eso es
+    frecuencia, porque `vm` se pega al techo (2.32-2.73 V segun `L_inj`, y casi
+    todo el cambio entre L_inj=0.28 y 0.50). Eso es
     un dato del contrato, no algo que se descubra en silicio.
 
   * `Iref` ES ENTRADA, NO CONSTANTE. Desplaza la ventana en frecuencia sin
@@ -76,13 +76,13 @@ class IntegratorSpec:
     PERILLA
       tradeoff  0 = toda la holgura (banda ancha, margen al techo)
                 1 = toda la resolucion (poco rizado, banda justa)
-                Los dos compiten: `L6` largo mejora el rizado pero BAJA el
+                Los dos compiten: `L_inj` largo mejora el rizado pero BAJA el
                 techo, o sea que estrechas la banda para ganar precision
                 dentro de ella.
 
     DIMENSIONES (cualquiera puede venir dada; se libera si estorba)
-      W1, W2, L2, Iref   la fuga.  `L1` va fijo en 0.28 um (ver laws.fuga)
-      W6, L6, C          la inyeccion y la memoria
+      W_leakpass, W_leak, L_leak, Iref   la fuga.  `L1` va fijo en 0.28 um (ver laws.fuga)
+      W_inj, L_inj, C          la inyeccion y la memoria
 
     CONTEXTO
       area_max   [um2] si se da, se penaliza el condensador
@@ -93,12 +93,12 @@ class IntegratorSpec:
     t_respuesta_max: float | None = None      # us
     tradeoff: float = 0.5
 
-    W1: float | None = None
-    W2: float | None = None
-    L2: float | None = None
+    W_leakpass: float | None = None
+    W_leak: float | None = None
+    L_leak: float | None = None
     Iref: float | None = None
-    W6: float | None = None
-    L6: float | None = None
+    W_inj: float | None = None
+    L_inj: float | None = None
     C: float | None = None
 
     area_max: float | None = None
@@ -106,7 +106,7 @@ class IntegratorSpec:
     @property
     def fixed_dims(self) -> dict[str, float]:
         d = {}
-        for k in ("W1", "W2", "L2", "Iref", "W6", "L6", "C"):
+        for k in ("W_leakpass", "W_leak", "L_leak", "Iref", "W_inj", "L_inj", "C"):
             v = getattr(self, k)
             if v is not None:
                 d[k] = v

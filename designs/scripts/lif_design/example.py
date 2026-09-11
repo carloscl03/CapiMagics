@@ -47,7 +47,7 @@ def ejemplo_2_rangos():
 def ejemplo_3_hibrido():
     """El diseñador ya calculo W; que se respete y se resuelva el resto."""
     print("\n3. hibrido: W fija, el resto libre")
-    d = design(NeuronSpec(W_M5=1.0, freq_range=(500, 500)))
+    d = design(NeuronSpec(W_reset=1.0, freq_range=(500, 500)))
     print(f"   {d.params}")
     for n in d.notes:
         print(f"   {n}")
@@ -56,7 +56,7 @@ def ejemplo_3_hibrido():
 def ejemplo_4_conflicto():
     """Objetivo incompatible con las dimensiones fijadas."""
     print("\n4. conflicto resoluble (los objetivos mandan)")
-    d = design(NeuronSpec(W_M5=1.0, L_M5=41, freq_range=(2000, 2000)))
+    d = design(NeuronSpec(W_reset=1.0, L_reset=41, freq_range=(2000, 2000)))
     print(f"   {d.params}   ok={d.ok}")
     for n in d.warnings:
         print(f"   [{n.subject}] {n.message}")

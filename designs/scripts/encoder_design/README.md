@@ -35,16 +35,16 @@ caracterización costó dos hipótesis falsas.
 
 ## Espacio de diseño
 
-Cuatro variables. `Ld = 1.60 um` y `W9 = 0.26 um` van fijos: se eligieron
+Cuatro variables. `L_in = 1.60 um` y `W_tail = 0.26 um` van fijos: se eligieron
 midiendo que fijarlos no pierde nada de la región que el LIF usa (100 % de
 cobertura) y ahorran área.
 
 | | rango [um] |
 |---|---|
-| `Wd` ancho del par de entrada | 0.26 – 1.80 |
-| `Wl` ancho de las cargas | 0.30 – 2.70 |
-| `Ll` largo de las cargas | 0.28 – 0.62 |
-| `L9` largo de la cola | 0.80 – 3.78 |
+| `W_in` ancho del par de entrada | 0.26 – 1.80 |
+| `W_load` ancho de las cargas | 0.30 – 2.70 |
+| `L_load` largo de las cargas | 0.28 – 0.62 |
+| `L_tail` largo de la cola | 0.80 – 3.78 |
 
 Dos objetivos contra cuatro variables dejan **dos grados de libertad libres**,
 que valen un factor 4 en desapareamiento a especificación idéntica. Se gastan
@@ -57,7 +57,7 @@ tradeoff       area    sigma_Vos    iex_min     gain
     1.00   1.083 um2     39.6 mV   100.3 nA   0.3493
 ```
 
-**La palanca del apareamiento es `Ll`, el par de CARGA, no el par de entrada.**
+**La palanca del apareamiento es `L_load`, el par de CARGA, no el par de entrada.**
 Medido por Monte Carlo con los modelos del PDK: el reflejo habitual de
 "agrandar el par de entrada" da 1.7x de mejora; guiarse por la ley medida da
 3-4x por la misma área.
@@ -70,10 +70,10 @@ encima de las dimensiones fijadas (prioridad 2). Cada liberación se reporta con
 su cadena causal:
 
 ```python
-design(EncoderSpec(iex_min=400, gain=0.30, L9=3.7))
-# [WARNING] L9: cambiada de 3.700 a 0.950 um para alcanzar lo pedido
-#   cadena: con L9=3.700 fija el mejor alcanzable era 85.3 % de desviacion;
-#           liberandola baja a 0.1 %. Se eligio L9 primero porque no interviene
+design(EncoderSpec(iex_min=400, gain=0.30, L_tail=3.7))
+# [WARNING] L_tail: cambiada de 3.700 a 0.950 um para alcanzar lo pedido
+#   cadena: con L_tail=3.700 fija el mejor alcanzable era 85.3 % de desviacion;
+#           liberandola baja a 0.1 %. Se eligio L_tail primero porque no interviene
 #           ni en la ganancia ni en el desapareamiento
 ```
 
@@ -81,13 +81,13 @@ El orden de liberación sale de las leyes medidas, no de intuición:
 
 | | por qué |
 |---|---|
-| 1. `L9` | no interviene ni en la ganancia (exp. 0.03) ni en el desapareamiento (0.03), y no es un par apareado |
-| 2. `Wl` | mueve la ganancia pero **no** el desapareamiento (exp. 0.03) |
-| 3. `Ll` | mueve la ganancia **y domina** el desapareamiento (exp. −1.07) |
-| 4. `Wd` | par apareado de entrada: ganancia, desapareamiento y layout |
+| 1. `L_tail` | no interviene ni en la ganancia (exp. 0.03) ni en el desapareamiento (0.03), y no es un par apareado |
+| 2. `W_load` | mueve la ganancia pero **no** el desapareamiento (exp. 0.03) |
+| 3. `L_load` | mueve la ganancia **y domina** el desapareamiento (exp. −1.07) |
+| 4. `W_in` | par apareado de entrada: ganancia, desapareamiento y layout |
 
 Se libera solo lo necesario y se para al alcanzar la tolerancia. Con las cuatro
-fijadas y un objetivo incompatible, libera `L9` y `Wl`, llega, y deja `Wd` y `Ll`
+fijadas y un objetivo incompatible, libera `L_tail` y `W_load`, llega, y deja `W_in` y `L_load`
 como el usuario las puso.
 
 Si no se alcanza ni liberándolo todo, `ERROR` con lo más cercano:
@@ -113,7 +113,7 @@ Lo que se guarda es **el criterio**, no el resultado:
 
 ```python
 NOMINAL_SPEC = {"iex_min": 80.0, "gain": 0.40, "tradeoff": 0.5}
-nominal()    # -> {'Wd': 0.725, 'Wl': 0.947, 'Ll': 0.394, 'L9': 1.811}
+nominal()    # -> {'W_in': 0.725, 'W_load': 0.947, 'L_load': 0.394, 'L_tail': 1.811}
 ```
 
 El nominal de la neurona sí son cuatro números clavados, porque el suyo es una
@@ -124,7 +124,7 @@ criterio.
 Verificado en ngspice: predicho 80.0/286.5 nA G=0.400, medido 79.6/285.4
 G=0.401 (−0.5 %, −0.4 %, +0.1 %). Y el criterio se verifica solo: de los tres
 diseños de referencia el que peor valida (−2.7 %) es justo el que tiene
-`Ll = 0.280`, pegado al borde.
+`L_load = 0.280`, pegado al borde.
 
 ## Precisión
 
@@ -172,11 +172,11 @@ el encoder debe mover                     2.03 fF   (C_in del LIF)
 el LIF puede mover hasta                132.00 fF
 ```
 
-`C_in` depende casi solo de `Wd` (exponente 0.934); el desvío de 1.0 y el
-término de `L9` son efecto Miller. Si la cota `c_in_max` llega a morder, el
+`C_in` depende casi solo de `W_in` (exponente 0.934); el desvío de 1.0 y el
+término de `L_tail` son efecto Miller. Si la cota `c_in_max` llega a morder, el
 compromiso real no es capacidad contra área sino **capacidad contra desviación
-de entrada**: bajar `C_in` exige reducir `Wd`, que es lo que se paga en
-`sigma_Vos` (va con `Wd^-0.44`).
+de entrada**: bajar `C_in` exige reducir `W_in`, que es lo que se paga en
+`sigma_Vos` (va con `W_in^-0.44`).
 
 ## Lo que este paquete NO resuelve
 

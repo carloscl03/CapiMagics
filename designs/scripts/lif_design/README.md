@@ -33,7 +33,7 @@ W and L are M5, the integrator transistor. The inverters (M1–M4) are not
 characterised — they are sized as ordinary digital gates.
 
 `C_in` is what the cell presents to whatever drives current into it, on top of
-`Cm`. It is a predicted output, never an objective: it depends only on `W_M5`,
+`Cm`. It is a predicted output, never an objective: it depends only on `W_reset`,
 and 1.1–4.0 fF across the envelope is too narrow to constrain anything. A
 `c_in_max` in the spec is checked, not solved. **It must not be added to `f`** —
 the frequency law was fitted on simulations that already include it.

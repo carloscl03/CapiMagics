@@ -4,12 +4,12 @@ El encoder es una VCCS diferencial: dos entradas complementarias (Vin, Vin_neg)
 alrededor de un modo comun, un par de entrada M1/M2, cargas pmos en diodo M3/M4,
 cola M9, y espejos de salida que entregan Iex a la membrana de cada LIF.
 
-Con `Ld` y `W9` fijos (ver coeffs), el espacio de diseño son CUATRO variables:
+Con `L_in` y `W_tail` fijos (ver coeffs), el espacio de diseño son CUATRO variables:
 
-    Wd   ancho del par de entrada M1/M2
-    Wl   ancho de las cargas M3/M4
-    Ll   largo de las cargas M3/M4
-    L9   largo de la cola M9
+    W_in   ancho del par de entrada M1/M2
+    W_load   ancho de las cargas M3/M4
+    L_load   largo de las cargas M3/M4
+    L_tail   largo de la cola M9
 
 Procedencia de todo: sch/encoder/results/encoder_knowledge_base.md
 
@@ -27,7 +27,7 @@ reescritura pero aproximada si la truncas.
 AVISO SOBRE LOS EXPONENTES. Los coeficientes de una ley son derivadas
 PARCIALES, con todo lo demas quieto. No se leen como consejo de diseño: a
 especificacion constante las otras variables se reacomodan y el efecto neto
-puede invertirse. Paso con `Ld` en `sigma_vos` (seccion 8.5 del documento).
+puede invertirse. Paso con `L_in` en `sigma_vos` (seccion 8.5 del documento).
 """
 from __future__ import annotations
 
@@ -59,11 +59,11 @@ CONDICIONES = tuple(sorted(C.ESQUINAS))
 # da 24 % de media en toda la caja (5.8 % cerca de REF): sirve para entender,
 # NO para calcular, y por eso el motor evalua las dos partes.
 
-def _lg(Wd, Wl, Ll, L9):
+def _lg(W_in, W_load, L_load, L_tail):
     """lg10 de cada dimension relativa al punto de referencia."""
     from math import log10
     return tuple(log10(v / r) for v, r in
-                 zip((Wd, Wl, Ll, L9), C.REF))
+                 zip((W_in, W_load, L_load, L_tail), C.REF))
 
 
 def _potencia(exps, v):
@@ -86,7 +86,7 @@ def _correccion(cor, v):
 
 # --- leyes directas ---------------------------------------------------------
 
-def iex_min(Wd, Wl, Ll, L9):
+def iex_min(W_in, W_load, L_load, L_tail):
     """Iex [nA] en el extremo bajo de la excursion (Vdif = -0.14 V).
 
     Error externo 0.65 %. Cubica de 35 terminos, `siete.npz`.
@@ -94,40 +94,40 @@ def iex_min(Wd, Wl, Ll, L9):
     PARA LEERLA, el mismo polinomio alrededor del nominal (cambio de base
     exacto, residuo 1e-14) es una ley de potencia:
 
-        Iex(-) = 80.1 nA x (Wd/0.725)^-0.468 (Wl/0.947)^-0.865
-                           (Ll/0.394)^+2.510 (L9/1.811)^-1.609
+        Iex(-) = 80.1 nA x (W_in/0.725)^-0.468 (W_load/0.947)^-0.865
+                           (L_load/0.394)^+2.510 (L_tail/1.811)^-1.609
 
-    `Ll` manda (+2.5), `L9` va detras (-1.6), `Wd` casi no interviene. Esa
+    `L_load` manda (+2.5), `L_tail` va detras (-1.6), `W_in` casi no interviene. Esa
     forma da 5.8 % en media caja: sirve para entender, NO para calcular, y por
     eso aqui se evalua la cubica entera. Ver ECUACIONES.md y la seccion 16 del
     knowledge base.
     """
-    v = _lg(Wd, Wl, Ll, L9)
+    v = _lg(W_in, W_load, L_load, L_tail)
     return (C.IEX_MIN_0 * 1e9
             * 10.0 ** (_potencia(C.IEX_MIN_EXP, v) + _correccion(C.IEX_MIN_COR, v)))
 
 
-def gain(Wd, Wl, Ll, L9):
+def gain(W_in, W_load, L_load, L_tail):
     """Ganancia dV(x)/dVdif en el centro de la excursion.
 
     Error externo 0.26 %.
 
-    `L9` sale con exponente ~0.03: la ganancia NO depende de la cola. Medido
+    `L_tail` sale con exponente ~0.03: la ganancia NO depende de la cola. Medido
     dos veces, en barridos independientes.
 
     Alrededor del nominal (exacto, para leer):
 
-        G = 0.400 x (Wd/0.725)^+0.452 (Wl/0.947)^-0.436
-                    (Ll/0.394)^+0.533 (L9/1.811)^+0.024
+        G = 0.400 x (W_in/0.725)^+0.452 (W_load/0.947)^-0.436
+                    (L_load/0.394)^+0.533 (L_tail/1.811)^+0.024
 
-    Ahi se ve el +0.024 de `L9`. Esa forma da 0.92 % en media caja.
+    Ahi se ve el +0.024 de `L_tail`. Esa forma da 0.92 % en media caja.
     """
-    v = _lg(Wd, Wl, Ll, L9)
+    v = _lg(W_in, W_load, L_load, L_tail)
     return (C.GAIN_0
             * 10.0 ** (_potencia(C.GAIN_EXP, v) + _correccion(C.GAIN_COR, v)))
 
 
-def v_a(Wd, Wl, Ll, L9):
+def v_a(W_in, W_load, L_load, L_tail):
     """Tension [V] del nodo `a` (drenador de la cola M9) en el centro.
 
     Es el margen de saturacion de M9: debe quedar sobre VA_MIN. Error 0.12 %.
@@ -137,12 +137,12 @@ def v_a(Wd, Wl, Ll, L9):
 
     Alrededor del nominal (exacto, para leer):
 
-        V(a) = 0.582 V + 0.189 lg10(Wd/0.725) + 0.234 lg10(L9/1.811)
+        V(a) = 0.582 V + 0.189 lg10(W_in/0.725) + 0.234 lg10(L_tail/1.811)
 
-    `Wl` y `Ll` salen en CERO exacto: el nodo `a` solo ve el par de entrada y
+    `W_load` y `L_load` salen en CERO exacto: el nodo `a` solo ve el par de entrada y
     la cola. Esa forma da 2.1 mV en media caja.
     """
-    v = _lg(Wd, Wl, Ll, L9)
+    v = _lg(W_in, W_load, L_load, L_tail)
     return C.VA_0 + _potencia(C.VA_EXP, v) + _correccion(C.VA_COR, v)
 
 
@@ -157,13 +157,13 @@ def forma_corta(digitos=3):
     f = "%%+.%df" % digitos
     def pot(exps):
         return "  ".join(("(%s/%.3f)^" + f) % (n, w, e)
-                          for n, w, e in zip(("Wd", "Wl", "Ll", "L9"), W, exps))
+                          for n, w, e in zip(("W_in", "W_load", "L_load", "L_tail"), W, exps))
     return "\n".join([
         "Iex(-) = %.1f nA  x  %s" % (C.IEX_MIN_0 * 1e9, pot(C.IEX_MIN_EXP)),
         "G      = %.3f     x  %s" % (C.GAIN_0, pot(C.GAIN_EXP)),
         "V(a)   = %.3f V   +  %s" % (C.VA_0, "  ".join(
             ("%+.3f lg10(%s/%.3f)" % (e, n, w))
-            for n, w, e in zip(("Wd", "Wl", "Ll", "L9"), W, C.VA_EXP)
+            for n, w, e in zip(("W_in", "W_load", "L_load", "L_tail"), W, C.VA_EXP)
             if abs(e) > 5e-4)),
     ])
 
@@ -191,21 +191,21 @@ def iex_max(iex_min_nA, gain_):
 
 # --- desapareamiento --------------------------------------------------------
 
-def sigma_vos(Wd, Wl, Ll, L9):
+def sigma_vos(W_in, W_load, L_load, L_tail):
     """Desviacion tipica [V] de la tension de entrada, por desapareamiento.
 
     Medida por Monte Carlo con los modelos del PDK (`sw_stat_mismatch=1`),
     150 geometrias x 200 tiradas. Error externo 5.6 %.
 
-    LA PALANCA ES `Ll`, NO EL PAR DE ENTRADA. Exponentes: Wd -0.44, Ll -1.07,
-    y Wl y L9 en 0.03 (no intervienen). El reflejo habitual de "agrandar el par
+    LA PALANCA ES `L_load`, NO EL PAR DE ENTRADA. Exponentes: W_in -0.44, L_load -1.07,
+    y W_load y L_tail en 0.03 (no intervienen). El reflejo habitual de "agrandar el par
     de entrada" da 1.7x de mejora; guiarse por esta ley da 3.1x por la misma
     area. El par de carga pone el suelo: en subumbral gm = I/(n*VT) para los
     dos pares con la misma corriente, asi que la carga refiere su desviacion a
     la entrada casi con ganancia unidad.
     """
     from math import log10
-    v = (1.0, log10(Wd), log10(Wl), log10(Ll), log10(L9))
+    v = (1.0, log10(W_in), log10(W_load), log10(L_load), log10(L_tail))
     return 10.0 ** sum(c * x for c, x in zip(C.SIGMA_VOS, v))
 
 
@@ -248,7 +248,7 @@ def source_ro(iex_nA, Wo=None, Lo=None):
                      + C.RO_SALIDA[2]) * u + C.RO_SALIDA[3])
 
 
-def c_in(Wd, Wl, Ll, L9):
+def c_in(W_in, W_load, L_load, L_tail):
     """Capacidad de entrada [fF] por pin (Vin o Vin_neg).
 
     ES EL DUAL DEL `C_in` DE LA NEURONA: lo que la etapa anterior tiene que
@@ -261,14 +261,14 @@ def c_in(Wd, Wl, Ll, L9):
     Medida con `.ac` a 1 kHz, una fuente por geometria, 300 puntos.
     De 0.86 a 5.65 fF en la caja; mediana 2.31 fF. Error externo 0.73 %.
 
-    Depende casi solo de `Wd` (exponente 0.934, cerca de 1 como corresponde a
-    una capacidad de puerta con `Ld` fijo). `Wl` y `Ll` estan en 0.01: no
-    intervienen. El 0.934 en vez de 1.0, y el termino de `L9`, son el efecto
+    Depende casi solo de `W_in` (exponente 0.934, cerca de 1 como corresponde a
+    una capacidad de puerta con `L_in` fijo). `W_load` y `L_load` estan en 0.01: no
+    intervienen. El 0.934 en vez de 1.0, y el termino de `L_tail`, son el efecto
     Miller: `Cgd` se multiplica por (1 + ganancia) y la ganancia si depende de
     las otras dimensiones.
     """
     from math import log10
-    v = (1.0, log10(Wd), log10(Wl), log10(Ll), log10(L9))
+    v = (1.0, log10(W_in), log10(W_load), log10(L_load), log10(L_tail))
     return 10.0 ** sum(c * x for c, x in zip(C.C_IN, v)) * 1e15
 
 
@@ -346,15 +346,15 @@ def en_caja_bias(Wn, Ln, Wp, Lp):
 
 # --- geometria --------------------------------------------------------------
 
-def area(Wd, Wl, Ll, L9):
+def area(W_in, W_load, L_load, L_tail):
     """Area activa [um2] de la etapa diferencial (sin los espejos de salida)."""
-    return Wd * C.LD + 2.0 * Wl * Ll + C.W9 * L9
+    return W_in * C.LD + 2.0 * W_load * L_load + C.W_tail * L_tail
 
 
-def en_caja(Wd, Wl, Ll, L9):
+def en_caja(W_in, W_load, L_load, L_tail):
     """True si la geometria cae dentro de la caja donde se midieron las leyes."""
     return all(lo <= v <= hi for v, (lo, hi) in
-               zip((Wd, Wl, Ll, L9), C.CAJA))
+               zip((W_in, W_load, L_load, L_tail), C.CAJA))
 
 
 # --- esquinas ---------------------------------------------------------------

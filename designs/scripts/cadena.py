@@ -21,7 +21,7 @@ Los seis acoplos que se comprueban, y por que cada uno:
   2. `source_ro` del encoder contra lo que el LIF tolera. El LIF tiene
      `freq_error_from_source`: una fuente blanda mete error de frecuencia.
   3. Carga de los spikes: el STDP cuelga capacidad de las salidas del LIF.
-     `c_load_max(W_M7M8)` es el limite.
+     `c_load_max(W_buf)` es el limite.
   4. Ventana del STDP contra los INTERVALOS que la capa 1 produce. Si `tau` no
      solapa, no hay pares que aprender.
   5. `Iout` del STDP dentro de la ventana de la capa 2. Es el acoplo que nadie
@@ -121,7 +121,7 @@ def resuelve(spec: CadenaSpec) -> CadenaDesign:
     # ---- 2. LIF capa 1 ----------------------------------------------------
     l1 = _lif(NeuronSpec(iex_range=(iex_lo, iex_hi)))
     c.bloques["LIF capa 1"] = l1
-    W, Lg = l1.params["W_M5"], l1.params["L_M5"]
+    W, Lg = l1.params["W_reset"], l1.params["L_reset"]
     f_lo, f_hi = LL.freq(W, Lg, iex_lo), LL.freq(W, Lg, iex_hi)
 
     # acoplo 1: Iex dentro de la ventana
@@ -154,14 +154,14 @@ def resuelve(spec: CadenaSpec) -> CadenaDesign:
 
     # acoplo 3: carga de los spikes
     cl = SL.c_in(spec.n_post, "post")
-    cl_max = LL.c_load_max(l1.params["W_M7M8"])
+    cl_max = LL.c_load_max(l1.params["W_buf"])
     c.acoplos["3. carga en los spikes"] = (
         "%.2f fF (%d sinapsis) contra %.0f fF que mueve el LIF"
         % (cl * 1e15, spec.n_post, cl_max))
     if cl * 1e15 > cl_max:
         c.add(Severity.ERROR, "c_load",
               "las sinapsis cargan mas de lo que el inversor del LIF mueve",
-              "sube `W_M7M8` o reparte las sinapsis en mas lineas")
+              "sube `W_buf` o reparte las sinapsis en mas lineas")
 
     # acoplo 4: la ventana contra los intervalos
     fc = SL.f_cubierta(st.params["itd_nA"] * 1e-9, int(st.params["nCdep"])) / 1e3
@@ -182,7 +182,7 @@ def resuelve(spec: CadenaSpec) -> CadenaDesign:
     # un solo diseno de neurona para las dos capas es mas barato de verificar,
     # de caracterizar y de poner en layout que dos distintos.
     from lif_design.solver import NOMINAL as _LIF_NOM
-    _wn, _ln = _LIF_NOM["W_M5"], _LIF_NOM["L_M5"]
+    _wn, _ln = _LIF_NOM["W_reset"], _LIF_NOM["L_reset"]
     _a, _b = LL.iex_window(_wn, _ln)
     if _a <= iout_max * 0.05 and iout_max <= _b:
         g2 = (_wn, _ln)
@@ -207,9 +207,9 @@ def resuelve(spec: CadenaSpec) -> CadenaDesign:
                          freq_range=(f2_obj * iout_max * 0.05 / iout_max, f2_obj)))
     if not l2.ok:
         l2 = _lif(NeuronSpec(iex_range=(iout_max * 0.05, iout_max),
-                             W_M5=g2[0], L_M5=g2[1]))
+                             W_reset=g2[0], L_reset=g2[1]))
     c.bloques["LIF capa 2"] = l2
-    W2, L2g = l2.params["W_M5"], l2.params["L_M5"]
+    W2, L2g = l2.params["W_reset"], l2.params["L_reset"]
     w2_lo, w2_hi = LL.iex_window(W2, L2g)
 
     # acoplo 5: Iout dentro de la ventana de la capa 2
@@ -240,7 +240,7 @@ def resuelve(spec: CadenaSpec) -> CadenaDesign:
     # el punto de trabajo sube capa a capa hasta salirse. Compensarlo con una
     # neurona mayor en la capa 2 sirve para UNA capa, no para una red.
     g_etapa = iout_max / w2_hi_def if (w2_hi_def := LL.iex_window(
-        *[_LIF_NOM[k] for k in ("W_M5", "L_M5")])[1]) else 0
+        *[_LIF_NOM[k] for k in ("W_reset", "L_reset")])[1]) else 0
     c.acoplos["9. ganancia por etapa"] = (
         "%d x %.0f = %.0f nA contra %.0f que admite la celda: %.3fx"
         % (spec.n_post, iout_1, iout_max, w2_hi_def, g_etapa))
@@ -304,7 +304,7 @@ def coherentes():
 
     c = resuelve(CadenaSpec(iex_min_nA=E["iex_min"], gain=E["gain"],
                             tau_stdp_us=S["tau_us"]))
-    W, Lg = LN["W_M5"], LN["L_M5"]
+    W, Lg = LN["W_reset"], LN["L_reset"]
     f1 = (LL.freq(W, Lg, E["iex_min"]),
           LL.freq(W, Lg, c.bloques["encoder"].predicted["iex_max [nA]"]))
     malas = []

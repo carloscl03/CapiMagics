@@ -44,7 +44,7 @@ S_MIN = 0.05   # V. Margen minimo al techo donde la ley de inyeccion vale.
 #
 # NO ES DECORATIVO. La ley se ajusto exigiendo `techo - vm > 0.05`, y es un
 # polinomio de grado 4 en `log10(techo - vm)`: por debajo de ese margen
-# log(s) -> -inf y la extrapolacion se dispara. Medido, con W6=0.26, L6=2.0:
+# log(s) -> -inf y la extrapolacion se dispara. Medido, con W_inj=0.26, L_inj=2.0:
 #
 #     techo - vm = 0.0437 V  ->  dV = 0.0001 mV
 #                  0.0237    ->       5.3e+08
@@ -73,18 +73,18 @@ def _evalua(co, v):
 
 # --- el techo ---------------------------------------------------------------
 
-def techo(W6, L6):
+def techo(W_inj, L_inj):
     """Tension [V] a la que la inyeccion se anula.
 
     Por encima NO HAY EQUILIBRIO: `dV -> 0`, la inyeccion ya no sostiene a la
     fuga y `vm` se queda clavado. Eso es la SATURACION del integrador, y dice a
     que frecuencia deja de leer cada geometria.
 
-    Depende solo de `W6` y `L6`. `C` no lo mueve nada (2.735 V para los tres
-    condensadores medidos) y `W6` apenas 23 mV en un factor 8 de anchura:
+    Depende solo de `W_inj` y `L_inj`. `C` no lo mueve nada (2.735 V para los tres
+    condensadores medidos) y `W_inj` apenas 23 mV en un factor 8 de anchura:
 
-        L6 = 0.28 um -> 2.73 V        L6 = 1.00 -> 2.35 V
-        L6 = 0.50    -> 2.42          L6 = 2.00 -> 2.33
+        L_inj = 0.28 um -> 2.73 V        L_inj = 1.00 -> 2.35 V
+        L_inj = 0.50    -> 2.42          L_inj = 2.00 -> 2.33
 
     7 coeficientes, 6.8 mV de error sobre 48 geometrias.
 
@@ -92,7 +92,7 @@ def techo(W6, L6):
     estaban topados por una malla de V0 que acababa en 2.45 V -- no se midio el
     techo, se midio el borde del barrido.
     """
-    u, w = log10(W6), log10(L6)
+    u, w = log10(W_inj), log10(L_inj)
     return (C.TECHO[0]
             + C.TECHO[1]*u + C.TECHO[2]*u*u + C.TECHO[3]*u**3
             + C.TECHO[4]*w + C.TECHO[5]*w*w + C.TECHO[6]*w**3)
@@ -100,10 +100,10 @@ def techo(W6, L6):
 
 # --- la fuga ----------------------------------------------------------------
 
-def fuga(vm, W1, W2, L2, Iref):
+def fuga(vm, W_leakpass, W_leak, L_leak, Iref):
     """Corriente de fuga [A] que descarga el condensador entre spikes.
 
-    `Iref` en amperios. `L1` va FIJO en `coeffs.L1_FIJO` (0.28 um): fijarlo
+    `Iref` en amperios. `L1` va FIJO en `coeffs.L_LEAKPASS_FIJO` (0.28 um): fijarlo
     cubre el 78 % del rango del nivel y el 98 % del de la pendiente, y con el
     fijo la ley baja de 5 variables a 4.
 
@@ -120,7 +120,7 @@ def fuga(vm, W1, W2, L2, Iref):
     La forma se eligio compitiendo familias: el polinomio de grado 3 (35 coef,
     7.37 %) contra `A + B*vm` con A y B cubicas (40 coef, 7.14 % pero peor
     cola), el grado 4 (70 coef, 5.56 % de media pero 16.9 % de cola) y colapsos
-    por `W2/L2` (10 coef, 9.59 % pero 28.6 % de cola).
+    por `W_leak/L_leak` (10 coef, 9.59 % pero 28.6 % de cola).
 
     La curva de aprendizaje es PLANA (8.77 % con 36 geometrias, 7.37 % con 360):
     es limite de modelo, no de dato. Barrer mas no bajaria de ~7 %.
@@ -128,13 +128,13 @@ def fuga(vm, W1, W2, L2, Iref):
     Y NO es separable: el doble centrado deja un residuo del 62.7 % con un
     segundo modo al 31 %, asi que `lg(I/Iref) != f(geometria) + g(vm)`.
     """
-    v = (log10(W1), log10(W2), log10(L2), vm)
+    v = (log10(W_leakpass), log10(W_leak), log10(L_leak), vm)
     return Iref * 10.0 ** _evalua(C.FUGA, v)
 
 
 # --- la inyeccion -----------------------------------------------------------
 
-def inyeccion(vm, W6, L6, Cf):
+def inyeccion(vm, W_inj, L_inj, Cf):
     """Salto [V] que da `vm` con cada spike. `Cf` en fF.
 
     LA VARIABLE NO ES `vm`, ES LA DISTANCIA AL TECHO. Con `s = techo - vm`, la
@@ -148,9 +148,9 @@ def inyeccion(vm, W6, L6, Cf):
     Ahora: 2.93 % LOO por geometria, 6.0 % en la peor, -6.4 % en el punto de
     trabajo. 70 coeficientes (grado 4): aqui gana en media Y en cola.
 
-    Leida como potencia alrededor de W6=0.25, L6=1.0, C=5111, s=0.5:
+    Leida como potencia alrededor de W_inj=0.25, L_inj=1.0, C=5111, s=0.5:
 
-        dV = 11.69 mV x (W6/0.25)^+0.62 (L6/1.00)^-1.10 (C/5111)^-0.98
+        dV = 11.69 mV x (W_inj/0.25)^+0.62 (L_inj/1.00)^-1.10 (C/5111)^-0.98
                       x ((techo-vm)/0.50)^+3.46 x 10^correccion
 
     El `C^-0.98` es `Q/C` casi exacto. Y el exponente +3.46 en la distancia al
@@ -160,10 +160,10 @@ def inyeccion(vm, W6, L6, Cf):
 
     Devuelve 0.0 en el techo y por encima.
     """
-    s = techo(W6, L6) - vm
+    s = techo(W_inj, L_inj) - vm
     if s < S_MIN:
         return 0.0        # ver S_MIN: fuera de la caja el grado 4 explota
-    a, b, c, d = log10(W6), log10(L6), log10(Cf), log10(s)
+    a, b, c, d = log10(W_inj), log10(L_inj), log10(Cf), log10(s)
     P = ((1.0, a, a*a, a**3, a**4), (1.0, b, b*b, b**3, b**4),
          (1.0, c, c*c, c**3, c**4), (1.0, d, d*d, d**3, d**4))
     t = 0.0
@@ -174,7 +174,7 @@ def inyeccion(vm, W6, L6, Cf):
 
 # --- el rizado: sin coeficientes --------------------------------------------
 
-def rizado(vm, W1, W2, L2, Iref, Cf, f_kHz):
+def rizado(vm, W_leakpass, W_leak, L_leak, Iref, Cf, f_kHz):
     """Excursion pico a pico [V] de `vm` en un periodo.
 
     LEY SIN COEFICIENTES:
@@ -191,12 +191,12 @@ def rizado(vm, W1, W2, L2, Iref, Cf, f_kHz):
     el pulso ocupa el 19 % del periodo y la fuga tambien corre durante la
     inyeccion. Es del orden del error de la propia ley de fuga.
     """
-    return fuga(vm, W1, W2, L2, Iref) / (f_kHz * 1e3 * Cf * 1e-15)
+    return fuga(vm, W_leakpass, W_leak, L_leak, Iref) / (f_kHz * 1e3 * Cf * 1e-15)
 
 
 # --- la composicion: vm no se ajusta, se RESUELVE ---------------------------
 
-def vm_equilibrio(W1, W2, L2, Iref, W6, L6, Cf, f_kHz):
+def vm_equilibrio(W_leakpass, W_leak, L_leak, Iref, W_inj, L_inj, Cf, f_kHz):
     """Tension de reposo [V] a esa frecuencia. `None` si satura o no hay solucion.
 
     Resuelve  dV(vm) = I_fuga(vm) / (f * C)  por biseccion sobre `vm`.
@@ -209,13 +209,13 @@ def vm_equilibrio(W1, W2, L2, Iref, W6, L6, Cf, f_kHz):
     mal condicionamiento del equilibrio: alli la curva es mas plana y el mismo
     error relativo en las leyes se traduce en mas milivoltios.
     """
-    tc = techo(W6, L6)
+    tc = techo(W_inj, L_inj)
     lo, hi = C.VM_RANGO[0], min(C.VM_RANGO[1], tc - S_MIN)
     if hi <= lo:
         return None
 
     def dif(vm):
-        return inyeccion(vm, W6, L6, Cf) - rizado(vm, W1, W2, L2, Iref, Cf, f_kHz)
+        return inyeccion(vm, W_inj, L_inj, Cf) - rizado(vm, W_leakpass, W_leak, L_leak, Iref, Cf, f_kHz)
 
     a, b = dif(lo), dif(hi)
     if a * b > 0:
@@ -230,7 +230,7 @@ def vm_equilibrio(W1, W2, L2, Iref, W6, L6, Cf, f_kHz):
     return 0.5 * (lo + hi)
 
 
-def f_satura(W1, W2, L2, Iref, W6, L6, Cf, f_max=20000.0):
+def f_satura(W_leakpass, W_leak, L_leak, Iref, W_inj, L_inj, Cf, f_max=20000.0):
     """Frecuencia [kHz] a la que esta geometria deja de leer.
 
     Por encima `vm` se pega al techo y ya no responde. Es el limite que
@@ -245,25 +245,25 @@ def f_satura(W1, W2, L2, Iref, W6, L6, Cf, f_max=20000.0):
     ok = None
     f = 10.0
     while f < f_max:                       # buscar un punto con equilibrio
-        if vm_equilibrio(W1, W2, L2, Iref, W6, L6, Cf, f) is not None:
+        if vm_equilibrio(W_leakpass, W_leak, L_leak, Iref, W_inj, L_inj, Cf, f) is not None:
             ok = f
             break
         f *= 1.5
     if ok is None:
         return 0.0
     lo, hi = ok, f_max
-    if vm_equilibrio(W1, W2, L2, Iref, W6, L6, Cf, hi) is not None:
+    if vm_equilibrio(W_leakpass, W_leak, L_leak, Iref, W_inj, L_inj, Cf, hi) is not None:
         return hi                          # no satura dentro del rango mirado
     for _ in range(30):
         m = (lo * hi) ** 0.5
-        if vm_equilibrio(W1, W2, L2, Iref, W6, L6, Cf, m) is not None:
+        if vm_equilibrio(W_leakpass, W_leak, L_leak, Iref, W_inj, L_inj, Cf, m) is not None:
             lo = m
         else:
             hi = m
     return lo
 
 
-def t_respuesta(vm, W1, W2, L2, Iref, Cf):
+def t_respuesta(vm, W_leakpass, W_leak, L_leak, Iref, Cf):
     """Tiempo de respuesta [us] del lector: `tau = C * vm / I_fuga`.
 
     ES UNA ESPECIFICACION, NO UN DETALLE. Cuando la neurona cambia de
@@ -279,33 +279,33 @@ def t_respuesta(vm, W1, W2, L2, Iref, Cf):
 
     Rango medido en el barrido de banda: 180 a 240 us de mediana.
     """
-    I = fuga(vm, W1, W2, L2, Iref)
+    I = fuga(vm, W_leakpass, W_leak, L_leak, Iref)
     return 1e6 * Cf * 1e-15 * vm / I if I > 0 else float('inf')
 
 
 # --- lo que el motor optimiza -----------------------------------------------
 
-def sensibilidad(W1, W2, L2, Iref, W6, L6, Cf, f_lo, f_hi):
+def sensibilidad(W_leakpass, W_leak, L_leak, Iref, W_inj, L_inj, Cf, f_lo, f_hi):
     """Pendiente [mV/decada] de `vm` frente a `log10(f)`. `None` si no cubre."""
-    a = vm_equilibrio(W1, W2, L2, Iref, W6, L6, Cf, f_lo)
-    b = vm_equilibrio(W1, W2, L2, Iref, W6, L6, Cf, f_hi)
+    a = vm_equilibrio(W_leakpass, W_leak, L_leak, Iref, W_inj, L_inj, Cf, f_lo)
+    b = vm_equilibrio(W_leakpass, W_leak, L_leak, Iref, W_inj, L_inj, Cf, f_hi)
     if a is None or b is None:
         return None
     return 1000.0 * (b - a) / log10(f_hi / f_lo)
 
 
-def resolucion(W1, W2, L2, Iref, W6, L6, Cf, f_lo, f_hi):
+def resolucion(W_leakpass, W_leak, L_leak, Iref, W_inj, L_inj, Cf, f_lo, f_hi):
     """Sensibilidad dividida por el rizado PEOR de la banda.
 
     El rizado peor esta siempre en el extremo de BAJA frecuencia, donde cada
     spike es una fraccion grande de la excursion. Es la figura de merito con la
     que se compara un integrador con otro.
     """
-    s = sensibilidad(W1, W2, L2, Iref, W6, L6, Cf, f_lo, f_hi)
+    s = sensibilidad(W_leakpass, W_leak, L_leak, Iref, W_inj, L_inj, Cf, f_lo, f_hi)
     if s is None:
         return None
-    v = vm_equilibrio(W1, W2, L2, Iref, W6, L6, Cf, f_lo)
-    r = 1000.0 * rizado(v, W1, W2, L2, Iref, Cf, f_lo)
+    v = vm_equilibrio(W_leakpass, W_leak, L_leak, Iref, W_inj, L_inj, Cf, f_lo)
+    r = 1000.0 * rizado(v, W_leakpass, W_leak, L_leak, Iref, Cf, f_lo)
     return None if r <= 0 else s / r
 
 
@@ -335,7 +335,7 @@ def ancho_ns(f_kHz):
 
 # --- LA INTERFAZ con el resto de la cadena -----------------------------------
 
-def c_in(W6, L6):
+def c_in(W_inj, L_inj):
     """Capacidad de entrada [fF]: la puerta de M6, que el spike del LIF mueve.
 
     ES EL DUAL DEL `C_in` DEL ENCODER. `NeuronSpec` acepta `c_in_max` como cota
@@ -347,12 +347,12 @@ def c_in(W6, L6):
 
     6 coeficientes, 0.87 % de error medio, 1.97 % peor.
     """
-    a, b = log10(W6), log10(L6)
+    a, b = log10(W_inj), log10(L_inj)
     v = (1.0, a, b, a*b, a*a, b*b)
     return 10.0 ** sum(k*x for k, x in zip(C.C_IN, v)) * 1e15
 
 
-def r_out(vm, W1, W2, L2, Iref):
+def r_out(vm, W_leakpass, W_leak, L_leak, Iref):
     """Impedancia de salida [ohm] en `vm`. `Iref` en amperios.
 
     `R_out = 1/(dI_fuga/dvm)`.
@@ -368,7 +368,7 @@ def r_out(vm, W1, W2, L2, Iref):
     Cubica de 56 coeficientes, 26.7 % K-fold por geometria sobre 3.9 decadas.
     Sale de la derivada de los DATOS, no de la derivada de la ley -- ver coeffs.
     """
-    v = (log10(W1), log10(W2), log10(L2), vm, log10(Iref))
+    v = (log10(W_leakpass), log10(W_leak), log10(L_leak), vm, log10(Iref))
     t = 0.0
     for k, ex in zip(C.R_OUT, C.EXPONENTES_ROUT):
         m = k
@@ -381,13 +381,13 @@ def r_out(vm, W1, W2, L2, Iref):
 
 # --- cajas ------------------------------------------------------------------
 
-def en_caja_fuga(W1, W2, L2, Iref):
+def en_caja_fuga(W_leakpass, W_leak, L_leak, Iref):
     """True si la geometria de la fuga cae donde se midio la ley."""
     return (all(lo <= v <= hi for v, (lo, hi) in
-                zip((W1, W2, L2), C.CAJA_FUGA))
+                zip((W_leakpass, W_leak, L_leak), C.CAJA_FUGA))
             and C.IREF_RANGO[0] <= Iref <= C.IREF_RANGO[1])
 
 
-def en_caja_iny(W6, L6, Cf):
+def en_caja_iny(W_inj, L_inj, Cf):
     """True si la geometria de la inyeccion cae donde se midio la ley."""
-    return all(lo <= v <= hi for v, (lo, hi) in zip((W6, L6, Cf), C.CAJA_INY))
+    return all(lo <= v <= hi for v, (lo, hi) in zip((W_inj, L_inj, Cf), C.CAJA_INY))

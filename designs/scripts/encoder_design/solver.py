@@ -28,14 +28,14 @@ El orden importa y no es arbitrario:
 ORDEN DE LIBERACION cuando hay que tocar algo fijado, por coste de cambio. Sale
 de las leyes medidas, no de intuicion:
 
-  1. L9   la cola. No interviene en la ganancia (exponente 0.03) ni en el
+  1. L_tail   la cola. No interviene en la ganancia (exponente 0.03) ni en el
           desapareamiento (0.03), y no es un par apareado. Cambiarla no
           arrastra nada.
-  2. Wl   ancho de las cargas. Mueve la ganancia pero NO el desapareamiento
+  2. W_load   ancho de las cargas. Mueve la ganancia pero NO el desapareamiento
           (exponente 0.03).
-  3. Ll   largo de las cargas. Mueve la ganancia Y domina el desapareamiento
+  3. L_load   largo de las cargas. Mueve la ganancia Y domina el desapareamiento
           (exponente -1.07): tocarla se paga en sigma_Vos.
-  4. Wd   el par de entrada. Mueve la ganancia, el desapareamiento, y es el par
+  4. W_in   el par de entrada. Mueve la ganancia, el desapareamiento, y es el par
           apareado con mas peso en el layout. Lo ultimo que se toca.
 
 Sin numpy: la busqueda son unos pocos miles de evaluaciones de ~105 productos.
@@ -51,7 +51,7 @@ from .spec import EncoderDesign, EncoderSpec, Severity
 
 __all__ = ["design", "nominal", "NOMINAL_SPEC"]
 
-_ORDEN = ("Wd", "Wl", "Ll", "L9")
+_ORDEN = ("W_in", "W_load", "L_load", "L_tail")
 
 # --- el punto nominal -------------------------------------------------------
 #
@@ -80,14 +80,14 @@ _ORDEN = ("Wd", "Wl", "Ll", "L9")
 NOMINAL_SPEC = {"iex_min": 80.0, "gain": 0.40, "tradeoff": 0.5}
 
 # Verificado en ngspice (2026-09-01) con las leyes de esta version:
-#   dimensiones  Wd 0.725  Wl 0.947  Ll 0.394  L9 1.811
+#   dimensiones  W_in 0.725  W_load 0.947  L_load 0.394  L_tail 1.811
 #   predicho     80.0 / 286.5 nA   G=0.400   V(a)=582 mV
 #   ngspice      79.6 / 285.4 nA   G=0.401   V(a)=583 mV  (-0.5 %, -0.4 %, +0.1 %)
 #
 # El criterio se verifica solo: de los tres diseños de referencia, el que peor
-# valida (`lento`, -2.7 %) es el que tiene Ll = 0.280, pegado al borde.
+# valida (`lento`, -2.7 %) es el que tiene L_load = 0.280, pegado al borde.
 #
-# Para comparar, la celda original del equipo (Wd=0.5 Ld=10 Wl=2 Ll=0.28
+# Para comparar, la celda original del equipo (W_in=0.5 L_in=10 W_load=2 L_load=0.28
 # Wb=0.5 Lb=0.28) da 40.0/56.0 nA, G=0.075 y V(a)=41 mV: ganancia 4x menor,
 # excursion de 1.4x en vez de 3x, y M9 en triodo.
 _NOMINAL_CACHE: dict[str, float] | None = None
@@ -175,13 +175,13 @@ def _resolver(spec, libres, fijas, iex_obj, gain_obj, semilla=0):
 
 
 # Orden de liberacion por coste de cambio (ver docstring del modulo).
-_COSTE = ("L9", "Wl", "Ll", "Wd")
+_COSTE = ("L_tail", "W_load", "L_load", "W_in")
 
 _PORQUE = {
-    "L9": "no interviene ni en la ganancia ni en el desapareamiento",
-    "Wl": "mueve la ganancia pero no el desapareamiento",
-    "Ll": "mueve la ganancia y domina el desapareamiento: se paga en sigma_Vos",
-    "Wd": "es el par apareado de entrada, lo mas caro de tocar",
+    "L_tail": "no interviene ni en la ganancia ni en el desapareamiento",
+    "W_load": "mueve la ganancia pero no el desapareamiento",
+    "L_load": "mueve la ganancia y domina el desapareamiento: se paga en sigma_Vos",
+    "W_in": "es el par apareado de entrada, lo mas caro de tocar",
 }
 
 
@@ -328,8 +328,8 @@ def design(spec: EncoderSpec | None = None) -> EncoderDesign:
         g, fijas = _resolver_liberando(spec, d, dict(fijas), iex_obj, gain_obj)
 
     d.params = {n: round(x, 3) for n, x in zip(_ORDEN, g)}
-    d.params["Ld"] = C.LD
-    d.params["W9"] = C.W9
+    d.params["L_in"] = C.LD
+    d.params["W_tail"] = C.W_tail
 
     # --- 3. que sale de aqui ----------------------------------------------
     ie, gn, va = L.iex_min(*g), L.gain(*g), L.v_a(*g)
@@ -370,7 +370,7 @@ def design(spec: EncoderSpec | None = None) -> EncoderDesign:
         d.add(Severity.WARNING, "C_in",
               f"{ci:.2f} fF supera los {spec.c_in_max:.2f} fF que la etapa "
               f"anterior puede mover",
-              "C_in va casi solo con Wd (exponente 0.93): bajarlo exige "
+              "C_in va casi solo con W_in (exponente 0.93): bajarlo exige "
               "reducir el par de entrada, lo que se paga en apareamiento")
 
     # la interfaz con el LIF: source_ro es lo que NeuronSpec pide como contexto

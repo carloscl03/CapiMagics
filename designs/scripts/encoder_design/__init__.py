@@ -53,7 +53,7 @@ Precision (medida fuera de muestra, y el lazo cerrado verificado en ngspice):
 Solo stdlib: math, random, dataclasses, enum. Sin numpy a proposito, igual que
 lif_design.
 """
-from .coeffs import CAJA, CAJA_BIAS, LD, LO, REF, VBIAS_NOMINAL, W9, WO
+from .coeffs import CAJA, CAJA_BIAS, LD, LO, REF, VBIAS_NOMINAL, W_tail, WO
 from .laws import (
     area, c_in, corner_factors, en_caja, en_caja_bias, forma_corta,
     gain, i_ref,
@@ -70,5 +70,5 @@ __all__ = [
     "source_ro", "iex_para_ro", "c_in", "i_ref", "en_caja_bias",
     "corner_factors", "forma_corta", "CONDICIONES",
     "VA_MIN",
-    "CAJA", "CAJA_BIAS", "REF", "LD", "W9", "WO", "LO", "VBIAS_NOMINAL",
+    "CAJA", "CAJA_BIAS", "REF", "LD", "W_tail", "WO", "LO", "VBIAS_NOMINAL",
 ]

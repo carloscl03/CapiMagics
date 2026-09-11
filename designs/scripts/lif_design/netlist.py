@@ -53,12 +53,12 @@ def de_diseño(design, handles, name: str = "lif") -> str:
         fet("4", _RESET, "spike_neg", "Vss", "Vss", "nfet_03v3", w_inv, l_inv),
         # inversor 2: el bufer de salida, el unico que el solver dimensiona
         fet("7", "spike", "spike_neg", "Vdd", "Vdd", "pfet_03v3",
-            d["W_M7M8"], l_inv),
+            d["W_buf"], l_inv),
         fet("8", "spike", "spike_neg", "Vss", "Vss", "nfet_03v3",
-            d["W_M7M8"], l_inv),
+            d["W_buf"], l_inv),
         # M5, el interruptor que descarga la membrana
         fet("5", "Iin", _RESET, "Vss", "Vss", "nfet_03v3",
-            d["W_M5"], d["L_M5"]),
+            d["W_reset"], d["L_reset"]),
         # el banco. m=n en vez de n instancias: el comparador combina
         # dispositivos en paralelo, asi que las dos formas casan con la
         # extraccion, y una sola linea dice lo que hay.

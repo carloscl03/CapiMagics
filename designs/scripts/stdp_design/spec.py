@@ -19,11 +19,11 @@ Lo propio de esta celda frente a las otras tres:
 
   * HAY UN TERMINO NO HEBBIANO. La inyeccion de carga hace derivar el peso con
     actividad presinaptica SOLA. En la potenciacion se anula eligiendo
-    `W1 = 0.357`; en la depresion no cruza cero y hay que vivir con 1.7 mV de
+    `W_trrd_pot = 0.357`; en la depresion no cruza cero y hay que vivir con 1.7 mV de
     peor caso. Se reporta siempre, porque no se puede eliminar del todo.
 
-  * `L1` ES DISCRETA. No es una simplificacion: dejando fuera una `L` entera el
-    error de prediccion es del 43-47 %. El motor elige de `L1_DISC`.
+  * `L_trrd_pot` ES DISCRETA. No es una simplificacion: dejando fuera una `L` entera el
+    error de prediccion es del 43-47 %. El motor elige de `L_TRRD_POT_DISC`.
 
   * LA VENTANA SE ACOPLA CON LA NEURONA. `tau` tiene que solapar con los
     intervalos entre spikes que el LIF produce. Pedir una ventana que no los
@@ -81,7 +81,7 @@ class StdpSpec:
                       para reportar la carga que ve la neurona. En el 4x2, 2 y 4.
 
     DIMENSIONES (cualquiera puede venir dada; se libera si estorba)
-      W4, W1, L1      lectura de las trazas. `L4` va FIJA a 0.28 (ver laws).
+      W_trrd_dep, W_trrd_pot, L_trrd_pot      lectura de las trazas. `L4` va FIJA a 0.28 (ver laws).
       nCdep, nCW      capacidades, en unidades de unitcap
       itd, itp        corrientes de decaimiento [A]
 
@@ -97,9 +97,9 @@ class StdpSpec:
     n_sinapsis_pre: int = 2
     n_sinapsis_post: int = 4
 
-    W4: float | None = None
-    W1: float | None = None
-    L1: float | None = None
+    W_trrd_dep: float | None = None
+    W_trrd_pot: float | None = None
+    L_trrd_pot: float | None = None
     nCdep: int | None = None
     nCW: int | None = None
     itd: float | None = None
@@ -110,7 +110,7 @@ class StdpSpec:
     @property
     def fixed_dims(self) -> dict[str, float]:
         d = {}
-        for k in ("W4", "W1", "L1", "nCdep", "nCW", "itd", "itp"):
+        for k in ("W_trrd_dep", "W_trrd_pot", "L_trrd_pot", "nCdep", "nCW", "itd", "itp"):
             v = getattr(self, k)
             if v is not None:
                 d[k] = v

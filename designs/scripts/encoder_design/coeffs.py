@@ -22,9 +22,9 @@ Error externo medido (validación 70/30, fuera de muestra):
 
 # --- dimensiones fijas de la celda ---------------------------------------
 LD = 1.600   # um, largo del par de entrada M1/M2
-W9 = 0.260   # um, ancho de la cola M9
+W_tail = 0.260   # um, ancho de la cola M9
 
-# --- caja de validez (Wd, Wl, Ll, L9) en um -------------------------------
+# --- caja de validez (W_in, W_load, L_load, L_tail) en um -------------------------------
 CAJA = ((0.260, 1.796), (0.300, 2.699), (0.280, 0.620), (0.801, 3.781))
 VBIAS_NOMINAL = 1.2   # V
 VDIF_MIN, VDIF_MAX = -0.14, 0.14   # V, donde se miden Iex(-) e Iex(+)
@@ -34,7 +34,7 @@ VDIF_MIN, VDIF_MAX = -0.14, 0.14   # V, donde se miden Iex(-) e Iex(+)
 # este punto. Es una reescritura EXACTA (discrepancia 1e-14), elegida para
 # que se lean: la constante es el valor aquí y los exponentes son los de la
 # ley de potencia local. REF es FIJO; no es el nominal que deriva el solver.
-REF = (0.725, 0.947, 0.394, 1.811)   # Wd, Wl, Ll, L9 en um
+REF = (0.725, 0.947, 0.394, 1.811)   # W_in, W_load, L_load, L_tail en um
 
 # --- base polinómica: exponentes de lg10(v/REF) ---------------------------
 # cúbica completa en 4 variables = 35 términos. Los 4 de grado 1 salen
@@ -54,8 +54,8 @@ EXPONENTES = (
 CORRECCION = (2, 3, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34,)
 
 # Iex a Vdif = -0.14 V.  En REF: 8.007e-08 A
-#   IEX_MIN = IEX_MIN_0 * (Wd/0.725)^-0.46797 (Wl/0.947)^-0.86524
-#              * (Ll/0.394)^+2.50952 (L9/1.811)^-1.60885 * 10^correccion
+#   IEX_MIN = IEX_MIN_0 * (W_in/0.725)^-0.46797 (W_load/0.947)^-0.86524
+#              * (L_load/0.394)^+2.50952 (L_tail/1.811)^-1.60885 * 10^correccion
 IEX_MIN_0 = 8.0067074e-08
 IEX_MIN_EXP = (-0.46796509, -0.86524365, 2.5095229, -1.6088519)
 IEX_MIN_COR = (
@@ -70,8 +70,8 @@ IEX_MIN_COR = (
 )
 
 # dV(x)/dVdif en el centro.  En REF: 0.4004 
-#   GAIN = GAIN_0 * (Wd/0.725)^+0.45189 (Wl/0.947)^-0.43638
-#              * (Ll/0.394)^+0.53311 (L9/1.811)^+0.02431 * 10^correccion
+#   GAIN = GAIN_0 * (W_in/0.725)^+0.45189 (W_load/0.947)^-0.43638
+#              * (L_load/0.394)^+0.53311 (L_tail/1.811)^+0.02431 * 10^correccion
 GAIN_0 = 0.40042334
 GAIN_EXP = (0.45189016, -0.43638221, 0.5331072, 0.024308063)
 GAIN_COR = (
@@ -150,13 +150,13 @@ ESQUINAS = {
 # ampliar midiendo. (En `stdp_design` pasar CAJA_W4 de 0.90 a 1.50 fue eso, y
 # desbloqueo disenos que el motor rechazaba.)
 #
-#   Wd  0.260 - 1.796    los dos son borde de barrido
-#   Wl  0.300 - 2.699    idem
-#   Ll  0.280 - 0.620    el 0.280 es el MINIMO DEL PDK                  ✅
+#   W_in  0.260 - 1.796    los dos son borde de barrido
+#   W_load  0.300 - 2.699    idem
+#   L_load  0.280 - 0.620    el 0.280 es el MINIMO DEL PDK                  ✅
 #                        el 0.620 es borde de barrido
-#   L9  0.801 - 3.781    los dos son borde de barrido
+#   L_tail  0.801 - 3.781    los dos son borde de barrido
 #
-# Historia que conviene no repetir: el suelo de Ll estuvo en 0.30 por un error
+# Historia que conviene no repetir: el suelo de L_load estuvo en 0.30 por un error
 # mio (confundi el L minimo con el W minimo). Corregirlo a 0.28 bajo el area
 # un 26 pct. Una frontera sin nivel declarado se hereda sin revisar.
 #

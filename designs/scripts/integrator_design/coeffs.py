@@ -28,7 +28,7 @@ EXPONENTES = (
 # --- la FUGA: I_fuga/Iref = 10^(FUGA . base(lgW1, lgW2, lgL2, vm)) ----
 # L1 va FIJO en 0.28 um: fijarlo cubre el 78 %% del rango de A y el 98 %%
 # del de B, y con el fijo la ley baja de 5 variables a 4.
-L1_FIJO = 0.28
+L_LEAKPASS_FIJO = 0.28
 FUGA = (
     -1.8034352, 2.8990814, -1.5455872, 0.27415844,
     0.57057967, -0.35519937, 0.002768675, -0.34676867,
@@ -42,8 +42,8 @@ FUGA = (
 )
 
 # --- el TECHO: techo[V] = TECHO . (1, u,u^2,u^3, w,w^2,w^3) -----------
-# con u = lg10(W6), w = lg10(L6).  C NO interviene (2.735 V para los
-# tres condensadores medidos) y W6 apenas 23 mV en un factor 8.
+# con u = lg10(W_inj), w = lg10(L_inj).  C NO interviene (2.735 V para los
+# tres condensadores medidos) y W_inj apenas 23 mV en un factor 8.
 TECHO = (
     2.341904, 0.035108557, 0.097721015, -0.076739596,
     0.0027669843, 0.24375494, -1.8114291,
@@ -53,12 +53,12 @@ TECHO = (
 # Variables: lgW6, lgL6, lgC, lg(techo - vm).
 #
 # REHECHA (2026-09-07) sobre `iny_util.npz`: 100 geometrias x 26 valores de vm
-# DENSAS donde el motor opera de verdad (W6 0.26-1.0, L6 1.0-2.8, C 3000-18000,
+# DENSAS donde el motor opera de verdad (W_inj 0.26-1.0, L_inj 1.0-2.8, C 3000-18000,
 # vm 1.0-2.25).
 #
 # La anterior salia de `iny3.npz` -- 200 geometrias aleatorias sobre una caja
 # mucho mas ancha -- y daba 4.03 % de LOO ahi. Pero la validacion de 84 puntos
-# mostro que el motor SIEMPRE elige L6=2.0, W6 en {0.26,0.5} y C en {5111,12000}:
+# mostro que el motor SIEMPRE elige L_inj=2.0, W_inj en {0.26,0.5} y C en {5111,12000}:
 # una esquina con poquisimo apoyo. En el punto de trabajo fallaba un -25.6 %,
 # que por la pendiente d(ln dV)/dvm = 6.9/V da EXACTAMENTE los -43 mV de sesgo
 # medidos en vm.
@@ -105,9 +105,9 @@ EXPONENTES_INY = (
 )
 
 # --- cajas de validez -------------------------------------------------
-CAJA_FUGA = ((0.5, 4), (0.5, 4), (0.28, 10))   # W1, W2, L2 [um]
+CAJA_FUGA = ((0.5, 4), (0.5, 4), (0.28, 10))   # W_leakpass, W_leak, L_leak [um]
 IREF_RANGO = (5e-09, 1e-07)   # A
-CAJA_INY = ((0.256, 1.98), (0.283, 1.99), (802, 1.94e+04))    # W6, L6 [um], C [fF]
+CAJA_INY = ((0.256, 1.98), (0.283, 1.99), (802, 1.94e+04))    # W_inj, L_inj [um], C [fF]
 VM_RANGO = (1.00, 2.45)   # V
 FUGA_MIN = 0.30   # la ley de fuga vale donde I_fuga > FUGA_MIN * Iref
 
@@ -188,13 +188,13 @@ C_IN = (-14.91974, 1.0031535, 0.77089614, 0.00092089657, -0.0024814056, 0.149888
 # NIVEL de cada frontera.  ✅ = MEDIDA directamente.
 # Sin marca = donde se dejo de barrer; se puede ampliar midiendo.
 #
-#   CAJA_FUGA  W1, W2 0.5-4      borde de barrido
-#              L2  0.28 - 10     el 0.28 es MINIMO DEL PDK              ✅
+#   CAJA_FUGA  W_leakpass, W_leak 0.5-4      borde de barrido
+#              L_leak  0.28 - 10     el 0.28 es MINIMO DEL PDK              ✅
 #                                el 10 es borde de barrido
-#   CAJA_INY   W6 0.256 - 1.98   borde de barrido los dos
-#              L6 0.283 - 1.99   borde de barrido los dos
+#   CAJA_INY   W_inj 0.256 - 1.98   borde de barrido los dos
+#              L_inj 0.283 - 1.99   borde de barrido los dos
 #              C  802 - 1.94e4   borde de barrido los dos
 #   FUGA_MIN   0.30              CONDICION DE VALIDEZ medida: la ley de fuga
 #                                solo vale donde I_fuga > 0.30 * Iref     ✅
-#   L1_FIJO    0.28              fijarlo cubre el 78 pct del rango de A y el
+#   L_LEAKPASS_FIJO    0.28              fijarlo cubre el 78 pct del rango de A y el
 #                                98 pct de los casos: criterio MEDIDO      ✅

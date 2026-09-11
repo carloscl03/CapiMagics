@@ -540,16 +540,16 @@ fija la interaccion desaparece por construccion.
 ```
 
 ```python
-SUELO_W  = (-2.775747e-03, -1.481682e-03)      # suelo[V] = a*W4 + b   (0.03 %)
+SUELO_W  = (-2.775747e-03, -1.481682e-03)      # suelo[V] = a*W_trrd_dep + b   (0.03 %)
 NUCLEO_W = (
-    (+4.349992e-01, -2.128562e+00, -2.074077e+01),   # c_V     cuadratica en ln(W4)
+    (+4.349992e-01, -2.128562e+00, -2.074077e+01),   # c_V     cuadratica en ln(W_trrd_dep)
     (-8.902535e-01, +1.475265e+00, +2.274034e+01),   # c_logV
     (-3.021607e-01, +2.972607e+00, +2.121030e+01),   # c_1
 )
-# DVw(V, W4) = suelo - exp(c_V*V + c_logV*ln(V) + c_1)
+# DVw(V, W_trrd_dep) = suelo - exp(c_V*V + c_logV*ln(V) + c_1)
 ```
 
-**11 numeros.** Valida para `W4` en [0.22, 0.90] um y `Vdep` en [0.50, 1.00] V.
+**11 numeros.** Valida para `W_trrd_dep` en [0.22, 0.90] um y `Vdep` en [0.50, 1.00] V.
 (El encoder necesitaba 35 por ley; la diferencia no es el circuito, es haber
 reducido bien los grados de libertad antes de ajustar.)
 
@@ -571,11 +571,11 @@ Familia ganadora `E3` (4 coef), distinta de la de depresion: no hay una familia
 "correcta", se compite en cada caso.
 
 ```python
-SUELO_POT = (+7.666903e-04, -2.738296e-04)   # suelo[V] = a*W1 + b; cruza en W=0.357
+SUELO_POT = (+7.666903e-04, -2.738296e-04)   # suelo[V] = a*W_trrd_pot + b; cruza en W=0.357
 ```
 
 **El suelo de potenciacion NO depende de `L`** -- identico a 4 cifras en las tres
-medidas -- y **se anula solo** eligiendo `W1 = 0.357 um`. Contrastado con el de
+medidas -- y **se anula solo** eligiendo `W_trrd_pot = 0.357 um`. Contrastado con el de
 depresion, cuyos dos terminos son negativos y por tanto **no cruza**: alli hay
 que jugar con la `L` de M3 y aceptar un nulo por cancelacion con 3 mV de
 dispersion en esquinas. Dos problemas distintos y dos remedios distintos.
@@ -610,7 +610,7 @@ Las dos mitades, con estimulos distintos y signos opuestos, dan el mismo numero.
 Con el:
 
 ```
-  DVw(V, W4, CW) = DVw_10(V, W4) * (10 + 0.5) / (nCW + 0.5)      0.04 % de error
+  DVw(V, W_trrd_dep, CW) = DVw_10(V, W_trrd_dep) * (10 + 0.5) / (nCW + 0.5)      0.04 % de error
 ```
 
 **Y esa parasita es la puerta de M5**, medido barriendo su geometria:
@@ -639,16 +639,16 @@ a tasa `r`, la deriva media del peso va como `r^2*(A+ tau+ - A- tau-)`; si no es
 cero, los pesos se van al rail. Con `tau+ = tau-` queda **`A+ = A-`**.
 
 Cruzando esa condicion con el hecho medido de que el suelo de potenciacion se
-anula en `W1 = 0.357` (independiente de `L`), la solucion es **unica**:
+anula en `W_trrd_pot = 0.357` (independiente de `L`), la solucion es **unica**:
 
 ```
-  W4 = 0.30   L4 = 0.28   ->  A- = 223 mV
-  W1 = 0.357  L1 = 0.40   ->  A+ = 222 mV, suelo NULO
+  W_trrd_dep = 0.30   L_trrd_dep = 0.28   ->  A- = 223 mV
+  W_trrd_pot = 0.357  L_trrd_pot = 0.40   ->  A+ = 222 mV, suelo NULO
 ```
 
-`L1 = 2.00` queda **descartada**: ninguna `W` dentro del proceso alcanza a
+`L_trrd_pot = 2.00` queda **descartada**: ninguna `W` dentro del proceso alcanza a
 equilibrar (su maximo es 141 mV contra los 209 minimos de la depresion). Con
-`L1 = 0.80` y `W1 = 0.357` harian falta `W4` por debajo del minimo. Las dos
+`L_trrd_pot = 0.80` y `W_trrd_pot = 0.357` harian falta `W_trrd_dep` por debajo del minimo. Las dos
 condiciones juntas fijan las cuatro dimensiones.
 
 **Lazo cerrado sobre el netlist propuesto**, midiendo `Iout` -- lo que la
@@ -678,8 +678,8 @@ escrita de memoria. `+1` proporcional, `~0` ortogonal, `-1` inversa.
 
 ```
   perilla      A-      A+     tau   suelo-  suelo+  S/ruido
-  W4        +0.33      ~0      ~0   +0.36     ~0    -0.03
-  W1           ~0   +0.78      ~0      ~0   -0.63      ~0
+  W_trrd_dep        +0.33      ~0      ~0   +0.36     ~0    -0.03
+  W_trrd_pot           ~0   +0.78      ~0      ~0   -0.63      ~0
   CW        -0.95   -0.95      ~0   -0.95   -0.95      ~0
   Cdep         ~0      ~0   +1.00      ~0      ~0      ~0
   Itd          ~0      ~0   -1.00      ~0      ~0      ~0
@@ -691,20 +691,20 @@ Tres lecturas que no son obvias sin la matriz:
 La ventana temporal es una perilla limpia y aislada: se ajusta sin tocar
 amplitudes ni suelos.
 
-**`W4` no sirve para mejorar senal/ruido.** Mueve la senal (+0.33) y el suelo
+**`W_trrd_dep` no sirve para mejorar senal/ruido.** Mueve la senal (+0.33) y el suelo
 (+0.36) casi en la misma proporcion, asi que el cociente se queda (-0.03). En el
 lado de DEPRESION no hay ninguna perilla continua que ataque el termino no
 hebbiano -- la unica es la `L` de M3, que es discreta en la practica porque lo
 que se busca es el cruce por cero.
 
-**En POTENCIACION si la hay**: `W1` sube `A+` (+0.78) y baja el suelo (-0.63) a
+**En POTENCIACION si la hay**: `W_trrd_pot` sube `A+` (+0.78) y baja el suelo (-0.63) a
 la vez. Las dos mitades no son espejo en esto, y es la asimetria mas profunda
 de la celda.
 
 ### Lo que no es continuo, y por eso no sale en la matriz
 
 ```
-  L1     DISCRETA (0.40 / 0.80 / 2.00). A+ cae 2.4x de 0.40 a 0.80 y otro
+  L_trrd_pot     DISCRETA (0.40 / 0.80 / 2.00). A+ cae 2.4x de 0.40 a 0.80 y otro
          2.6x hasta 2.00. El suelo+ NO la nota (identico a 4 cifras)
   L(M3)  solo mueve el suelo-, y lo CRUZA POR CERO
   M9     fija el techo `n5`, o sea el maximo de Vdep0: 0.568 a 0.879 V
@@ -719,17 +719,17 @@ ella el numero es donde se dejo de barrer y se puede ampliar midiendo.
 
 | Parametro | Limite | Que pasa fuera |
 |---|---|---|
-| `W4` | >= 0.22 um ✅ | minimo del PDK |
-| `W4` | <= 1.50 um | decision de precision: LOO 4.02 % contra 8.05 % si se llega a 4.00. Hay datos hasta 4.00 |
-| `W4` | saturacion ✅ | con `Vdep`=1.0 y `W4`~1.5 la senal se aplana en ~1.63 V: choca con el recorrido del peso |
-| `W1` | 0.23 - 1.70 | los dos, borde de barrido |
-| `W1` | util <= ~1.28 ✅ | por encima `A+` se pasa de lo que la depresion puede igualar, y el suelo+ crece 0.77 mV/um |
+| `W_trrd_dep` | >= 0.22 um ✅ | minimo del PDK |
+| `W_trrd_dep` | <= 1.50 um | decision de precision: LOO 4.02 % contra 8.05 % si se llega a 4.00. Hay datos hasta 4.00 |
+| `W_trrd_dep` | saturacion ✅ | con `Vdep`=1.0 y `W_trrd_dep`~1.5 la senal se aplana en ~1.63 V: choca con el recorrido del peso |
+| `W_trrd_pot` | 0.23 - 1.70 | los dos, borde de barrido |
+| `W_trrd_pot` | util <= ~1.28 ✅ | por encima `A+` se pasa de lo que la depresion puede igualar, y el suelo+ crece 0.77 mV/um |
 | `Vdep` | >= 0.50 V ✅ | por debajo la senal se entierra: a 0.40 V son 0.050 mV de STDP contra 2.832 de inyeccion |
 | `Vdep` | <= 1.00 V ✅ | por encima la VENTANA pierde la forma exponencial y sale con meseta |
 | `itd` | >= ~16 pA ✅ | la fuga del dispositivo (0.8 pA, medida sin el `rshunt` del banco) pasa del 5 % de `Itd`. `tau` util hasta ~500 us |
 | `itd` | <= 7.4 nA | borde de barrido |
-| `L1` | 0.40 / 0.80 / 2.00 ✅ | NO interpolable: dejando fuera una `L` entera el error es 43-47 %, hasta 140 % |
-| `L4` | = 0.28 um ✅ | el optimo esta en el minimo y gana en los tres ejes; entre 0.28 y 0.45 la dependencia con `W` cambia de sentido |
+| `L_trrd_pot` | 0.40 / 0.80 / 2.00 ✅ | NO interpolable: dejando fuera una `L` entera el error es 43-47 %, hasta 140 % |
+| `L_trrd_dep` | = 0.28 um ✅ | el optimo esta en el minimo y gana en los tres ejes; entre 0.28 y 0.45 la dependencia con `W` cambia de sentido |
 
 **El suelo de 0.4 nA en `itd` que decia la primera version NO EXISTIA**: era el
 amperimetro en el extremo equivocado de la pila. El limite real esta 25 veces

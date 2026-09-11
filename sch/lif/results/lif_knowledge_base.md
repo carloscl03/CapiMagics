@@ -7,7 +7,7 @@ simulation with multi-cycle period averaging.
 Cell under test: [`../neurona_input_current.sch`](../neurona_input_current.sch).
 Current input — the cell receives `Iex` directly, so it carries no input mirror.
 
-Reference point: `W_M5 = 1.25 µm`, `L_M5 = 50 µm`, `Cm = 150 fF`, inverters at
+Reference point: `W_reset = 1.25 µm`, `L_reset = 50 µm`, `Cm = 150 fF`, inverters at
 PDK minimum (`W/L = 0.22/0.28 µm`).
 
 > **Simulation settings are not a detail.** Use `.tran 1n` and a transient long
@@ -90,7 +90,7 @@ frequency shifts under 0.7% with `C_load` from 0 to 1600 fF.
 
 The inverter is balanced: pull-up (M7) matches pull-down (M8) at equal W, so
 the spike is symmetric. Drive is independent of everything else — re-measured at
-`L_M5 = 25 µm` it gives 84.97 vs 85.07 µA/µm, under 1% apart.
+`L_reset = 25 µm` it gives 84.97 vs 85.07 µA/µm, under 1% apart.
 
 ### Input capacitance
 
@@ -162,10 +162,10 @@ criterion: area, validity margin, or maximum achievable `Vth`.
 | Knob | frequency | threshold | notes |
 |---|---|---|---|
 | `Iex` | primary, linear | **<1.2%** | the only clean knob |
-| `W_M5` | strong, `∝W^-1.08` | strong, via `W·L` | first order on both |
-| `L_M5` | strong, `∝L^-0.94` | moderate | |
+| `W_reset` | strong, `∝W^-1.08` | strong, via `W·L` | first order on both |
+| `L_reset` | strong, `∝L^-0.94` | moderate | |
 | `Cm` | **none** | primary | sets swing too |
-| `W_M7M8` | none | none | fan-out only |
+| `W_buf` | none | none | fan-out only |
 
 ---
 
@@ -176,10 +176,10 @@ Measured, not assumed. Values marked ✅ have a directly measured boundary.
 | Parameter | Limit | What happens outside |
 |---|---|---|
 | `f` | **≤ ~4500 kHz** ✅ | reset does not complete; period floor ~215 ns |
-| `W_M5` | **≤ 3.5 µm** ✅ | at 4.0 µm `Vm_min` = −0.058 V; depends on `Cm` |
-| `W_M5` | ≥ 0.22 µm | PDK minimum |
-| `L_M5` | **≤ 50 µm** ✅ | L=60 does not converge |
-| `L_M5` | ≥ 20 µm ✅ | below 25 µm the frequency error rises to 5–7% |
+| `W_reset` | **≤ 3.5 µm** ✅ | at 4.0 µm `Vm_min` = −0.058 V; depends on `Cm` |
+| `W_reset` | ≥ 0.22 µm | PDK minimum |
+| `L_reset` | **≤ 50 µm** ✅ | L=60 does not converge |
+| `L_reset` | ≥ 20 µm ✅ | below 25 µm the frequency error rises to 5–7% |
 | `Cm` | ≥ `Cm_min(W,L)` ✅ | membrane leaves the rails |
 | `Cm` | ≥ 50 fF | the `Vth` law diverges (at 25 fF it predicts 5.83 V > VDD) |
 | `Iex` | **no floor** ✅ | verified down to 5 nA with constant gain and swing |
@@ -416,7 +416,7 @@ the law would need refitting, not refining), if `CM_FLOOR` drops well below
 
 ## Consumo de corriente (2026-09-02)
 
-Medido sobre la celda v3 del equipo (`W_M5=2.3, L_M5=50, Cm=280 fF,
+Medido sobre la celda v3 del equipo (`W_reset=2.3, L_reset=50, Cm=280 fF,
 inversores W=0.5/0.28`), promediando `i(vdd)` en transitorio:
 
     Iex [nA]    f [kHz]    I media [nA]    de la cual Iex

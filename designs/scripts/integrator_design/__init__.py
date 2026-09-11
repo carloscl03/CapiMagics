@@ -19,7 +19,7 @@ Lo que lo distingue de los otros dos:
   * el rizado tiene ley SIN COEFICIENTES: I_fuga/(f*C)
   * `vm` no se ajusta, se RESUELVE componiendo fuga e inyeccion
 """
-from .coeffs import BANDA_CADENA, CAJA_FUGA, CAJA_INY, IREF_RANGO, L1_FIJO, VM_RANGO
+from .coeffs import BANDA_CADENA, CAJA_FUGA, CAJA_INY, IREF_RANGO, L_LEAKPASS_FIJO, VM_RANGO
 from .laws import (
     ancho_ns, c_in, en_caja_fuga, en_caja_iny, f_satura, fuga, inyeccion,
     r_out,
@@ -35,5 +35,5 @@ __all__ = [
     "sensibilidad", "resolucion", "f_satura", "ancho_ns", "t_respuesta",
     "c_in", "r_out",
     "en_caja_fuga", "en_caja_iny",
-    "BANDA_CADENA", "CAJA_FUGA", "CAJA_INY", "IREF_RANGO", "L1_FIJO", "VM_RANGO",
+    "BANDA_CADENA", "CAJA_FUGA", "CAJA_INY", "IREF_RANGO", "L_LEAKPASS_FIJO", "VM_RANGO",
 ]

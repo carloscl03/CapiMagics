@@ -66,15 +66,15 @@ así son segundos.
 diseño original, pero se equivocó un +25% en un diseño lejano y un +59% en
 sensibilidad en otro. Sirve para explorar, NO para publicar cifras.
 
-## 4. La fuga: la planitud la manda `L2` y solo `L2`
+## 4. La fuga: la planitud la manda `L_leak` y solo `L_leak`
 
 93 geometrías barridas en DC. Métrica: cuánto varía la corriente dentro de su
 rango útil (desde que conduce hasta 3.0 V).
 
-    L2 (espejo)       0.28 -> 4.8      1.0 -> 1.4      4.0 -> 1.4
+    L_leak (espejo)       0.28 -> 4.8      1.0 -> 1.4      4.0 -> 1.4
     L1 (diodo pfet)   0.28 -> 1.9      1.0 -> 1.9      4.0 -> 1.7
-    W2                0.5  -> 1.6      1.0 -> 1.7      2.0 -> 1.9
-    W1                0.5  -> 1.4      1.0 -> 1.8      2.0 -> 1.9
+    W_leak                0.5  -> 1.6      1.0 -> 1.7      2.0 -> 1.9
+    W_leakpass                0.5  -> 1.4      1.0 -> 1.8      2.0 -> 1.9
     Iref              10n  -> 2.0     200n -> 1.4
 
 En el original (todo a 0.28) la fuga va de 6.8 nA a 195 nA según dónde esté
@@ -84,15 +84,15 @@ espejo a 1.0 um la variación baja a 1.4x. Alargarlo más no aporta.
 `L1` conviene dejarlo CORTO: alargarlo sube el punto de arranque de 1.10 a
 1.50 V y estrecha el rango útil.
 
-## 5. La inyección: `W6` importa según el régimen
+## 5. La inyección: `W_inj` importa según el régimen
 
 30 geometrías x 5 tensiones de partida.
 
 Con C pequeño (1 pF) M6 equilibra el condensador dentro de los 32 ns pase lo que
-pase, y `W6` casi no importa (1051 vs 1425 mV entre W6=0.25 y 4.0). Con C grande
-(20 pF) la inyección queda limitada por corriente y `W6` manda (factor 7).
+pase, y `W_inj` casi no importa (1051 vs 1425 mV entre W_inj=0.25 y 4.0). Con C grande
+(20 pF) la inyección queda limitada por corriente y `W_inj` manda (factor 7).
 
-`L6 = 1.0` baja el techo de ~2.6 a ~2.2 V, por el aumento de Vth.
+`L_inj = 1.0` baja el techo de ~2.6 a ~2.2 V, por el aumento de Vth.
 
 ## 6. Resultado: 5.9x de resolución, a igual área
 
@@ -103,15 +103,15 @@ excursión por década no sirve aunque su media responda bien.
 Medido con transitorios directos (no con el modelo compuesto):
 
     diseño                          sensibilidad   rizado   RESOLUCIÓN
-    ORIGINAL  W6=1.0/0.28 Iref=50n    180 mV/dec    71 mV       2.5
-    MEJOR     W6=0.25/1.0 Iref=25n    280 mV/dec    19 mV      15.0
-              L2=1.0u, C sin cambiar                            5.9x
+    ORIGINAL  W_inj=1.0/0.28 Iref=50n    180 mV/dec    71 mV       2.5
+    MEJOR     W_inj=0.25/1.0 Iref=25n    280 mV/dec    19 mV      15.0
+              L_leak=1.0u, C sin cambiar                            5.9x
 
 Gana en las dos cosas: más sensibilidad Y un tercio del rizado, con el MISMO
 condensador y por tanto la misma área. Son tres dimensiones:
 
-    L2 (y L3, apareado)   0.28 -> 1.00 um     aplana la fuga
-    W6 / L6               1.0/0.28 -> 0.25/1.0   suaviza la inyección
+    L_leak (y L3, apareado)   0.28 -> 1.00 um     aplana la fuga
+    W_inj / L_inj               1.0/0.28 -> 0.25/1.0   suaviza la inyección
     Iref                  50 -> 25 nA
 
 ## 7. Tres correcciones que me hice durante el trabajo
@@ -175,7 +175,7 @@ Por que importa el rebote: la neurona tira picos de **43 uA** en cada disparo
 (22.5 ohm), 8 neuronas sincronizadas dan 7.7 mV y 32 dan 31 mV. En una red
 neuronal la actividad correlacionada es la norma.
 
-Y `L2 = 1.0` resulta arreglar TRES cosas por el mismo motivo fisico (mejor
+Y `L_leak = 1.0` resulta arreglar TRES cosas por el mismo motivo fisico (mejor
 impedancia de salida del espejo):
 
     planitud de la fuga    4.8x  -> 1.4x
@@ -228,19 +228,19 @@ El original ya sobra: 3.59 > 2.74. Solo se queda corto en el extremo superior
 
 ### 11.1 Anchura y resolucion COMPITEN
 
-    L6 corto (0.28)   techo alto (2.26 V)  -> mas anchura, peor rizado
-    L6 largo (1.00)   techo bajo (1.89 V)  -> menos anchura, mejor rizado
+    L_inj corto (0.28)   techo alto (2.26 V)  -> mas anchura, peor rizado
+    L_inj largo (1.00)   techo bajo (1.89 V)  -> menos anchura, mejor rizado
 
 Los limites FISICOS de la ventana de `vm`:
 
     SUELO   0.925 V   la fuga se anula; por debajo nada baja vm
-    TECHO   2.26 V con L6=0.28   /   1.89 V con L6=1.00
+    TECHO   2.26 V con L_inj=0.28   /   1.89 V con L_inj=1.00
 
 Frente de Pareto A IGUAL CONDENSADOR (5111 fF), con el rizado medido en el PEOR
 punto de la banda (el extremo de baja frecuencia, donde cada spike es una
 fraccion grande de la excursion):
 
-    decadas   resol |    L2    Iref |    W6    L6 |   banda [kHz]
+    decadas   resol |    L_leak    Iref |    W_inj    L_inj |   banda [kHz]
        4.59     1.0 |  0.28    200n |  0.25  0.28 |    1 - 24447
        4.13     2.6 |  0.28    200n |  0.25  1.00 |    2 - 24447
        3.97     3.6 |  0.28     50n |  0.25  1.00 |    1 -  6472
@@ -249,7 +249,7 @@ fraccion grande de la excursion):
     ORIGINAL  3.59     0.5 |  0.28     50n |  1.00  0.28
 
 **Se puede tener MAS anchura y 7x mas resolucion que el original, sin tocar el
-area.** El cambio que manda es `W6` de 1.0/0.28 a 0.25/1.00.
+area.** El cambio que manda es `W_inj` de 1.0/0.28 a 0.25/1.00.
 
 Con C = 20000 fF se llega a 4.69 decadas, pero la anchura tambien se paga en
 area, igual que la resolucion.
@@ -260,7 +260,7 @@ area, igual que la resolucion.
                resolucion y holgura
     compruebo  si esa banda cabe en las decadas disponibles (3.2 a 4.7 segun
                cuanta resolucion se sacrifique)
-    devuelvo   L2, W6, L6, Iref, C
+    devuelvo   L_leak, W_inj, L_inj, Iref, C
     reporto    pendiente, rizado, impedancia de salida y C_in
 
 `Iref` es una ENTRADA, no un parametro fijo: desplaza la ventana en frecuencia
@@ -268,7 +268,7 @@ sin cambiar su anchura. Es el analogo del `Vbias` del encoder.
 
 ### 11.3 Impedancias medidas
 
-    C_in (puerta de M6)   0.124 - 1.99 fF segun W6/L6; 0.295 con el recomendado
+    C_in (puerta de M6)   0.124 - 1.99 fF segun W_inj/L_inj; 0.295 con el recomendado
                           la neurona mueve hasta 300 fF: no es restriccion
     R_out en vm           1.74-1.82 GOhm a Iref=5 nA
                           0.37-0.40 GOhm a Iref=25 nA
@@ -336,12 +336,12 @@ DATO, no modelo. Distinguir las dos cosas antes de tocar nada ahorra horas -- en
 la caja ampliada del encoder la curva era plana y la respuesta fue justo la
 contraria (subir el grado, no barrer mas).
 
-El techo, medido con cuatro valores de L6:
+El techo, medido con cuatro valores de L_inj:
 
-    L6 = 0.28 um -> 2.323 +- 0.064 V
-    L6 = 0.50    -> 2.037 +- 0.053
-    L6 = 1.00    -> 1.953 +- 0.062
-    L6 = 2.00    -> 1.916 +- 0.067
+    L_inj = 0.28 um -> 2.323 +- 0.064 V
+    L_inj = 0.50    -> 2.037 +- 0.053
+    L_inj = 1.00    -> 1.953 +- 0.062
+    L_inj = 2.00    -> 1.916 +- 0.067
 
 **No es ley de potencia, es asintotico**: casi toda la caida ocurre entre 0.28 y
 0.5. Con solo dos valores se habria ajustado una recta y salido mal.
@@ -370,12 +370,12 @@ electronica para caracterizar, usa los datos en si mismos"). Resultados
 distintos y los dos utiles:
 
   * **Fuga**: colapsa parcialmente (8.2 % de dispersion) y los exponentes salen
-    `W1 +0.01, L1 -0.09, W2 +0.00, L2 +0.63`. **Los datos dicen por su cuenta
-    que solo `L2` interviene.** En prediccion empata con el polinomio (6.58 vs
+    `W_leakpass +0.01, L1 -0.09, W_leak +0.00, L_leak +0.63`. **Los datos dicen por su cuenta
+    que solo `L_leak` interviene.** En prediccion empata con el polinomio (6.58 vs
     6.06 %), asi que no gana en precision, pero SI en diagnostico.
   * **Inyeccion**: NO colapsa (54 %). Son dos regimenes -- con C pequeño M6
-    equilibra en los 32 ns y `W6` no importa; con C grande la inyeccion queda
-    limitada por corriente y `W6` manda. Dos escalados distintos no se
+    equilibra en los 32 ns y `W_inj` no importa; con C grande la inyeccion queda
+    limitada por corriente y `W_inj` manda. Dos escalados distintos no se
     superponen con un solo reescalado.
 
 **Imponer la fisica fallo dos veces**: el cociente `W/L` en el encoder y la
@@ -502,19 +502,19 @@ con ese centrado. La prueba correcta es el doble centrado.
 
 ```
   dim      resol  sensib  rizado  techo   C_in   R_out  t_resp    vm
-  W1          ~0      ~0      ~0     ~0     ~0   -0.03      ~0     ~0
-  W2          ~0      ~0      ~0     ~0     ~0   -0.05      ~0     ~0
-  L2          ~0      ~0   +0.02     ~0     ~0   +0.47   -0.02     ~0
+  W_leakpass          ~0      ~0      ~0     ~0     ~0   -0.03      ~0     ~0
+  W_leak          ~0      ~0      ~0     ~0     ~0   -0.05      ~0     ~0
+  L_leak          ~0      ~0   +0.02     ~0     ~0   +0.47   -0.02     ~0
   Iref     -0.71   +0.31   +1.02     ~0     ~0   -0.79   -1.08   -0.06
-  W6       -0.26   -0.28      ~0     ~0  +1.00   -0.03   +0.05  +0.03
-  L6       +0.25   +0.28   +0.03     ~0  +0.77   +0.08   -0.13  -0.09
+  W_inj       -0.26   -0.28      ~0     ~0  +1.00   -0.03   +0.05  +0.03
+  L_inj       +0.25   +0.28   +0.03     ~0  +0.77   +0.08   -0.13  -0.09
   C        +0.98   -0.02   -1.00     ~0     ~0      ~0   +1.00     ~0
 ```
 
-**`W1` y `W2` son practicamente INERTES**, y `L2` solo mueve `R_out` (+0.47).
+**`W_leakpass` y `W_leak` son practicamente INERTES**, y `L_leak` solo mueve `R_out` (+0.47).
 Pero la ley de fuga tiene **35 coeficientes en cuatro variables**, tres de las
 cuales no hacen nada en el punto de trabajo. Concuerda con el cribado que se
-hizo entonces ("W1, L1 y W2 se pueden fijar") pero nunca se cuantifico, y la
+hizo entonces ("W_leakpass, L1 y W_leak se pueden fijar") pero nunca se cuantifico, y la
 ley se ajusto igual con las cuatro.
 
 **`C` es la perilla limpia de resolucion**: +0.98 en resolucion, -1.00 en
@@ -524,17 +524,17 @@ se paga exactamente en velocidad**, nada mas.
 **`Iref` es la sucia**: mueve las siete salidas a la vez (-0.71, +0.31, +1.02,
 -0.79, -1.08).
 
-**`C_in` lo fijan `W6` y `L6`** (+1.00 y +0.77), que son tambien las de la
+**`C_in` lo fijan `W_inj` y `L_inj`** (+1.00 y +0.77), que son tambien las de la
 inyeccion: no se puede ajustar el acoplo con la neurona sin tocar la senal.
 
 ### Aviso: el `~0` del techo es LOCAL
 
 El techo sale `~0` para las siete perillas, y sin embargo va de 2.32 a 2.69 V
-en la caja. La razon es que casi todo el cambio ocurre entre `L6` = 0.28 y
-0.50, y el punto nominal tiene `L6` = 1.0, ya en la zona plana:
+en la caja. La razon es que casi todo el cambio ocurre entre `L_inj` = 0.28 y
+0.50, y el punto nominal tiene `L_inj` = 1.0, ya en la zona plana:
 
 ```
-  techo(W6=0.5, L6)   0.30 -> 2.666    1.00 -> 2.342
+  techo(W_inj=0.5, L_inj)   0.30 -> 2.666    1.00 -> 2.342
                       0.50 -> 2.413    1.99 -> 2.317
 ```
 

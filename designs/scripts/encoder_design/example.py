@@ -37,7 +37,7 @@ def main():
               (t, p["area [um2]"], p["sigma_Vos [mV]"],
                p["iex_min [nA]"], p["gain"]))
     print("\n  Un factor 4 en desviacion a especificacion identica.")
-    print("  La palanca es Ll (el par de CARGA), no el par de entrada:")
+    print("  La palanca es L_load (el par de CARGA), no el par de entrada:")
     print("  el reflejo de 'agrandar la entrada' da 1.7x; esto da 3-4x.")
 
     _sep("5. Esquinas: el diseño no cambia, lo que hace el chip si")
@@ -51,11 +51,11 @@ def main():
     print("  se arregla en la polarizacion (seccion 7 del knowledge base).")
 
     _sep("6. Fijar dimensiones a mano")
-    d = design(EncoderSpec(iex_min=100, gain=0.35, Ll=0.30))
-    print("  Ll fijado a 0.30:", {k: d.params[k] for k in ("Wd", "Wl", "Ll", "L9")})
+    d = design(EncoderSpec(iex_min=100, gain=0.35, L_load=0.30))
+    print("  L_load fijado a 0.30:", {k: d.params[k] for k in ("W_in", "W_load", "L_load", "L_tail")})
     print("  ->", d.predicted["iex_min [nA]"], "nA, sigma",
           d.predicted["sigma_Vos [mV]"], "mV")
-    d = design(EncoderSpec(iex_min=100, gain=0.35, Wd=5.0))
+    d = design(EncoderSpec(iex_min=100, gain=0.35, W_in=5.0))
     print("\n  Fuera de la caja medida:")
     for n in d.warnings:
         print("   ", n)
