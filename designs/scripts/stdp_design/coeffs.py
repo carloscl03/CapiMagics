@@ -95,7 +95,13 @@ R_VW = 1.436e11        # [ohm] idem -> tau = 79 ms de RETENCION DEL PESO
 # El M5 original (pfet con la puerta en vw) tiene el SIGNO INVERTIDO: potenciar
 # reducia la corriente que recibe la membrana. Estos numeros son de la lectura
 # corregida (transconductor nfet + espejo pfet).
-IOUT_MAX = 2.231e-6    # [A]
+# Dimensionado por la CADENA, no por la celda: `ifwd` recoge n_post
+# sinapsis en paralelo y el LIF no admite mas de 2758 nA en ninguna
+# geometria, y ese maximo esta en la frontera de W_M5. Con 4 x 252 =
+# 1009 nA la neurona sale W=3.09 L=20, con 12 pct de margen.
+# (La primera version daba 2231 por
+# sinapsis: 8924 con las cuatro, factor 9.8 de exceso.)
+IOUT_MAX = 0.252e-6    # [A] por sinapsis
 VW_RANGO = (0.80, 2.70)
 
 # ============================================================================

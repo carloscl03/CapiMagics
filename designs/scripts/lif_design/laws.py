@@ -238,3 +238,26 @@ def iex_window(W: float, L: float) -> tuple[float, float]:
     Lo que se reporto antes como piso era artefacto de ventana de simulacion.
     """
     return (IEX_VERIFIED_MIN, iex_max(W, L))
+
+
+def geometria_para_iex(lo_nA, hi_nA, paso=24):
+    """(W, L) cuya ventana de Iex cubre [lo, hi], o None si ninguna.
+
+    `iex_range` por si sola no elegia geometria: el motor la usaba solo para
+    calcular la ganancia junto con `freq_range`, y si le dabas una corriente
+    que no cabia devolvia la geometria por defecto. Lo encontro la comprobacion
+    de cadena, cuando el STDP entregaba 2764 nA a una neurona de ventana 5-911.
+
+    De las que sirven devuelve la de MENOS area, que es el criterio del resto
+    del motor.
+    """
+    mejor = None
+    for i in range(paso + 1):
+        W = W_MIN + i * (W_MAX - W_MIN) / paso
+        for j in range(paso + 1):
+            Lg = L_MIN + j * (L_MAX - L_MIN) / paso
+            a, b = iex_window(W, Lg)
+            if a <= lo_nA and hi_nA <= b:
+                if mejor is None or W * Lg < mejor[0] * mejor[1]:
+                    mejor = (W, Lg)
+    return mejor

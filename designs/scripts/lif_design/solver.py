@@ -365,6 +365,23 @@ def _validate(d: NeuronDesign, W: float, Lg: float, Cm: float,
               f"{Cm:.0f} fF esta bajo Cm_min={L.Cm_min(W, Lg):.0f} fF; la "
               "membrana puede salir del riel (la ley es conservadora 10-25%, "
               "asi que puede funcionar igualmente)")
+    # La corriente que la etapa previa entrega TIENE que caber en la ventana
+    # de la geometria elegida. Sin esto el motor aceptaba iex_range=(111,2231)
+    # y devolvia una geometria de ventana 5-911 nA sin decir nada: lo encontro
+    # la comprobacion de cadena, no este motor.
+    if spec.iex_range is not None:
+        lo_v, hi_v = L.iex_window(W, Lg)
+        lo_p, hi_p = spec.iex_range
+        if lo_p < lo_v or hi_p > hi_v:
+            sev = (Severity.ERROR if (hi_p > hi_v * 1.5 or lo_p < lo_v * 0.5)
+                   else Severity.WARNING)
+            d.add(sev, "iex_range",
+                  f"la etapa previa entrega {lo_p:.1f}-{hi_p:.1f} nA y esta "
+                  f"geometria solo admite {lo_v:.1f}-{hi_v:.1f} nA",
+                  f"fuera de ahi la neurona no dispara (por abajo) o el reset "
+                  f"no completa (por arriba). Da tambien `freq_range` para que "
+                  f"el motor elija geometria, o acota lo que entrega el vecino")
+
     v = L.vth(W, Lg, Cm)
     if v >= L.VDD:
         d.add(Severity.ERROR, "Vth",

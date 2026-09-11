@@ -14,7 +14,17 @@
 *    cuando la membrana necesita que le inyecten. De ahi transconductor+espejo:
 *                    Imax    rango   linealidad   area      signo
 *      M5 (hoy)     2.350    1.90      8.3 %     7.50 um2   INVERTIDO
-*      Mn+Mp1+Mp2   2.231    1.90      4.6       5.62       correcto
+*      Mn+Mp1+Mp2   0.252    1.90      4.8       9.03       correcto
+*
+*    El espejo se dimensiona por la CADENA, no por la celda: `ifwd` recoge
+*    CUATRO sinapsis en paralelo, y ninguna geometria del LIF acepta mas de
+*    2758 nA (su maximo, con W=3.5 L=50), y ESE maximo esta justo en la
+*    frontera medida de W_M5: disenar ahi es fragil. Con 1009 nA totales la
+*    neurona de capa 2 sale W=3.09 L=20 -- area 61.8 um2, comparable a la de
+*    capa 1 (62.5) y con 12 pct de margen a W_MAX.
+*    La primera version daba 2231 nA POR SINAPSIS: 8924 con las cuatro,
+*    factor 9.8 de exceso. El tercio superior del rango de peso no habria
+*    hecho nada, y nadie lo habria visto porque el acoplo cruza dos bloques.
 *
 * 3. M4 y M1 dimensionados por la CONDICION DE EQUILIBRIO del STDP aditivo.
 *    Con pre/post no correlacionados la deriva va como r^2*(A+ tau+ - A- tau-);
@@ -61,7 +71,7 @@ x3[0] avdd vpot unitcap
 x3[1] avdd vpot unitcap
 Mn  nd   vw avss avss nfet_03v3 L=6.0u W=0.22u nf=1
 Mp1 nd   nd avdd avdd pfet_03v3 L=2.0u W=0.5u nf=1
-Mp2 iout nd avdd avdd pfet_03v3 L=6.6u W=0.5u nf=1
+Mp2 iout nd avdd avdd pfet_03v3 L=30.5u W=0.22u nf=1
 .ends
 
 * expanding   symbol:  stdp/unitcap.sym # of pins=2
