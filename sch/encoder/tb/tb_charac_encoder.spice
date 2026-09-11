@@ -1,0 +1,164 @@
+* Caracterizacion del encoder (VCCS diferencial) - GF180MCU
+*
+* El encoder convierte una entrada diferencial (Vin, Vin_neg) en cuatro
+* corrientes de salida. Es la "etapa previa" que NeuronSpec da por supuesta:
+* de aqui salen iex_range y source_ro, que hoy el motor obliga a adivinar.
+*
+* Dimensiones tomadas de sch/encoder/encoder.sch -- el esquematico, NO de
+* layout/encoder/encoder_comp.spice, que lleva W=0.28u donde los otros
+* cinco ficheros (esquematico y extraidos del layout) llevan 0.5u.
+*
+* Correr dentro del contenedor:  ngspice -b tb_charac_encoder.spice
+.include /foss/pdks/gf180mcuD/libs.tech/ngspice/design.ngspice
+.lib /foss/pdks/gf180mcuD/libs.tech/ngspice/sm141064.ngspice typical
+
+* --- parametros de diseño: los ejes del barrido -------------------------
+* Cada uno es una perilla independiente del circuito. Separados asi para que
+* el barrido mueva una a la vez y las leyes salgan de un ajuste multivariante
+* y no de rodajas -- una rodaja absorbe las correlaciones entre variables.
+.param Wd=0.5u   Ld=10u      $ M1/M2  par diferencial
+.param Wl=2u     Ll=0.28u    $ M3/M4  cargas PMOS en diodo (lado referencia)
+.param Wo=0.93u  Lo=1.86u    $ M5-M8  espejos de salida
+.param Wb=0.5u   Lb=0.28u    $ M9/M10/M11 cola y referencia autopolarizada
+
+* --- contexto de operacion ----------------------------------------------
+.param VSUP=3.3
+.param VCM=3.3               $ Vin + Vin_neg: la entrada es complementaria
+.param VMEM=1.0              $ tension del nodo de membrana que ve la salida
+
+* ========================================================================
+* El encoder, con amperimetros (fuentes de 0 V) en cada rama.
+*
+* Van DENTRO del subcircuito, no fuera, porque hacen falta corrientes de
+* rama y no solo de puerto. Cada uno se inserta donde no rompe una puerta:
+* la caida es cero, asi que el circuito es identico y ninguna tension se
+* mueve -- lo unico que cambia es que la corriente pasa a tener nombre.
+* ========================================================================
+.subckt encoder Vdd Vss Vin Vin_neg Iex_1 Iex_2 Iex_3 Iex_4
+
+* -- par diferencial. L larga y W estrecha (W/L = 0.05) -> subumbral, que es
+*    lo que da el rango de entrada amplio.
+XM1 x1 Vin     a Vss nfet_03v3 L={Ld} W={Wd} nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u'
++ pd='2*int((nf+1)/2) * (W/nf + 0.18u)' ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
+XM2 y1 Vin_neg a Vss nfet_03v3 L={Ld} W={Wd} nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u'
++ pd='2*int((nf+1)/2) * (W/nf + 0.18u)' ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
+
+* -- cargas en diodo: cierran el par y son el lado de referencia del espejo
+XM3 x x Vdd Vdd pfet_03v3 L={Ll} W={Wl} nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u'
++ pd='2*int((nf+1)/2) * (W/nf + 0.18u)' ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
+XM4 y y Vdd Vdd pfet_03v3 L={Ll} W={Wl} nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u'
++ pd='2*int((nf+1)/2) * (W/nf + 0.18u)' ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
+
+* -- espejos de salida. Iex_1/Iex_2 copian la rama x, Iex_3/Iex_4 la rama y:
+*    cuatro pines, pero solo DOS corrientes independientes, duplicadas.
+XM8 o1 x Vdd Vdd pfet_03v3 L={Lo} W={Wo} nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u'
++ pd='2*int((nf+1)/2) * (W/nf + 0.18u)' ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
+XM5 o2 x Vdd Vdd pfet_03v3 L={Lo} W={Wo} nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u'
++ pd='2*int((nf+1)/2) * (W/nf + 0.18u)' ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
+XM7 o3 y Vdd Vdd pfet_03v3 L={Lo} W={Wo} nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u'
++ pd='2*int((nf+1)/2) * (W/nf + 0.18u)' ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
+XM6 o4 y Vdd Vdd pfet_03v3 L={Lo} W={Wo} nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u'
++ pd='2*int((nf+1)/2) * (W/nf + 0.18u)' ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
+
+* -- cola y referencia autopolarizada: M11 (pfet) y M10 (nfet) en diodo
+*    fijan net1, y net1 fija la corriente de cola de M9.
+XM9  a1   net1 Vss Vss nfet_03v3 L={Lb} W={Wb} nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u'
++ pd='2*int((nf+1)/2) * (W/nf + 0.18u)' ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
+XM10 nref net1 Vss Vss nfet_03v3 L={Lb} W={Wb} nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u'
++ pd='2*int((nf+1)/2) * (W/nf + 0.18u)' ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
+XM11 net1 net1 Vdd Vdd pfet_03v3 L={Lb} W={Wb} nf=1 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u'
++ pd='2*int((nf+1)/2) * (W/nf + 0.18u)' ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0
+
+* -- amperimetros. 0 V: no cargan, solo dan nombre a la corriente.
+*    Rama del par: entre el drenador del nfet y el nodo x/y, que asi conserva
+*    su conexion al diodo y a las puertas de los espejos.
+VAM_X    x1   x    0
+VAM_Y    y1   y    0
+* Cola: entre las fuentes del par y el drenador de M9. Ninguna puerta en medio.
+VAM_TAIL a    a1   0
+* Referencia: la corriente que fija net1, y con ella la cola.
+VAM_REF  net1 nref 0
+* Salidas: entre el drenador del espejo y el pin. Ninguna puerta en medio.
+VAM_1    o1 Iex_1 0
+VAM_2    o2 Iex_2 0
+VAM_3    o3 Iex_3 0
+VAM_4    o4 Iex_4 0
+.ends
+
+* ========================================================================
+* Banco
+* ========================================================================
+VDD  Vdd 0 {VSUP}
+VSS  Vss 0 0
+
+* Entrada: se barre Vin y Vin_neg lo sigue en complementario, que es como lo
+* excita el testbench del equipo (Vin 0->3.3 mientras Vin_neg 3.3->0).
+VIN  Vin 0 1.65
+BNEG Vin_neg 0 V = {VCM} - V(Vin)
+
+* Cargas: cada salida termina en una fuente de tension, no en tierra. Esa
+* tension es la del nodo de membrana de la neurona, y es ademas la perilla
+* con la que se mide ro -- barriendola a Vin fijo, ro = dV/dI.
+VL1 Iex_1 0 {VMEM}
+VL2 Iex_2 0 {VMEM}
+VL3 Iex_3 0 {VMEM}
+VL4 Iex_4 0 {VMEM}
+
+X1 Vdd Vss Vin Vin_neg Iex_1 Iex_2 Iex_3 Iex_4 encoder
+
+.control
+set wr_singlescale
+set wr_vecnames
+
+* -- 1. transferencia Iex(Vin) --------------------------------------------
+* Signo, verificado contra la simulacion y no supuesto: el amperimetro de
+* salida tiene su nodo + en el drenador del pmos y el - en el pin, asi que
+* la corriente ENTREGADA a la neurona sale positiva como i(vam_N). Los de
+* rama estan al reves (el + es el drenador del nfet, que sumidero), y ahi
+* si hace falta el signo menos. Poner el mismo signo en los dos sitios daba
+* un ratio de espejo negativo, que fue como se detecto.
+* Nota: dentro de .control las llaves de .param NO se sustituyen --
+* {VSUP} llegaba como el literal 'vsup' y abortaba el barrido en
+* silencio, dejando los vectores vacios. Aqui va el numero.
+dc VIN 0 3.3 0.005
+let iex1  = i(v.x1.vam_1)
+let iex3  = i(v.x1.vam_3)
+let ibr_x = -i(v.x1.vam_x)
+let ibr_y = -i(v.x1.vam_y)
+let itail = i(v.x1.vam_tail)
+let iref  = i(v.x1.vam_ref)
+* Ratio del espejo MEDIDO, no deducido de la geometria: es la magnitud que
+* convierte los microamperios de la rama en los nanoamperios de la salida.
+let ratio = iex1 / ibr_x
+* Comprobacion estructural: cuatro pines pero dos corrientes. Si esto deja
+* de dar cero, el espejo no esta copiando lo que el esquematico dice.
+let iex2 = i(v.x1.vam_2)
+let par_err = maximum(abs(iex1 - iex2))
+print par_err
+write tb_encoder_dc.raw iex1 iex2 iex3 ibr_x ibr_y itail iref ratio v(x1.x) v(x1.y) v(x1.net1) v(x1.a)
+
+meas dc iex1_lo  FIND iex1  WHEN v(Vin)=0.4
+meas dc iex1_mid FIND iex1  WHEN v(Vin)=1.65
+meas dc iex1_hi  FIND iex1  WHEN v(Vin)=2.9
+meas dc itail_op FIND itail WHEN v(Vin)=1.65
+meas dc ratio_op FIND ratio WHEN v(Vin)=1.65
+print iex1_lo iex1_mid iex1_hi itail_op ratio_op
+
+* -- 2. impedancia de salida: ro = dV/dI a Vin fijo ------------------------
+* Lo que NeuronSpec llama source_ro. Se MIDE en el nodo de salida barriendo
+* su tension; no se estima de lambda.
+alter VIN = 1.65
+dc VL1 0.2 3.0 0.01
+let iout = i(v.x1.vam_1)
+let gout = deriv(iout)
+* El menos es fisico, no cosmetico: al subir la tension del nodo de salida
+* el pmos pierde Vsd y ENTREGA menos, asi que dI/dV es negativa. ro es su
+* magnitud. Sin el signo salia una resistencia de salida negativa.
+let ro   = -1 / gout
+write tb_encoder_ro.raw iout ro
+meas dc ro_1v FIND ro WHEN v(Iex_1)=1.0
+meas dc ro_2v FIND ro WHEN v(Iex_1)=2.0
+print ro_1v ro_2v
+
+.endc
+.end

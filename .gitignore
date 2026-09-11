@@ -49,3 +49,12 @@ build/
 dist/
 
 designs/out.svg
+
+# Salidas de LibreLane / OpenLane: se regeneran con el flujo
+designs/libs/**/runs/
+**/runs/*/tmp/
+**/runs/*/logs/
+
+# Ficheros intermedios de ngspice
+*.raw
+*.dat
