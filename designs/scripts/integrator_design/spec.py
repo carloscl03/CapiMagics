@@ -20,7 +20,8 @@ Lo propio del integrador frente a los otros dos:
     ninguna celda: era un numero arrastrado.
 
   * LA SATURACION SE REPORTA HACIA ARRIBA. Cada geometria deja de leer a cierta
-    frecuencia, porque `vm` se pega al techo (1.92-2.73 V segun `L6`). Eso es
+    frecuencia, porque `vm` se pega al techo (2.32-2.73 V segun `L6`, y casi
+    todo el cambio entre L6=0.28 y 0.50). Eso es
     un dato del contrato, no algo que se descubra en silicio.
 
   * `Iref` ES ENTRADA, NO CONSTANTE. Desplaza la ventana en frecuencia sin

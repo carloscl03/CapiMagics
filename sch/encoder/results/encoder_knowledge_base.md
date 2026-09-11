@@ -1961,3 +1961,40 @@ enseño que el motor castiga las leyes peores mas de lo que sugiere su error.
 son separables, cada variable por su lado. Aqui la forma aditiva se estanca en
 6.59 %. No es que lo hayamos hecho peor -- es que este circuito acopla sus
 cuatro dimensiones y el del LIF no.
+
+
+---
+
+## Matriz de acoplo
+
+`d(ln salida)/d(ln dimension)` en el punto nominal (`REF` del desarrollo
+potencia x correccion), **calculada de las leyes**. `+1` proporcional, `~0`
+ortogonal, `-1` inversa.
+
+```
+  dim      Iex-       G     Iex+    C_in    area    sVos    V(a)     r_o
+  Wd      -0.47   +0.45   +0.14   +0.93   +0.49   -0.44   +0.14   +0.38
+  Wl      -0.87   -0.44   -0.99      ~0   +0.31   -0.03      ~0   +0.70
+  Ll      +2.51   +0.53   +2.16      ~0   +0.31   -1.07      ~0   -2.03
+  L9      -1.61   +0.02   -1.03   -0.09   +0.20   -0.03   +0.17   +1.30
+```
+
+Cuatro lecturas que no estaban documentadas:
+
+**`L9` es ortogonal a la ganancia** (+0.02) y mueve `Iex-` un -1.61. Es la
+perilla limpia para desplazar corriente sin tocar ganancia.
+
+**`C_in` lo controla SOLO `Wd`** (+0.93, casi proporcional; las otras tres a
+~0). Como `C_in` es lo que la neurona tiene que mover, el acoplo con el bloque
+vecino depende de una sola dimension.
+
+**El desapareo lo fijan `Wd` y `Ll`** (-0.44 y -1.07). `Wl` y `L9` no lo notan.
+
+**Ninguna es ortogonal a `r_o`** (+0.38, +0.70, -2.03, +1.30). La impedancia de
+salida esta acoplada a todo, y `Ll` -- que es la perilla dominante de corriente
+(+2.51) -- la empeora (-2.03). La tension de `source_ro` que arrastramos es
+ESTRUCTURAL, no un caso particular.
+
+**Aviso sobre el metodo**: una matriz de acoplo es una derivada LOCAL. Un `~0`
+dice que en ESE punto no se mueve, no que la dependencia sea plana en toda la
+caja.

@@ -491,3 +491,57 @@ centrar por la media GLOBAL, y dio 77.8 % para el LIF -- peor que la inyeccion
 del integrador (80.2 %), lo cual era absurdo porque la ley del LIF es separable
 por construccion. El fallo: una estructura aditiva en logaritmos es de rango 2
 con ese centrado. La prueba correcta es el doble centrado.
+
+
+---
+
+## Matriz de acoplo
+
+`d(ln salida)/d(ln perilla)` en el punto que devuelve el motor para
+`f_min=74, f_max=4500`, **calculada de las leyes**.
+
+```
+  dim      resol  sensib  rizado  techo   C_in   R_out  t_resp    vm
+  W1          ~0      ~0      ~0     ~0     ~0   -0.03      ~0     ~0
+  W2          ~0      ~0      ~0     ~0     ~0   -0.05      ~0     ~0
+  L2          ~0      ~0   +0.02     ~0     ~0   +0.47   -0.02     ~0
+  Iref     -0.71   +0.31   +1.02     ~0     ~0   -0.79   -1.08   -0.06
+  W6       -0.26   -0.28      ~0     ~0  +1.00   -0.03   +0.05  +0.03
+  L6       +0.25   +0.28   +0.03     ~0  +0.77   +0.08   -0.13  -0.09
+  C        +0.98   -0.02   -1.00     ~0     ~0      ~0   +1.00     ~0
+```
+
+**`W1` y `W2` son practicamente INERTES**, y `L2` solo mueve `R_out` (+0.47).
+Pero la ley de fuga tiene **35 coeficientes en cuatro variables**, tres de las
+cuales no hacen nada en el punto de trabajo. Concuerda con el cribado que se
+hizo entonces ("W1, L1 y W2 se pueden fijar") pero nunca se cuantifico, y la
+ley se ajusto igual con las cuatro.
+
+**`C` es la perilla limpia de resolucion**: +0.98 en resolucion, -1.00 en
+rizado, ~0 en sensibilidad, +1.00 en tiempo de respuesta. **Toda la resolucion
+se paga exactamente en velocidad**, nada mas.
+
+**`Iref` es la sucia**: mueve las siete salidas a la vez (-0.71, +0.31, +1.02,
+-0.79, -1.08).
+
+**`C_in` lo fijan `W6` y `L6`** (+1.00 y +0.77), que son tambien las de la
+inyeccion: no se puede ajustar el acoplo con la neurona sin tocar la senal.
+
+### Aviso: el `~0` del techo es LOCAL
+
+El techo sale `~0` para las siete perillas, y sin embargo va de 2.32 a 2.69 V
+en la caja. La razon es que casi todo el cambio ocurre entre `L6` = 0.28 y
+0.50, y el punto nominal tiene `L6` = 1.0, ya en la zona plana:
+
+```
+  techo(W6=0.5, L6)   0.30 -> 2.666    1.00 -> 2.342
+                      0.50 -> 2.413    1.99 -> 2.317
+```
+
+Una matriz de acoplo es una derivada **local** y puede esconder una no
+linealidad fuerte a dos pasos. Vale para saber que tocar, no para extrapolar.
+
+**Nota**: el `1.92-2.73 V` que decia este documento era un borde de barrido --
+la malla de `V0` acababa en 2.45 V, asi que no se midio el techo sino el final
+del escaneo. El rango real es **2.32-2.73**. `laws.py` ya lo corregia; la
+correccion no habia llegado ni aqui ni a `spec.py`.
