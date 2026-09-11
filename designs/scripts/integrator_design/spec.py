@@ -12,8 +12,12 @@ Lo propio del integrador frente a los otros dos:
 
   * LA BANDA ES UN CONTRATO BIDIRECCIONAL. No se pide una corriente, se pide un
     rango de frecuencias a leer. Y ese rango tiene que caber en lo que la
-    cadena produce: `EncoderSpec` -> Iex -> `NeuronSpec` -> 74-4500 kHz. Pedir
-    fuera de ahi es un error de sistema, no del integrador.
+    cadena produce: `EncoderSpec` -> Iex -> `NeuronSpec`. El motor del LIF da
+    24.7-4500 kHz con la celda v2 y 12.8-4500 con la v3 del equipo (W_M5
+    1.25 -> 2.3; `Cm` NO interviene en la frecuencia, verificado de 280 a
+    864 fF). La banda medida de este integrador es 1-3866 kHz, o sea que
+    cubre las dos. El '74-4500 kHz' que decia aqui antes no corresponde a
+    ninguna celda: era un numero arrastrado.
 
   * LA SATURACION SE REPORTA HACIA ARRIBA. Cada geometria deja de leer a cierta
     frecuencia, porque `vm` se pega al techo (1.92-2.73 V segun `L6`). Eso es
