@@ -412,4 +412,38 @@ def design(spec: EncoderSpec | None = None) -> EncoderDesign:
           "seguimiento de esquina (99 mV contra 44). Gana en las dos cosas"
           % L.i_ref(0.5, 10.0, 0.5, 20.0))
 
+    # --- salidas: cuantas y con que polaridad ---------------------------
+    n = spec.n_salidas
+    if not (1 <= n <= 4):
+        d.add(Severity.ERROR, "n_salidas",
+              "%d fuera de rango: la celda tiene CUATRO copias de espejo" % n,
+              "1 a 4. Con 2 puedes hacer ON+OFF o dos copias del mismo signo")
+        n = max(1, min(4, n))
+    # Reparto EQUILIBRADO por defecto: con 2 salidas lo natural en codificacion
+    # neuromorfica es un par ON/OFF, no dos copias del mismo signo. Con
+    # `solo_positivas=True` se llenan primero las ON.
+    if spec.solo_positivas:
+        pos, neg = min(n, 2), max(0, n - 2)
+    else:
+        pos = (n + 1) // 2
+        neg = n - pos
+    if spec.solo_positivas and n > 2:
+        d.add(Severity.WARNING, "n_salidas",
+              "solo hay DOS salidas positivas (Iex_1, Iex_2); se piden %d" % n,
+              "las otras dos (Iex_3, Iex_4) bajan con Vdif")
+        pos, neg = 2, n - 2
+    d.predicted["salidas"] = "%d (%d ON, %d OFF)" % (n, pos, neg)
+    d.requirements["salidas"] = (
+        "Iex_1 e Iex_2 SUBEN con Vdif (canal ON), Iex_3 e Iex_4 BAJAN (OFF). "
+        "Medido: 40.8 nA a Vdif=-0.14 y 57.0 a +0.14, y al reves para las OFF. "
+        "Cada salida cuesta 48.5 nA (0.1 pct de los 47.81 uA que tira el "
+        "bloque con CERO conectadas): la decision es de area y de topologia, "
+        "no de consumo")
+    if neg and not spec.solo_positivas:
+        d.add(Severity.INFO, "polaridad",
+              "%d salida(s) van al canal OFF: su neurona dispara MENOS cuando "
+              "Vdif sube" % neg,
+              "es lo que permite codificar ON/OFF, pero si no se queria, pon "
+              "`solo_positivas=True` y n_salidas<=2")
+
     return d

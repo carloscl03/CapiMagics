@@ -91,6 +91,17 @@ class EncoderSpec:
     # objetivo secundario
     tradeoff: float = 0.5
 
+    # Cuantas de las cuatro salidas de corriente se usan, y con que polaridad.
+    # La celda tiene CUATRO copias de espejo: `Iex_1` e `Iex_2` suben con
+    # `Vdif` (canal ON) y `Iex_3` e `Iex_4` bajan (canal OFF). Medido:
+    #     Vdif -0.14 -> 40.8 / 40.8 / 57.0 / 57.0 nA
+    #     Vdif +0.14 -> 57.0 / 57.0 / 40.8 / 40.8 nA
+    # NO es una decision de consumo: el encoder tira 47.81 uA con CERO salidas
+    # conectadas y cada una anade 48.5 nA (0.1 pct). Lo que decide es el AREA y
+    # a cuantas neuronas alimenta un encoder.
+    n_salidas: int = 4
+    solo_positivas: bool = False   # True: usa solo el canal ON (max 2)
+
     # dimensiones fijadas
     Wd: float | None = None
     Wl: float | None = None

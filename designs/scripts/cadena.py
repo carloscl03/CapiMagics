@@ -60,6 +60,11 @@ class CadenaSpec:
     # Los defaults salen de los `NOMINAL_SPEC` de cada motor, que a su vez se
     # derivan de la celda del LIF que ya esta fabricada. Ver `defaults` en cada
     # solver: no son numeros a ojo, son la cadena resuelta hacia adelante.
+    n_salidas: int = 4            # copias de corriente del encoder (1 a 4).
+                                  # Iex_1,2 SUBEN con Vdif (ON); Iex_3,4 BAJAN
+                                  # (OFF). No es decision de consumo: el bloque
+                                  # tira 47.81 uA con CERO conectadas y cada
+                                  # una anade 48.5 nA (0.1 pct)
     iex_min_nA: float = 80.0      # = encoder_design.NOMINAL_SPEC
     gain: float | None = 0.40     # idem
     tau_stdp_us: float = 2.12     # = stdp_design.NOMINAL_SPEC; cubre los
@@ -101,7 +106,14 @@ def resuelve(spec: CadenaSpec) -> CadenaDesign:
     c = CadenaDesign()
 
     # ---- 1. encoder -------------------------------------------------------
-    enc = _enc(EncoderSpec(iex_min=spec.iex_min_nA, gain=spec.gain))
+    enc = _enc(EncoderSpec(iex_min=spec.iex_min_nA, gain=spec.gain,
+                           n_salidas=spec.n_salidas))
+    c.acoplos["0. salidas del encoder"] = enc.predicted.get("salidas", "?")
+    if spec.n_salidas < spec.n_pre:
+        c.add(Severity.WARNING, "n_salidas",
+              "el encoder da %d salidas y la capa 1 necesita %d neuronas"
+              % (spec.n_salidas, spec.n_pre),
+              "hacen falta mas encoders, o menos neuronas de entrada")
     c.bloques["encoder"] = enc
     iex_lo = enc.predicted["iex_min [nA]"]
     iex_hi = enc.predicted["iex_max [nA]"]
