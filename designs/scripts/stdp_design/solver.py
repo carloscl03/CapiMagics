@@ -33,6 +33,32 @@ from . import coeffs as C
 from . import laws as L
 from .spec import Severity, StdpDesign, StdpSpec
 
+__all__ = ["design", "nominal", "NOMINAL_SPEC"]
+
+# DEFAULT, derivado de la CADENA y no puesto a ojo.
+# La capa 1 con la celda v3 y el encoder por defecto dispara a 205-734 kHz, o
+# sea intervalos entre spikes de 1.36 a 4.88 us. Para que la ventana cubra el
+# extremo lento al 10 % hace falta `tau = 4.88/ln(10) = 2.12 us`.
+# `asimetria` = 1.0 porque con `tau+ = tau-` es la condicion de equilibrio:
+# en STDP aditivo, si `A+ tau+ != A- tau-` los pesos se van al rail.
+NOMINAL_SPEC = {"tau_us": 2.12, "asimetria": 1.0,
+                "f_min_kHz": 205.1, "f_max_kHz": 734.5}
+
+_NOM_CACHE = None
+
+
+def nominal():
+    """Las dimensiones del punto nominal, derivadas de `NOMINAL_SPEC`.
+
+    No estan clavadas: si la ley cambia, esto cambia con ella.
+    """
+    global _NOM_CACHE
+    if _NOM_CACHE is None:
+        from .spec import StdpSpec
+        _NOM_CACHE = dict(design(StdpSpec(**NOMINAL_SPEC)).params)
+    return dict(_NOM_CACHE)
+
+
 # punto de trabajo de las trazas con el bias nominal medido, ver el KB
 VDEP0_NOM = 0.767
 VTR0_NOM = 1.213

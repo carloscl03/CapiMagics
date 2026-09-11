@@ -71,6 +71,12 @@ _ORDEN = ("Wd", "Wl", "Ll", "L9")
 #
 # Buscando con el propio motor la peticion cuya solucion cae mas adentro sale
 # esta, con los cuatro ejes al 43-53 % del borde:
+# DEFAULT. Es el REF del desarrollo potencia x correccion, y encaja con la
+# cadena: 80-286 nA caen dentro de la ventana de la celda v3 (5-1755 nA) y dan
+# 205-734 kHz en la capa 1.
+# AVISO: solo usa el 16 % de la ventana del LIF, asi que el ENCODER es el
+# cuello de botella del rango dinamico de todo el sistema. Ampliarlo pide mas
+# ganancia, y la ganancia empeora `source_ro` (ver la matriz de acoplo).
 NOMINAL_SPEC = {"iex_min": 80.0, "gain": 0.40, "tradeoff": 0.5}
 
 # Verificado en ngspice (2026-09-01) con las leyes de esta version:

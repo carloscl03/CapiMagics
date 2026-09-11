@@ -57,9 +57,13 @@ class CadenaSpec:
     Solo los objetivos de SISTEMA. Cada bloque resuelve lo suyo con la misma
     politica de siempre (objetivos > dimensiones).
     """
-    iex_min_nA: float = 80.0      # lo que el encoder entrega en el extremo bajo
-    gain: float | None = 0.40     # ganancia del encoder
-    tau_stdp_us: float = 33.9     # ventana STDP; 33.9 cubre la neurona v3
+    # Los defaults salen de los `NOMINAL_SPEC` de cada motor, que a su vez se
+    # derivan de la celda del LIF que ya esta fabricada. Ver `defaults` en cada
+    # solver: no son numeros a ojo, son la cadena resuelta hacia adelante.
+    iex_min_nA: float = 80.0      # = encoder_design.NOMINAL_SPEC
+    gain: float | None = 0.40     # idem
+    tau_stdp_us: float = 2.12     # = stdp_design.NOMINAL_SPEC; cubre los
+                                  # intervalos de 1.36-4.88 us de la capa 1
     n_pre: int = 4                # sinapsis por linea pre, en el 4x2
     n_post: int = 4               # sinapsis que suman en cada ifwd
     tol_freq: float = 0.01        # error de frecuencia tolerable por r_o
@@ -162,7 +166,19 @@ def resuelve(spec: CadenaSpec) -> CadenaDesign:
     # `iex_range` por si sola no elegia geometria en el motor del LIF, asi que
     # aqui se le busca una que SI acepte lo que la sinapsis entrega, y se le
     # pasa fijada. Si ninguna sirve, el problema es de la sinapsis.
-    g2 = LL.geometria_para_iex(iout_max * 0.05, iout_max)
+    # Si la celda POR DEFECTO ya acepta lo que la sinapsis entrega, se usa esa:
+    # un solo diseno de neurona para las dos capas es mas barato de verificar,
+    # de caracterizar y de poner en layout que dos distintos.
+    from lif_design.solver import NOMINAL as _LIF_NOM
+    _wn, _ln = _LIF_NOM["W_M5"], _LIF_NOM["L_M5"]
+    _a, _b = LL.iex_window(_wn, _ln)
+    if _a <= iout_max * 0.05 and iout_max <= _b:
+        g2 = (_wn, _ln)
+        c.add(Severity.INFO, "capa 2",
+              "la celda por defecto (W=%.2f L=%.1f) ya admite los %.0f nA: se "
+              "reutiliza en vez de disenar otra" % (_wn, _ln, iout_max))
+    else:
+        g2 = LL.geometria_para_iex(iout_max * 0.05, iout_max)
     if g2 is None:
         c.add(Severity.ERROR, "Iout",
               "ninguna geometria del LIF admite los %.0f nA que suman las "

@@ -119,7 +119,15 @@ ANCHO_NS = (33.0, 32.0, 33.0, 33.0, 34.0, 36.0, 39.0)
 # --- la banda que la cadena puede producir ----------------------------
 # EncoderSpec -> Iex 15-1307 nA -> NeuronSpec -> esta banda.
 # El techo lo pone el reset del LIF (F_MAX), no el integrador.
-BANDA_CADENA = (74.0, 4500.0)   # kHz
+# DERIVADA de la cadena con los defaults, no clavada a ojo. Es lo que la CAPA
+# 2 produce: la alimentan 4 sinapsis de 252 nA (1009 nA en total) sobre la
+# celda v3 del LIF (ganancia 2.419 kHz/nA), y el suelo es donde la neurona
+# empieza a disparar (5 nA).
+#   5 nA    -> 12.8 kHz        1009 nA -> 2586 kHz
+# El (74, 4500) que decia antes no correspondia a ninguna celda: el 74 es el
+# mismo numero fantasma que estaba en spec.py y en el KB. Si cambian los
+# defaults de la cadena, esto se recalcula con `cadena.resuelve()`.
+BANDA_CADENA = (12.8, 2586.0)   # kHz
 
 # --- LA INTERFAZ: lo que la cadena necesita saber ------------------------
 # Igual que `EncoderSpec` reporta `source_ro` y `C_in` para que `NeuronSpec`
