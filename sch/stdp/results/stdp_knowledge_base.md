@@ -1,7 +1,7 @@
 # STDP — caracterización
 
 Medido sobre `designs/libs/snn_analog/stdp/stdp_sch.spice` (gf180mcuD, ngspice),
-septiembre 2026. **9.641 puntos** repartidos en 19 ficheros `.npz` en esta
+septiembre 2026. **10.741 puntos** repartidos en 25 ficheros `.npz` en esta
 carpeta; los bancos que los generan están en `../tb/scripts/`.
 
 Mismo método que `../../encoder/results/encoder_knowledge_base.md` y
@@ -457,3 +457,95 @@ en `stdp_lvs.sch` y `W=0.5u` en el netlist, con la misma fecha.
 10. **Imponer la física en vez de medirla**: de cuatro predicciones sobre el
     suelo, acerté una. `Cgdo·W` y `Cox·W·L·Vov` no describen un interruptor cuyo
     nodo intermedio flota.
+
+---
+
+## 10. Las ecuaciones, ya ajustadas y validadas
+
+Validacion **LOO por geometria entera**, nunca por punto: se deja fuera una
+geometria completa y se predice sin haberla visto, que es lo que le pedira el
+motor. El indicador de salud es que el error interno y el LOO **coincidan**;
+cuando se separan 12x, la ley no tiene los datos que dice tener.
+
+### 10.1 Nucleo de DEPRESION — `nucleo_w.npz` (168 pts)
+
+`L(M4)` va **FIJA a 0.28 um**, el minimo del proceso, y se justifica midiendo:
+el optimo esta ahi y gana en los tres ejes a la vez (e-plegado 123.1 mV contra
+74.8, suelo -2.09 contra -2.87, senal 499.9 contra 238.9). Ademas entre L=0.28
+y L=0.45 hay una transicion fisica: la dependencia con `W` **cambia de sentido**,
+el doble centrado da rango 2 y ninguna ley de potencia lo describe. Con `L`
+fija la interaccion desaparece por construccion.
+
+```
+  familia            interno    LOO    peor geom
+  E1 exponencial      49.4 %   49.7 %    59.0 %     <- la forma "obvia": la peor
+  E2 exp+cuad (3)      7.1      7.3       8.0
+  M1 mixta    (3)      2.5      3.05      4.51      <- elegida, por parsimonia
+  E3 exp+cub  (4)      0.69     1.59      4.35
+```
+
+```python
+SUELO_W  = (-2.775747e-03, -1.481682e-03)      # suelo[V] = a*W4 + b   (0.03 %)
+NUCLEO_W = (
+    (+4.349992e-01, -2.128562e+00, -2.074077e+01),   # c_V     cuadratica en ln(W4)
+    (-8.902535e-01, +1.475265e+00, +2.274034e+01),   # c_logV
+    (-3.021607e-01, +2.972607e+00, +2.121030e+01),   # c_1
+)
+# DVw(V, W4) = suelo - exp(c_V*V + c_logV*ln(V) + c_1)
+```
+
+**11 numeros.** Valida para `W4` en [0.22, 0.90] um y `Vdep` en [0.50, 1.00] V.
+(El encoder necesitaba 35 por ley; la diferencia no es el circuito, es haber
+reducido bien los grados de libertad antes de ajustar.)
+
+### 10.2 Nucleo de POTENCIACION — `pot_denso.npz` (504 pts)
+
+Aqui `L` **NO se puede fijar**: no hay punto que gane en todo (un factor 5.7 de
+suavidad cuesta un factor 27 de senal). Y tampoco se puede interpolar:
+
+```
+  LOO dejando fuera una W  (con L fija)     3.5 - 5.2 %
+  LOO dejando fuera una L  (con W fija)    43.0 - 47.5 %,  peor 140 %
+```
+
+Asi que la ley es **continua en `W` y DISCRETA en `L`**. El motor elige `L` de
+una lista corta -- que es lo que se hace en layout, donde nadie pone 1.37 um.
+Fingir una superficie suave daba 30 % de error pretendiendo ser 5 %.
+
+Familia ganadora `E3` (4 coef), distinta de la de depresion: no hay una familia
+"correcta", se compite en cada caso.
+
+```python
+SUELO_POT = (+7.666903e-04, -2.738296e-04)   # suelo[V] = a*W1 + b; cruza en W=0.357
+```
+
+**El suelo de potenciacion NO depende de `L`** -- identico a 4 cifras en las tres
+medidas -- y **se anula solo** eligiendo `W1 = 0.357 um`. Contrastado con el de
+depresion, cuyos dos terminos son negativos y por tanto **no cruza**: alli hay
+que jugar con la `L` de M3 y aceptar un nulo por cancelacion con 3 mV de
+dispersion en esquinas. Dos problemas distintos y dos remedios distintos.
+
+Coeficientes del nucleo en `../tb/scripts/gen_ley_pot.py` (se regeneran).
+
+### 10.3 Techo y lectura — `m12.npz`, `m5.npz`
+
+```
+  M9   fija n5, o sea el TECHO         0.5679 a 0.8793 V
+  M12  fija la VELOCIDAD para llegar   83.8 % a 96.4 % del techo en 33 ns
+  M5   independencia de carga = f(L) SOLA, no depende de W
+       L=1: 1.25 %   L=6: 0.171 %   L=15: 0.078 %
+```
+
+Para dar los 2.35 uA que pide la neurona con la `W` minima del proceso basta
+`L ~ 7.5`, no 15: **4.5x menos area** (1.65 um2 contra 7.50) con independencia
+de carga de ~0.15 %, un orden de magnitud mejor de lo que cualquier espejo pide.
+
+### 10.4 Lo que NO cierra
+
+- **La fuga de 20 pA** del decaimiento no esta atribuida a un transistor.
+- **`L` fuera de los valores medidos**: si el DRC de layout impide `L(M4)=0.28`,
+  o si se necesita una `L(M1)` distinta de 0.40/0.80/2.00, hay que volver a
+  medir. La transicion canal corto/largo no se extrapola.
+- **La razon `A+/A-`** la tiene que fijar el sistema, no la celda. El STDP
+  biologico es asimetrico a proposito (Bi & Poo: tau+ 17 ms, tau- 34 ms), asi
+  que la pregunta no es "iguala las dos mitades" sino que asimetria se quiere.
