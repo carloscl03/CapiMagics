@@ -99,9 +99,21 @@ declarada.
   Vdep0   1.0107  1.0482  1.0505  1.0506  1.0506
 ```
 
-La amplitud la limita **`Vpost − Vth` de M12**, no la carga: la fuente de M12
-*es* `vdep`, y al subir la traza su `Vgs` se cierra solo. La ley `Q = Idep·Dtp`
-del paper no vale aquí.
+La amplitud NO la limita la carga, pero tampoco `Vpost − Vth` como escribí en
+la primera versión de este documento. **El techo es `n5`**: la traza carga hasta
+igualarlo y ahí M12 se queda con `Vds = 0` y deja de conducir. Equilibrio de
+carga, no limitación por umbral.
+
+Medido barriendo M12 en 5×5 geometrías (`m12.npz`): la meseta vale **0.8712 V en
+las veinticinco**, idéntica a cuatro decimales, y ese valor es exactamente el
+`n5` medido en el `.op` (0.8713 V). La ley `Q = Idep·Dtp` del paper no vale aquí.
+
+Reparto de papeles:
+
+```
+  M9   fija n5, o sea EL TECHO          (0.5679 a 0.8793 V en su rejilla)
+  M12  fija la VELOCIDAD para llegar    (83.8 % a 96.4 % del techo en 33 ns)
+```
 
 **Consecuencia: el spike de 33 ns del LIF basta.** Lo que faltaba era corriente.
 
