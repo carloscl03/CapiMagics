@@ -36,13 +36,14 @@ from .spec import Severity, StdpDesign, StdpSpec
 __all__ = ["design", "nominal", "NOMINAL_SPEC"]
 
 # DEFAULT, derivado de la CADENA y no puesto a ojo.
-# La capa 1 con la celda v3 y el encoder por defecto dispara a 205-734 kHz, o
-# sea intervalos entre spikes de 1.36 a 4.88 us. Para que la ventana cubra el
-# extremo lento al 10 % hace falta `tau = 4.88/ln(10) = 2.12 us`.
+# La capa 1 con NUESTRA celda y el encoder por defecto dispara a
+# 503-1801 kHz, o sea intervalos entre spikes de 0.56 a 1.99 us. Para
+# que la ventana cubra el extremo lento al 10 pct: tau = 1.99/ln(10)
+# = 0.86 us.
 # `asimetria` = 1.0 porque con `tau+ = tau-` es la condicion de equilibrio:
 # en STDP aditivo, si `A+ tau+ != A- tau-` los pesos se van al rail.
-NOMINAL_SPEC = {"tau_us": 2.12, "asimetria": 1.0,
-                "f_min_kHz": 205.1, "f_max_kHz": 734.5}
+NOMINAL_SPEC = {"tau_us": 0.86, "asimetria": 1.0,
+                "f_min_kHz": 503.0, "f_max_kHz": 1801.3}
 
 _NOM_CACHE = None
 

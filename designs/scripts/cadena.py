@@ -187,8 +187,15 @@ def resuelve(spec: CadenaSpec) -> CadenaDesign:
               "tiene que ir en el espejo de salida de la sinapsis"
               % max(LL.iex_window(*LL.geometria_para_iex(5.0, 100.0) or (1.25, 50.0))))
         g2 = (1.25, 50.0)
+    # A la capa 2 se le pide ADEMAS margen a F_MAX, no solo que acepte la
+    # corriente: `geometria_para_iex` sola elegia una que corria a 4450 kHz
+    # con F_MAX en 4500.
+    f2_obj = LL.F_MAX / 2.5
     l2 = _lif(NeuronSpec(iex_range=(iout_max * 0.05, iout_max),
-                         W_M5=g2[0], L_M5=g2[1]))
+                         freq_range=(f2_obj * iout_max * 0.05 / iout_max, f2_obj)))
+    if not l2.ok:
+        l2 = _lif(NeuronSpec(iex_range=(iout_max * 0.05, iout_max),
+                             W_M5=g2[0], L_M5=g2[1]))
     c.bloques["LIF capa 2"] = l2
     W2, L2g = l2.params["W_M5"], l2.params["L_M5"]
     w2_lo, w2_hi = LL.iex_window(W2, L2g)
@@ -216,11 +223,97 @@ def resuelve(spec: CadenaSpec) -> CadenaDesign:
               "las sinapsis anaden %.1f %% a la membrana: mueve Vth y la "
               "excursion" % (100 * cm_extra / cm))
 
+    # acoplo 9: GANANCIA POR ETAPA. Es la restriccion de RED, no de par de
+    # bloques: si el array de sinapsis entrega mas de lo que la neurona admite,
+    # el punto de trabajo sube capa a capa hasta salirse. Compensarlo con una
+    # neurona mayor en la capa 2 sirve para UNA capa, no para una red.
+    g_etapa = iout_max / w2_hi_def if (w2_hi_def := LL.iex_window(
+        *[_LIF_NOM[k] for k in ("W_M5", "L_M5")])[1]) else 0
+    c.acoplos["9. ganancia por etapa"] = (
+        "%d x %.0f = %.0f nA contra %.0f que admite la celda: %.3fx"
+        % (spec.n_post, iout_1, iout_max, w2_hi_def, g_etapa))
+    if g_etapa > 1.02:   # tolerancia: 1.000 exacto es el objetivo, no un fallo
+        n_capas = 1
+        I = iex_hi
+        while I <= w2_hi_def and n_capas < 20:
+            I *= g_etapa
+            n_capas += 1
+        c.add(Severity.ERROR, "cascada",
+              "el array amplifica %.3fx por etapa: en una red se sale de la "
+              "ventana en la capa %d" % (g_etapa, n_capas),
+              "condicion para que NO escale: n_post * Iout_max <= Iex_max, "
+              "o sea Iout_max <= %.0f nA por sinapsis en vez de %.0f"
+              % (w2_hi_def / spec.n_post, iout_1))
+    elif g_etapa < 0.5:
+        c.add(Severity.WARNING, "cascada",
+              "el array atenua %.3fx por etapa: la actividad se apaga capa a "
+              "capa" % g_etapa)
+
     # ---- 5. integrador, leyendo la capa 2 ---------------------------------
     f2_lo, f2_hi = LL.freq(W2, L2g, w2_lo), LL.freq(W2, L2g, min(iout_max, w2_hi))
+    # MARGEN a F_MAX. Sin esto la cadena daba OK con la capa 2 a 4450 kHz
+    # contra un F_MAX de 4500: un 1.1 % de margen, o sea diseñada al borde del
+    # limite donde el reset deja de completar.
+    marg = LL.F_MAX / f2_hi
+    c.acoplos["8. margen a F_MAX"] = (
+        "la capa 2 llega a %.0f kHz y F_MAX es %.0f: %.2fx" % (f2_hi, LL.F_MAX, marg))
+    if marg < 1.3:
+        sev = Severity.ERROR if marg < 1.1 else Severity.WARNING
+        c.add(sev, "F_MAX",
+              "la capa 2 corre a %.0f kHz con F_MAX en %.0f: solo %.2fx de "
+              "margen" % (f2_hi, LL.F_MAX, marg),
+              "el reset no completa por encima de F_MAX y el periodo se clava "
+              "en ~215 ns. Baja la corriente que entrega la sinapsis o usa una "
+              "neurona de menos ganancia en la capa 2")
+
     ig = _int(IntegratorSpec(f_min=f2_lo, f_max=f2_hi))
     c.bloques["integrador"] = ig
     c.acoplos["7. banda que lee"] = "%.1f-%.1f kHz de la capa 2" % (f2_lo, f2_hi)
     c.notes += [n for n in ig.notes if n.severity is not Severity.INFO]
 
     return c
+
+
+def coherentes():
+    """Los `NOMINAL_SPEC` de cada motor cuadran con lo que la cadena produce?
+
+    Existe porque dos defaults se quedaron atras en silencio dentro de una
+    misma sesion: se derivan de la cadena, y cuando la cadena cambia hay que
+    volver a derivarlos. Devuelve la lista de incoherencias, vacia si todo
+    cuadra.
+
+        from cadena import coherentes
+        assert not coherentes()
+    """
+    from encoder_design.solver import NOMINAL_SPEC as E
+    from integrator_design.solver import NOMINAL_SPEC as I
+    from lif_design.solver import NOMINAL as LN
+    from stdp_design.solver import NOMINAL_SPEC as S
+
+    c = resuelve(CadenaSpec(iex_min_nA=E["iex_min"], gain=E["gain"],
+                            tau_stdp_us=S["tau_us"]))
+    W, Lg = LN["W_M5"], LN["L_M5"]
+    f1 = (LL.freq(W, Lg, E["iex_min"]),
+          LL.freq(W, Lg, c.bloques["encoder"].predicted["iex_max [nA]"]))
+    malas = []
+
+    def cerca(a, b, tol=0.03):
+        return abs(a - b) <= tol * max(abs(a), abs(b), 1e-9)
+
+    if not (cerca(S["f_min_kHz"], f1[0]) and cerca(S["f_max_kHz"], f1[1])):
+        malas.append("stdp.NOMINAL_SPEC dice f=%.0f-%.0f y la capa 1 hace "
+                     "%.0f-%.0f" % (S["f_min_kHz"], S["f_max_kHz"], *f1))
+    tau_nec = 1e3 / f1[0] / 2.303
+    if not cerca(S["tau_us"], tau_nec, 0.10):
+        malas.append("stdp.tau_us=%.2f y para cubrir la capa 1 hacen falta "
+                     "%.2f us" % (S["tau_us"], tau_nec))
+    banda = c.acoplos.get("7. banda que lee", "").split()[0].split("-")
+    if len(banda) == 2:
+        b = (float(banda[0]), float(banda[1]))
+        if not (cerca(I["f_min"], b[0], 0.05) and cerca(I["f_max"], b[1], 0.05)):
+            malas.append("integrator.NOMINAL_SPEC dice f=%.1f-%.0f y la capa 2 "
+                         "produce %.1f-%.0f" % (I["f_min"], I["f_max"], *b))
+    for n in c.notes:
+        if n.severity is Severity.ERROR:
+            malas.append("la cadena con los defaults da ERROR: %s" % n.message)
+    return malas

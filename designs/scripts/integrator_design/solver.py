@@ -40,7 +40,7 @@ _C = (2000.0, 5111.0, 12000.0)
 # Lo que de verdad le llega: la capa 2 alimentada por 4 sinapsis de 252 nA
 # recorre 12.8-2586 kHz con la celda v3. El suelo es donde la neurona empieza a
 # disparar (5 nA) y el techo los 1009 nA que suman las cuatro sinapsis.
-NOMINAL_SPEC = {"f_min": 12.8, "f_max": 2586.0, "tradeoff": 0.5}
+NOMINAL_SPEC = {"f_min": 13.6, "f_max": 1800.2, "tradeoff": 0.5}
 
 _ORDEN = ("W1", "W2", "Iref", "L2", "C", "W6", "L6")
 

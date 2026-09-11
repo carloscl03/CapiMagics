@@ -27,19 +27,30 @@ from .spec import NeuronDesign, NeuronSpec, Severity
 # Punto nominal de la celda actual (sch/lif/neurona_input_current.sch).
 # Es el unico con simulacion directa del circuito completo, asi que es el
 # default mas honesto para "haz una neurona y ya".
-# DEFAULT DEL LIF: la celda v3 del equipo, la que ESTA FABRICADA.
-# A diferencia del encoder y el integrador, aqui el nominal son DIMENSIONES y
-# no un pedido, porque la celda ya existe en silicio y el resto de la cadena
-# tiene que acoplarse a ella, no al reves.
+# --- DOS defaults, con papeles distintos ----------------------------
 #
-# Cambio respecto de la v2 (PR #45 del equipo, "lif v3"):
-#     inversores M1-M4,M7,M8   W 0.22 -> 0.5 um
-#     M5                       W 1.25 -> 2.3 um (L sigue 50)
-#     capacitor                150 -> 280 fF (c_width 5->28u, m 3->1)
-# Consecuencia medida: la ganancia cae de 4.575 a 2.419 kHz/nA, o sea que a
-# igual corriente la v3 dispara a LA MITAD. `Cm` no interviene en la
-# frecuencia (verificado de 280 a 864 fF); el factor lo pone W_M5.
-NOMINAL = {"W_M5": 2.3, "L_M5": 50.0, "Cm": 280.0, "W_M7M8": 0.5}
+# CELDA_EQUIPO es lo que esta FABRICADO (PR #45 del equipo, 'lif v3').
+# Se guarda como REFERENCIA para comparar, no como punto de partida: se
+# dimensiono antes de que existiera esta caracterizacion, y el equipo
+# todavia no la tiene.
+CELDA_EQUIPO = {"W_M5": 2.3, "L_M5": 50.0, "Cm": 280.0, "W_M7M8": 0.5}
+#
+# NOMINAL es EL NUESTRO, derivado de NOMINAL_SPEC con los limites que
+# SI estan medidos:
+#     F_MAX = 4500 kHz   el reset no completa (periodo ~215 ns)
+#     L_M5 >= 25 um      por debajo el error de la ley sube a 5-7 pct
+#     W_M5 <= 3.5 um     a 4.0 um el Vm_min se va a -0.058 V
+#
+# Criterio: la MENOR AREA que cumple, con 2.5x de margen a F_MAX y
+# L >= 30 para no disenar pegado a la frontera de precision. Ese
+# margen no es cosmetico: dimensionar contra el limite exacto ya fallo
+# una vez en la cadena, por 6 nA de 2758.
+#
+#     nuestro   W=1.351 L=35.4  ->  area 47.9 um2, banda 503-1800 kHz
+#     equipo    W=2.300 L=50.0  ->  area 115.0 um2, banda 205-734 kHz
+#     -> 2.45x menos area, con 2.5x de margen a F_MAX en vez de 6.1x
+NOMINAL_SPEC = {"iex_range": (80.0, 286.5), "freq_range": (503.0, 1800.0)}
+NOMINAL = {"W_M5": 1.351, "L_M5": 35.4, "Cm": 178, "W_M7M8": 0.22}
 
 
 def _clamp(v: float, lo: float, hi: float) -> tuple[float, bool]:

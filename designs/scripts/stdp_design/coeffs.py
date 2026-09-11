@@ -101,7 +101,10 @@ R_VW = 1.436e11        # [ohm] idem -> tau = 79 ms de RETENCION DEL PESO
 # 1009 nA la neurona sale W=3.09 L=20, con 12 pct de margen.
 # (La primera version daba 2231 por
 # sinapsis: 8924 con las cuatro, factor 9.8 de exceso.)
-IOUT_MAX = 0.252e-6    # [A] por sinapsis
+IOUT_MAX = 0.166e-6    # [A] por sinapsis; 4 x 166 = 662 contra los
+                       # 716 que admite la celda -> ganancia 0.925.
+                       # NO se deja en 1.000 exacto: disenar contra
+                       # el limite fallo tres veces en esta sesion.
 VW_RANGO = (0.80, 2.70)
 
 # ============================================================================
