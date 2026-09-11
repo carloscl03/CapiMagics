@@ -668,3 +668,69 @@ se dimensiono.
 
 El netlist con las tres correcciones esta en
 `designs/libs/snn_analog/stdp/stdp_propuesta.spice`.
+
+---
+
+## 11. Matriz de acoplo
+
+`d(ln salida)/d(ln perilla)` en el punto nominal, **calculada de las leyes**, no
+escrita de memoria. `+1` proporcional, `~0` ortogonal, `-1` inversa.
+
+```
+  perilla      A-      A+     tau   suelo-  suelo+  S/ruido
+  W4        +0.33      ~0      ~0   +0.36     ~0    -0.03
+  W1           ~0   +0.78      ~0      ~0   -0.63      ~0
+  CW        -0.95   -0.95      ~0   -0.95   -0.95      ~0
+  Cdep         ~0      ~0   +1.00      ~0      ~0      ~0
+  Itd          ~0      ~0   -1.00      ~0      ~0      ~0
+```
+
+Tres lecturas que no son obvias sin la matriz:
+
+**`Cdep` e `Itd` son ORTOGONALES a todo menos a `tau`** (+1.00 y -1.00 exactos).
+La ventana temporal es una perilla limpia y aislada: se ajusta sin tocar
+amplitudes ni suelos.
+
+**`W4` no sirve para mejorar senal/ruido.** Mueve la senal (+0.33) y el suelo
+(+0.36) casi en la misma proporcion, asi que el cociente se queda (-0.03). En el
+lado de DEPRESION no hay ninguna perilla continua que ataque el termino no
+hebbiano -- la unica es la `L` de M3, que es discreta en la practica porque lo
+que se busca es el cruce por cero.
+
+**En POTENCIACION si la hay**: `W1` sube `A+` (+0.78) y baja el suelo (-0.63) a
+la vez. Las dos mitades no son espejo en esto, y es la asimetria mas profunda
+de la celda.
+
+### Lo que no es continuo, y por eso no sale en la matriz
+
+```
+  L1     DISCRETA (0.40 / 0.80 / 2.00). A+ cae 2.4x de 0.40 a 0.80 y otro
+         2.6x hasta 2.00. El suelo+ NO la nota (identico a 4 cifras)
+  L(M3)  solo mueve el suelo-, y lo CRUZA POR CERO
+  M9     fija el techo `n5`, o sea el maximo de Vdep0: 0.568 a 0.879 V
+  M12    solo la VELOCIDAD de llegar al techo: 83.8 a 96.4 pct en 33 ns
+  M5     el rango de Iout Y la parasita de `vw` (27 fF de sus 7.5 um2)
+```
+
+## 12. Limites de operacion
+
+Medidos, no supuestos. La marca ✅ es frontera **medida directamente**; sin
+ella el numero es donde se dejo de barrer y se puede ampliar midiendo.
+
+| Parametro | Limite | Que pasa fuera |
+|---|---|---|
+| `W4` | >= 0.22 um ✅ | minimo del PDK |
+| `W4` | <= 1.50 um | decision de precision: LOO 4.02 % contra 8.05 % si se llega a 4.00. Hay datos hasta 4.00 |
+| `W4` | saturacion ✅ | con `Vdep`=1.0 y `W4`~1.5 la senal se aplana en ~1.63 V: choca con el recorrido del peso |
+| `W1` | 0.23 - 1.70 | los dos, borde de barrido |
+| `W1` | util <= ~1.28 ✅ | por encima `A+` se pasa de lo que la depresion puede igualar, y el suelo+ crece 0.77 mV/um |
+| `Vdep` | >= 0.50 V ✅ | por debajo la senal se entierra: a 0.40 V son 0.050 mV de STDP contra 2.832 de inyeccion |
+| `Vdep` | <= 1.00 V ✅ | por encima la VENTANA pierde la forma exponencial y sale con meseta |
+| `itd` | >= ~16 pA ✅ | la fuga del dispositivo (0.8 pA, medida sin el `rshunt` del banco) pasa del 5 % de `Itd`. `tau` util hasta ~500 us |
+| `itd` | <= 7.4 nA | borde de barrido |
+| `L1` | 0.40 / 0.80 / 2.00 ✅ | NO interpolable: dejando fuera una `L` entera el error es 43-47 %, hasta 140 % |
+| `L4` | = 0.28 um ✅ | el optimo esta en el minimo y gana en los tres ejes; entre 0.28 y 0.45 la dependencia con `W` cambia de sentido |
+
+**El suelo de 0.4 nA en `itd` que decia la primera version NO EXISTIA**: era el
+amperimetro en el extremo equivocado de la pila. El limite real esta 25 veces
+mas abajo, y eso es lo que deja resolver el acoplo con la neurona con margen.
