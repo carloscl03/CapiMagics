@@ -411,3 +411,65 @@ corrects buys nothing.
 Worth reopening if M1/M2 are ever sized (the 0.945 term *is* those gates, so
 the law would need refitting, not refining), if `CM_FLOOR` drops well below
 50 fF, or to publish the mechanism.
+
+---
+
+## Consumo de corriente (2026-09-02)
+
+Medido sobre la celda v3 del equipo (`W_M5=2.3, L_M5=50, Cm=280 fF,
+inversores W=0.5/0.28`), promediando `i(vdd)` en transitorio:
+
+    Iex [nA]    f [kHz]    I media [nA]    de la cual Iex
+        50         143        14604              0 %
+       100         250        13656              1 %
+       300         786        15504              2 %
+
+**La neurona consume ~14.6 uA para procesar 50 nA de entrada** -- 290 veces lo
+que le entra, y el consumo apenas depende de `Iex`.
+
+### Es la corriente de cortocircuito del inversor de entrada
+
+Barrido DC del inversor M1/M2 solo, en funcion de la tension de membrana:
+
+    Vin [V]    I [nA]      salida
+      0.50        270        3.30
+      1.00      22815        2.98
+      1.32      43200 <-pico
+      1.65      29591        0.19
+      2.00      14242        0.07
+      2.50       1096        0.00
+      3.00          0        0.00
+
+    conduce por encima del 10 % del pico entre 0.70 y 2.32 V: ventana de 1620 mV
+
+La membrana recorre de 0 a ~2.1 V en cada ciclo, **despacio**, asi que atraviesa
+esa ventana entera en cada disparo. No hay transicion rapida que limite el
+cortocircuito: el inversor conduce casi todo el tiempo.
+
+Comprobacion: integrando la curva DC sobre el recorrido de la membrana salen
+17.4 uA de media, contra los 14.6 uA medidos en la celda completa. Cierra (la
+diferencia es que la membrana no pasa el mismo tiempo en cada tension y el
+reset es rapido).
+
+Es el problema clasico de usar un inversor como comparador con una entrada
+lenta. Se ataca limitando la corriente del inversor (un transistor de
+estrangulamiento en serie) o con un comparador con histeresis.
+
+**AVISO sobre el compromiso**: estrangular el inversor ralentiza su transicion,
+y `F_MAX = 4500 kHz` ya esta limitado por que "el reset no completa". Bajar el
+consumo por esta via se paga en frecuencia maxima. Hay que medirlo, no
+despejarlo.
+
+### En contexto de chip
+
+    NEURONA        14600 nA     95 % del total
+    ENCODER         2934 nA     (compartido entre 4 neuronas -> 733 nA c/u)
+    INTEGRADOR        50 nA     (25 el mejorado)
+
+El encoder, ademas, entrega 180 nA de los 2934 que consume (6.1 % de
+eficiencia): el 94 % se va en la etapa diferencial porque el espejo de salida
+divide 1:7.6. Subir `W8/L8` para acercar la relacion a 1 bajaria su consumo
+~5x, y de paso mejoraria su impedancia de salida (que va con `Wo^1.11` y se
+queda corta por encima de 126 nA). Una sola dimension arreglando dos
+problemas -- pero cambia el `Iex` entregado, asi que el motor tendria que
+reajustar el resto.
