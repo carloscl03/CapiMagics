@@ -144,3 +144,22 @@ ESQUINAS = {
     ("sf",      125): (0.7024, 0.9354),
 }
 
+# ============================================================================
+# NIVEL de cada frontera.  ✅ = MEDIDA directamente.
+# Sin marca = donde se dejo de barrer; NO es un limite del circuito y se puede
+# ampliar midiendo. (En `stdp_design` pasar CAJA_W4 de 0.90 a 1.50 fue eso, y
+# desbloqueo disenos que el motor rechazaba.)
+#
+#   Wd  0.260 - 1.796    los dos son borde de barrido
+#   Wl  0.300 - 2.699    idem
+#   Ll  0.280 - 0.620    el 0.280 es el MINIMO DEL PDK                  ✅
+#                        el 0.620 es borde de barrido
+#   L9  0.801 - 3.781    los dos son borde de barrido
+#
+# Historia que conviene no repetir: el suelo de Ll estuvo en 0.30 por un error
+# mio (confundi el L minimo con el W minimo). Corregirlo a 0.28 bajo el area
+# un 26 pct. Una frontera sin nivel declarado se hereda sin revisar.
+#
+# CAJA_BIAS: los 0.22 y 0.28 son minimos del PDK                        ✅
+# Los 4.00 y 25.00 son borde de barrido -- y esta caja YA fallo una vez por no
+# cubrir su propio punto de uso (llegaba a Ln<=3 y la recomendacion era Ln=10).

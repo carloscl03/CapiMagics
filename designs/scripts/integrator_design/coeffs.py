@@ -175,3 +175,18 @@ EXPONENTES_ROUT = (
 )
 
 C_IN = (-14.91974, 1.0031535, 0.77089614, 0.00092089657, -0.0024814056, 0.1498882)
+
+# ============================================================================
+# NIVEL de cada frontera.  ✅ = MEDIDA directamente.
+# Sin marca = donde se dejo de barrer; se puede ampliar midiendo.
+#
+#   CAJA_FUGA  W1, W2 0.5-4      borde de barrido
+#              L2  0.28 - 10     el 0.28 es MINIMO DEL PDK              ✅
+#                                el 10 es borde de barrido
+#   CAJA_INY   W6 0.256 - 1.98   borde de barrido los dos
+#              L6 0.283 - 1.99   borde de barrido los dos
+#              C  802 - 1.94e4   borde de barrido los dos
+#   FUGA_MIN   0.30              CONDICION DE VALIDEZ medida: la ley de fuga
+#                                solo vale donde I_fuga > 0.30 * Iref     ✅
+#   L1_FIJO    0.28              fijarlo cubre el 78 pct del rango de A y el
+#                                98 pct de los casos: criterio MEDIDO      ✅
