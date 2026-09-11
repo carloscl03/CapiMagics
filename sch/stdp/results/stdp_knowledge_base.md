@@ -202,8 +202,24 @@ Con `n3 = n4`, `vb_idep = 2.32`, `vb_pot = 1.30`:
 Exponencial con **tau_eff ≈ 5.5 µs** (el paper da ~5). Amplitud 1.9 % del rango
 de peso por evento.
 
-**Cubre el rango de disparo del LIF** (intervalos de 222 ns a 13.5 µs): 96 % del
-pico en el extremo rápido, ~10 % en el lento.
+**Cobertura frente al LIF — corregido.** La primera versión decía que cubría el
+rango entero, con "intervalos de 222 ns a 13.5 µs". Ese 13.5 µs salía de una
+`f_min` de 74 kHz que no corresponde a ninguna celda: el motor del LIF da
+**24.7–4500 kHz para la v2 y 12.8–4500 para la v3** (la del equipo, con `W_M5`
+de 2.3 µm; `Cm` NO interviene en la frecuencia, verificado de 280 a 864 fF).
+
+```
+  v3:  12.8 a 4500 kHz   ->  intervalos de 222 ns a 78 us
+  ventana al 10 % del pico con tau = 5.5 us  ->  Dt = 12.7 us  ->  f > 79 kHz
+  cubierto de verdad: 79 a 4500 kHz, 1.75 decadas de las 2.55 que hace la neurona
+```
+
+**Pero se estira, y solo gracias a la correccion de la fuga (§3.2).** Para
+cubrir hasta 12.8 kHz al 10 % hace falta `tau = 78/ln(10) = 34 us`, o sea
+`Itd = 73.9 mV/34 us * Cdep = 0.24 nA`. Con el suelo de 0.4 nA que yo habia
+reportado eso era inalcanzable; al resultar que ese suelo era el amperimetro en
+el extremo equivocado de la pila, el impedimento desaparece. El barrido llega a
+0.115 nA, asi que 0.24 esta medido.
 
 Aviso: con `Vdep0` por encima del umbral (`vb_idep = 2.15`) la ventana sale
 **con meseta** en vez de exponencial. Amplitud y forma compiten.
