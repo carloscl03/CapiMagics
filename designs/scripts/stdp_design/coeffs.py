@@ -14,12 +14,21 @@ sin unir `n3` y `n4` la potenciacion no conduce.
 # nucleo de DEPRESION, familia M1: log s = c_V*V + c_logV*ln(V) + c_1
 # cada coeficiente es una cuadratica en ln(W4). L4 FIJA = 0.28 um.
 NUC_DEP = (
-    (+4.349992e-01, -2.128562e+00, -2.074077e+01),
-    (-8.902535e-01, +1.475265e+00, +2.274034e+01),
-    (-3.021607e-01, +2.972607e+00, +2.121030e+01),
+    (-1.452045e+00, -5.454292e+00, -2.183904e+01),
+    (+3.246751e-01, +3.629617e+00, +2.346295e+01),
+    (+1.415467e+00, +6.001363e+00, +2.221186e+01),
 )
-CAJA_W4 = (0.22, 0.90)
-SUELO_DEP = (-2.775747e-03, -1.481682e-03)   # [V] = a*W4 + b
+# CAJA de `W4`, y QUE la limita. La marca ✅ = frontera MEDIDA:
+#   >= 0.22    minimo del PDK                                    ✅
+#   <= 1.50    hasta aqui la ley vale: LOO 4.02 por ciento, peor 8.68.
+#              HAY datos hasta 4.00 en `nucleo_w_full.npz`, pero ahi
+#              el LOO sube a 8.05 y el peor a 27.89.
+#   en Vdep=1.0 y W4 ~1.5 la senal SATURA en ~1.63 V: choca con el
+#              recorrido del peso. Ese SI es limite fisico        ✅
+# Antes decia 0.90, que era solo donde deje de medir: hacia que el
+# motor recortase disenos validos por un 1.7 por ciento de amplitud.
+CAJA_W4 = (0.22, 1.50)
+SUELO_DEP = (-2.786000e-03, -1.477326e-03)   # [V] = a*W4 + b
 
 # nucleo de POTENCIACION, familia E3, por cada L1 DISCRETA
 L1_DISC = (0.40, 0.80, 2.00)
@@ -88,3 +97,50 @@ R_VW = 1.436e11        # [ohm] idem -> tau = 79 ms de RETENCION DEL PESO
 # corregida (transconductor nfet + espejo pfet).
 IOUT_MAX = 2.231e-6    # [A]
 VW_RANGO = (0.80, 2.70)
+
+# ============================================================================
+# CAJAS, CON SU NIVEL.  ✅ = frontera MEDIDA directamente.
+# Sin marca, es donde se dejo de medir y NO se puede tratar como limite.
+# ============================================================================
+#
+# `W4` -- lectura de la traza de depresion
+#   >= 0.22 um   minimo del PDK                                          ✅
+#   <= 1.50 um   hasta aqui la ley vale: LOO 4.02 pct, peor 8.68.
+#                Hay datos medidos hasta 4.00 en `nucleo_w_full.npz`, pero
+#                alli el LOO sube a 8.05 y el peor a 27.89. El corte es una
+#                decision de precision, no un limite del circuito.
+#   saturacion   con Vdep=1.0 y W4 ~1.5 la senal se aplana en ~1.63 V:
+#                choca con el recorrido del peso                         ✅
+#
+# `W1` -- lectura de la traza de potenciacion
+#   >= 0.23 um   primer punto medido (el minimo del PDK es 0.22)
+#   <= 1.70 um   ultimo punto medido
+#   UTIL <= ~1.28  por encima, A+ se pasa del maximo que la depresion puede
+#                igualar (683.5 mV con W4 <= 1.50), asi que no se puede
+#                equilibrar. Y ademas el suelo de potenciacion crece
+#                +0.77 mV por um de W1: un W1 grande paga termino no hebbiano
+#
+# `Vdep` -- profundidad de la traza en que se lee
+#   >= 0.50 V    por debajo la senal se entierra en el suelo: a 0.40 V el
+#                STDP real son 0.050 mV contra 2.832 de inyeccion            ✅
+#   <= 1.00 V    por encima la lectura sale de subumbral y la VENTANA pierde
+#                la forma exponencial: medido en `barE_2p15.npz`, con
+#                Vdep0=1.035 la ventana sale con meseta                      ✅
+#
+# `itd` -- corriente de decaimiento
+#   <= 7.4 nA    ultimo punto medido
+#   >= ~16 pA    aqui la fuga del dispositivo (0.8 pA) es el 5 pct de Itd y
+#                la ley empieza a irse. Medido bajando hasta 1.6 pA:
+#                  Itd 127 pA -> -0.21 pct     Itd 20 pA -> -9.25 pct
+#                  Itd 5.4 pA -> -41 pct       Itd 1.6 pA -> -134 pct        ✅
+#                El exceso es constante (~2.2 pA) y de el 1.47 pA son el
+#                `rshunt` del BANCO, no del circuito: el dispositivo fuga
+#                0.73-0.86 pA.
+#                -> tau maxima util ~500 us, o sea cubre f >= 0.9 kHz.
+#                (El "suelo de 0.4 nA" que se reporto antes era el amperimetro
+#                 en el extremo equivocado de la pila: no existia.)
+ITD_CAJA = (16e-12, 7.4e-9)
+FUGA_VDEP = 0.8e-12        # [A] fuga real del dispositivo, medida sin rshunt
+W1_UTIL_MAX = 1.28         # por encima no se puede equilibrar
+VDEP_CAJA = (0.50, 1.00)
+VTR_CAJA = (0.70, 1.30)
