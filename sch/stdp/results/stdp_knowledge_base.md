@@ -122,18 +122,35 @@ Balance de carga: mediana −0.02 % (dep), +0.55 % (pot).
 ### 3.2 Decaimiento — `L2_dep.npz`, `L2_pot.npz` (15 + 15)
 
 ```
-  pendiente = (I + I_fuga) / C        I_fuga ~ 20 pA (dep), ~7 pA (pot)
+  pendiente = Itd / Cdep      con Itd medida en la ENTRADA de la pila
 ```
 
-Medido −10.16 µV/ns contra −10.33 predicho de `Itd/Cdep`: **−1.7 %**. El paper da
-10 µV/ns para `Itd = 1 nA, Cdep = 100 fF` — clavado.
+Medido −10.16 µV/ns contra −10.33 predicho: **−1.7 %**. El paper da 10 µV/ns
+para `Itd = 1 nA, Cdep = 100 fF` — clavado.
 
-La fuga de 20 pA pone **suelo a `Itd` en ~0.4 nA**: por debajo, la ley se rompe
-(+24 % a 0.115 nA) y `tau⁻` no se puede alargar a voluntad. Nuestro punto de
-trabajo (~1.1 nA) está cómodamente por encima.
+**NO hay fuga, y no hay suelo en `Itd`.** La primera versión de este documento
+reportaba ~20 pA de fuga parásita y un suelo a `Itd ≈ 0.4 nA` por debajo del
+cual `tau⁻` no se podría alargar. Las dos cosas eran un artefacto del
+instrumento: `VAM_td` estaba en `MCM_9`, o sea en el **fondo** de la pila de
+cinco, y los cuatro nodos intermedios se llevan corriente por sus uniones.
 
-Las tres capacidades piden la misma fuga por separado (17.3 / 21.6 / 22.9 pA),
-que es lo que la hace física y no un apaño.
+```
+  entra por arriba (vdep -> MCM_5)   138.74 pA
+  sale por abajo   (MCM_9 -> avss)   115.35 pA      20.3 % de diferencia
+
+  exceso con el amperimetro de ABAJO   26.26 pA     <- la "fuga"
+  exceso con el de ARRIBA               2.87 pA     <- de los cuales 1.5 son
+                                                       el rshunt del banco
+```
+
+Con el amperímetro en la entrada, el balance cierra al 1 %.
+
+**Regla, ampliada:** el amperímetro no va solo en la rama que hace el trabajo,
+sino **en el extremo por donde la corriente entra al nodo que estás midiendo**.
+Es la tercera vez que el mismo error aparece en esta celda (M16 aguas arriba del
+diodo M9, MCM_1 aguas arriba de M7, y MCM_9 en el extremo equivocado de la
+pila). Las tres las cazó el balance de carga; ninguna la habría cazado un error
+de validación.
 
 ### 3.3 El núcleo `DVw(Vdep)` — `L3_dep.npz`, `L3_pot.npz` (60 + 60)
 
@@ -540,9 +557,40 @@ Para dar los 2.35 uA que pide la neurona con la `W` minima del proceso basta
 `L ~ 7.5`, no 15: **4.5x menos area** (1.65 um2 contra 7.50) con independencia
 de carga de ~0.15 %, un orden de magnitud mejor de lo que cualquier espejo pide.
 
-### 10.4 Lo que NO cierra
+### 10.4 `CW` entra como divisor, con 27 fF de parasita
 
-- **La fuga de 20 pA** del decaimiento no esta atribuida a un transistor.
+Las leyes del nucleo estan ajustadas a `nCW = 10` fijo. Verificado que `CW` solo
+divide: `senal x nCW` es constante al 8 % en un factor 8 de capacidad. Pero ese
+8 % es **sistematico**, no ruido, y sale de una parasita fija en `vw`:
+
+```
+  depresion     C0 = 0.500 unidades = 27.2 fF   ->  8.41 % -> 0.33 %
+  potenciacion  C0 = 0.490 unidades = 26.7 fF   ->  8.07 % -> 0.04 %
+```
+
+Las dos mitades, con estimulos distintos y signos opuestos, dan el mismo numero.
+Con el:
+
+```
+  DVw(V, W4, CW) = DVw_10(V, W4) * (10 + 0.5) / (nCW + 0.5)      0.04 % de error
+```
+
+**Y esa parasita es la puerta de M5**, medido barriendo su geometria:
+
+```
+  area de puerta   C0
+  7.50 um2        27.2 fF     <- hoy
+  1.65             8.1        <- el M5 recomendado por area
+  0.50             4.4
+  -> C0 = 3.26*area + 2.77 fF
+```
+
+O sea que encoger M5 sube la senal de TODAS las sinapsis: 3.4 % a `nCW = 10`,
+6.8 % si ademas se reduce `CW`. La decision de area y la de senal estan
+acopladas.
+
+### 10.5 Lo que NO cierra
+
 - **`L` fuera de los valores medidos**: si el DRC de layout impide `L(M4)=0.28`,
   o si se necesita una `L(M1)` distinta de 0.40/0.80/2.00, hay que volver a
   medir. La transicion canal corto/largo no se extrapola.
