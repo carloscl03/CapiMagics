@@ -423,11 +423,33 @@ rearmado M3/M4 (§5.4).
 
 ## 8. Abierto
 
-**La polaridad del peso parece invertida.** `M5 iout vw avdd avdd pfet`: subir
-`vw` **reduce** `Iout`. Y la potenciación (M1/M2, pfets desde `avdd`) **sube**
-`vw`. Medido: la depresión baja `vw`, la potenciación lo sube (+146.76 mV). O sea
-que potenciar reduce la salida. Puede ser deliberado y compensado aguas abajo,
-pero no se sabe mirando solo esta celda.
+**La polaridad del peso ESTABA invertida.** Resuelto: no era una ambigüedad,
+faltaba trazar la cadena.
+
+```
+  paper, linea 162   "When Dt < 0 (Dt > 0), VW is decreased (increased) by the
+                      depression (potentiation) circuit"
+  celda              potenciacion sube vw (+146.76 mV)        -> DE ACUERDO
+  M5 iout vw avdd    pfet: vw arriba -> Vsg abajo -> MENOS Iout
+  neurona            XC2 Iin vss cap_mim -> `Iin` ES la membrana, y la
+                     corriente que ENTRA la carga hacia el umbral
+  => potenciar DEBILITABA la sinapsis
+```
+
+El nucleo STDP esta bien y respeta la convencion del paper; **el que invierte es
+`M5`**, que es anadido del equipo (el paper caracteriza `DVW(Dt)` y no especifica
+la lectura). Un pfet con la puerta en `vw` tiene transconductancia negativa por
+construccion, y un nfet solo DRENA de `iout` cuando la membrana necesita que le
+inyecten. Hace falta transconductor + espejo. Medido con la misma metrica:
+
+```
+                 Imax     rango   linealidad    area      signo
+  M5 (hoy)      2.350 uA  1.90 V     8.3 %     7.50 um2   INVERTIDO
+  Mn+Mp1+Mp2    2.231     1.90       4.6       5.62       correcto
+```
+
+Gana en todo: misma corriente, mismo rango, la mitad de alinealidad, 25 % menos
+area y el signo bien.
 
 **`Itar` y `VW0` no existen** y son la Fig. 4 del paper. `Itar` son dos
 transistores (interruptor con puerta `vpost` + fuente con puerta `vb_itar`, de
@@ -594,6 +616,39 @@ acopladas.
 - **`L` fuera de los valores medidos**: si el DRC de layout impide `L(M4)=0.28`,
   o si se necesita una `L(M1)` distinta de 0.40/0.80/2.00, hay que volver a
   medir. La transicion canal corto/largo no se extrapola.
-- **La razon `A+/A-`** la tiene que fijar el sistema, no la celda. El STDP
-  biologico es asimetrico a proposito (Bi & Poo: tau+ 17 ms, tau- 34 ms), asi
-  que la pregunta no es "iguala las dos mitades" sino que asimetria se quiere.
+### 10.6 El punto de diseno, determinado por la condicion de equilibrio
+
+`A+/A-` no es una preferencia. En STDP aditivo con pre y post no correlacionados
+a tasa `r`, la deriva media del peso va como `r^2*(A+ tau+ - A- tau-)`; si no es
+cero, los pesos se van al rail. Con `tau+ = tau-` queda **`A+ = A-`**.
+
+Cruzando esa condicion con el hecho medido de que el suelo de potenciacion se
+anula en `W1 = 0.357` (independiente de `L`), la solucion es **unica**:
+
+```
+  W4 = 0.30   L4 = 0.28   ->  A- = 223 mV
+  W1 = 0.357  L1 = 0.40   ->  A+ = 222 mV, suelo NULO
+```
+
+`L1 = 2.00` queda **descartada**: ninguna `W` dentro del proceso alcanza a
+equilibrar (su maximo es 141 mV contra los 209 minimos de la depresion). Con
+`L1 = 0.80` y `W1 = 0.357` harian falta `W4` por debajo del minimo. Las dos
+condiciones juntas fijan las cuatro dimensiones.
+
+**Lazo cerrado sobre el netlist propuesto**, midiendo `Iout` -- lo que la
+membrana recibe -- en vez de `vw`:
+
+```
+      dt[ns]      DVw[mV]     DIout[nA]      efecto
+       -4000     -148.42       -151.56      debilita
+        -200     -210.77       -208.81      debilita
+        +200     +222.93       +266.53      refuerza
+       +4000     +186.51       +219.92      refuerza
+```
+
+Pre antes que post refuerza; post antes que pre debilita. Desequilibrio del
+5.5 % cerca de `Dt -> 0`, coherente con el 4.6 % de error de las leyes con que
+se dimensiono.
+
+El netlist con las tres correcciones esta en
+`designs/libs/snn_analog/stdp/stdp_propuesta.spice`.
